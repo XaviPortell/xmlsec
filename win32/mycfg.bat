@@ -8,10 +8,15 @@ REM
 REM Aleksey Sanin <aleksey@aleksey.com>
 REM 
 
-SET PREFIX=C:\cygwin\home\local
-SET XMLSEC_INCLUDE=%PREFIX%\include;%PREFIX%\include\mozilla;%PREFIX%\include\mozilla\nspr;%PREFIX%\include\mozilla\nss;%MSSDK_INCLUDE%
-SET XMLSEC_LIB=%PREFIX%\lib;%MSSDK_LIB%
-SET XMLSEC_OPTIONS=static=no iconv=no debug=yes xslt=yes crypto=mscrypto,openssl unicode=yes
+call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86
+REM SET PREFIX=C:\CCFC\LLibreries\xmlsec
+REM MSET XMLSEC_INCLUDE=%PREFIX%\include;..\..\libxml2\include;..\..\libiconv\include
+REM SET XMLSEC_LIB=%PREFIX%\lib;..\..\Release\
+REM SET XMLSEC_OPTIONS=static=no iconv=no debug=yes xslt=yes crypto=mscrypto,openssl unicode=yes
+REM SET PREFIX=C:\CCFC\LLibreries\xmlsec
+SET XMLSEC_INCLUDE=..\..\libxml2\include;..\..\libiconv\include;..\..\libxslt
+SET XMLSEC_LIB=..\..\Release
+
 
 del /F Makefile configure.txt
 cscript configure.js prefix=%PREFIX% %XMLSEC_OPTIONS% include=%XMLSEC_INCLUDE% lib=%XMLSEC_LIB% 
