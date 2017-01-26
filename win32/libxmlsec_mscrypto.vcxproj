@@ -1,0 +1,183 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{55CD7D04-7053-4E1A-B676-858B9C13C41F}</ProjectGuid>
+    <RootNamespace>libxmlsec_mscrypto</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <ProjectName>libxmlsec-mscrypto</ProjectName>
+    <SccProjectName>Svn</SccProjectName>
+    <SccAuxPath>Svn</SccAuxPath>
+    <SccLocalPath>Svn</SccLocalPath>
+    <SccProvider>SubversionScc</SccProvider>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140_xp</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140_xp</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PrecompiledHeaderFile />
+      <AdditionalIncludeDirectories>$(SolutionDir)Llibreries\libxml2\include;$(SolutionDir)Llibreries\libiconv\include;$(SolutionDir)Llibreries\libxslt;..\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WINDOWS;WIN32;_DEBUG;_USRDLL;LIBXMLSEC_EXPORTS;_USING_V110_SDK71_;%(PreprocessorDefinitions);;_REENTRANT; PACKAGE="xmlsec";HAVE_STDIO_H;HAVE_STDLIB_H;HAVE_STRING_H;HAVE_CTYPE_H;HAVE_MALLOC_H;HAVE_MEMORY_H;XMLSEC_NO_GOST;XMLSEC_NO_GOST2012;XMLSEC_NO_XSLT=1;XMLSEC_DEFAULT_CRYPTO="mscrypto";XMLSEC_DL_WIN32;LIBXML_ICONV_ENABLED;XMLSEC_MSCRYPTO_NT4=1</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>crypt32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_WINDOWS;WIN32;WIN64;_DEBUG;_USRDLL;LIBXMLSEC_EXPORTS;_USING_V110_SDK71_;%(PreprocessorDefinitions);;_REENTRANT; PACKAGE="xmlsec";HAVE_STDIO_H;HAVE_STDLIB_H;HAVE_STRING_H;HAVE_CTYPE_H;HAVE_MALLOC_H;HAVE_MEMORY_H;XMLSEC_NO_GOST;XMLSEC_NO_GOST2012;XMLSEC_NO_XSLT=1;XMLSEC_DEFAULT_CRYPTO="mscrypto";XMLSEC_DL_WIN32;LIBXML_ICONV_ENABLED;XMLSEC_MSCRYPTO_NT4=1</PreprocessorDefinitions>
+      <PrecompiledHeaderFile />
+      <AdditionalIncludeDirectories>$(SolutionDir)Llibreries\libxml2\include;$(SolutionDir)Llibreries\libiconv\include;$(SolutionDir)Llibreries\libxslt;..\include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>crypt32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_WINDOWS;WIN32;NDEBUG;_USRDLL;LIBXMLSEC_EXPORTS;_USING_V110_SDK71_;%(PreprocessorDefinitions);_REENTRANT; PACKAGE="xmlsec";HAVE_STDIO_H;HAVE_STDLIB_H;HAVE_STRING_H;HAVE_CTYPE_H;HAVE_MALLOC_H;HAVE_MEMORY_H;XMLSEC_NO_GOST;XMLSEC_NO_GOST2012;XMLSEC_DEFAULT_CRYPTO="mscrypto";XMLSEC_DL_WIN32;LIBXML_ICONV_ENABLED;XMLSEC_MSCRYPTO_NT4=1</PreprocessorDefinitions>
+      <PrecompiledHeaderFile />
+      <AdditionalIncludeDirectories>$(SolutionDir)Llibreries\libxml2\include;$(SolutionDir)Llibreries\libiconv\include;$(SolutionDir)Llibreries\libxslt;..\include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>crypt32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_WINDOWS;WIN32;WIN64;NDEBUG;_USRDLL;LIBXMLSEC_EXPORTS;_USING_V110_SDK71_;%(PreprocessorDefinitions);;_REENTRANT; PACKAGE="xmlsec";HAVE_STDIO_H;HAVE_STDLIB_H;HAVE_STRING_H;HAVE_CTYPE_H;HAVE_MALLOC_H;HAVE_MEMORY_H;XMLSEC_NO_GOST;XMLSEC_NO_GOST2012;XMLSEC_DEFAULT_CRYPTO="mscrypto";XMLSEC_DL_WIN32;LIBXML_ICONV_ENABLED;XMLSEC_MSCRYPTO_NT4=1</PreprocessorDefinitions>
+      <PrecompiledHeaderFile />
+      <AdditionalIncludeDirectories>$(SolutionDir)Llibreries\libxml2\include;$(SolutionDir)Llibreries\libiconv\include;$(SolutionDir)Llibreries\libxslt;..\include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>crypt32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\mscrypto\app.c" />
+    <ClCompile Include="..\src\mscrypto\certkeys.c" />
+    <ClCompile Include="..\src\mscrypto\ciphers.c" />
+    <ClCompile Include="..\src\mscrypto\crypto.c" />
+    <ClCompile Include="..\src\mscrypto\digests.c" />
+    <ClCompile Include="..\src\mscrypto\hmac.c" />
+    <ClCompile Include="..\src\mscrypto\keysstore.c" />
+    <ClCompile Include="..\src\mscrypto\kt_rsa.c" />
+    <ClCompile Include="..\src\mscrypto\kw_aes.c" />
+    <ClCompile Include="..\src\mscrypto\kw_des.c" />
+    <ClCompile Include="..\src\mscrypto\signatures.c" />
+    <ClCompile Include="..\src\mscrypto\symkeys.c" />
+    <ClCompile Include="..\src\mscrypto\x509.c" />
+    <ClCompile Include="..\src\mscrypto\x509vfy.c" />
+    <ClCompile Include="..\src\strings.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\libiconv\libiconv.vcxproj">
+      <Project>{35410a20-ae1d-420a-865c-c9d488e59594}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\libxml2\win32\VC14\libxml2.vcxproj">
+      <Project>{1d6039f6-5078-416f-a3af-a36efc7e6a1c}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\libxslt\win32\libxslt\libxslt_so.vcxproj">
+      <Project>{cccb341d-3c81-451a-b8ed-aa356d7c0226}</Project>
+    </ProjectReference>
+    <ProjectReference Include="libxmlsec.vcxproj">
+      <Project>{1160e1df-f4e4-4bae-bc45-0228393efa37}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\xmlsec\mscrypto\app.h" />
+    <ClInclude Include="..\include\xmlsec\mscrypto\certkeys.h" />
+    <ClInclude Include="..\include\xmlsec\mscrypto\crypto.h" />
+    <ClInclude Include="..\include\xmlsec\mscrypto\keysstore.h" />
+    <ClInclude Include="..\include\xmlsec\mscrypto\x509.h" />
+    <ClInclude Include="..\include\xmlsec\strings.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

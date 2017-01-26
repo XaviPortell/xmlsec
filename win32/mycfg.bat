@@ -16,6 +16,7 @@ REM SET XMLSEC_OPTIONS=static=no iconv=no debug=yes xslt=yes crypto=mscrypto,ope
 REM SET PREFIX=C:\CCFC\LLibreries\xmlsec
 SET XMLSEC_INCLUDE=..\..\libxml2\include;..\..\libiconv\include;..\..\libxslt
 SET XMLSEC_LIB=..\..\Release
+SET XMLSEC_OPTIONS=crypto=mscrypto,openssl=110 xslt=yes iconv=yes unicode=yes debug=no static=no with-dl=yes nt4=yes
 
 
 del /F Makefile configure.txt
