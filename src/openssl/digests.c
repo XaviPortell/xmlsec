@@ -1,5 +1,5 @@
-/**
- * XMLSec library
+/*
+ * XML Security Library (http://www.aleksey.com/xmlsec).
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
@@ -19,16 +19,7 @@
 
 #include <xmlsec/openssl/crypto.h>
 #include <xmlsec/openssl/evp.h>
-
-/* new API from OpenSSL 1.1.0 (https://www.openssl.org/docs/manmaster/crypto/EVP_DigestInit.html):
- *
- * EVP_MD_CTX_create() and EVP_MD_CTX_destroy() were renamed to EVP_MD_CTX_new() and EVP_MD_CTX_free() in OpenSSL 1.1.
- */
-#if !defined(XMLSEC_OPENSSL_110)
-#define EVP_MD_CTX_new()   EVP_MD_CTX_create()
-#define EVP_MD_CTX_free(x) EVP_MD_CTX_destroy((x))
-#endif /* !defined(XMLSEC_OPENSSL_110) */
-
+#include "openssl_compat.h"
 
 /**************************************************************************
  *
@@ -279,11 +270,8 @@ xmlSecOpenSSLEvpDigestVerify(xmlSecTransformPtr transform,
     }
 
     if(memcmp(ctx->dgst, data, ctx->dgstSize) != 0) {
-        xmlSecError(XMLSEC_ERRORS_HERE,
-                    xmlSecErrorsSafeString(xmlSecTransformGetName(transform)),
-                    NULL,
-                    XMLSEC_ERRORS_R_INVALID_DATA,
-                    "data and digest do not match");
+        xmlSecInvalidDataError("data and digest do not match",
+                xmlSecTransformGetName(transform));
         transform->status = xmlSecTransformStatusFail;
         return(0);
     }

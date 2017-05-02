@@ -1,5 +1,5 @@
-/**
- * XMLSec library
+/*
+ * XML Security Library (http://www.aleksey.com/xmlsec).
  *
  * X509 support
  *
@@ -310,7 +310,11 @@ xmlSecOpenSSLX509StoreVerify(xmlSecKeyDataStorePtr store, XMLSEC_STACK_OF_X509* 
             }
 
 
-            ret         = X509_verify_cert(xsc);
+            if((keyInfoCtx->flags & XMLSEC_KEYINFO_FLAGS_X509DATA_DONT_VERIFY_CERTS) == 0) {
+                ret         = X509_verify_cert(xsc);
+            } else {
+                ret = 1;
+            }
             err_cert    = X509_STORE_CTX_get_current_cert(xsc);
             err         = X509_STORE_CTX_get_error(xsc);
 
@@ -933,12 +937,7 @@ xmlSecOpenSSLX509NameRead(xmlSecByte *str, int len) {
 
                 /* skip quote */
                 if((len <= 0) || ((*str) != '\"')) {
-                    xmlSecError(XMLSEC_ERRORS_HERE,
-                                NULL,
-                                NULL,
-                                XMLSEC_ERRORS_R_INVALID_DATA,
-                                "quote is expected:%s",
-                                xmlSecErrorsSafeString(str));
+                    xmlSecInvalidIntegerDataError("char", (*str), "quote '\"'", NULL);
                     X509_NAME_free(nm);
                     return(NULL);
                 }
@@ -949,12 +948,7 @@ xmlSecOpenSSLX509NameRead(xmlSecByte *str, int len) {
                     ++str; --len;
                 }
                 if((len > 0) && ((*str) != ',')) {
-                    xmlSecError(XMLSEC_ERRORS_HERE,
-                                NULL,
-                                NULL,
-                                XMLSEC_ERRORS_R_INVALID_DATA,
-                                "comma is expected:%s",
-                                xmlSecErrorsSafeString(str));
+                    xmlSecInvalidIntegerDataError("char", (*str), "comma ','", NULL);
                     X509_NAME_free(nm);
                     return(NULL);
                 }
@@ -964,11 +958,7 @@ xmlSecOpenSSLX509NameRead(xmlSecByte *str, int len) {
                 type = MBSTRING_ASC;
             } else if((*str) == '#') {
                 /* TODO: read octect values */
-                xmlSecError(XMLSEC_ERRORS_HERE,
-                            NULL,
-                            NULL,
-                            XMLSEC_ERRORS_R_INVALID_DATA,
-                            "reading octect values is not implemented yet");
+                xmlSecNotImplementedError("reading octect values is not implemented yet");
                 X509_NAME_free(nm);
                 return(NULL);
             } else {
@@ -1015,22 +1005,14 @@ xmlSecOpenSSLX509NameStringRead(xmlSecByte **str, int *strLen,
             nonSpace = q;
             if(xmlSecIsHex((*p))) {
                 if((p - (*str) + 1) >= (*strLen)) {
-                    xmlSecError(XMLSEC_ERRORS_HERE,
-                                NULL,
-                                NULL,
-                                XMLSEC_ERRORS_R_INVALID_DATA,
-                                "two hex digits expected");
+                    xmlSecInvalidDataError("two hex digits expected", NULL);
                     return(-1);
                 }
                 *(q++) = xmlSecGetHex(p[0]) * 16 + xmlSecGetHex(p[1]);
                 p += 2;
             } else {
                 if(((++p) - (*str)) >= (*strLen)) {
-                    xmlSecError(XMLSEC_ERRORS_HERE,
-                                NULL,
-                                NULL,
-                                XMLSEC_ERRORS_R_INVALID_DATA,
-                                "escaped symbol missed");
+                    xmlSecInvalidDataError("escaped symbol missed", NULL);
                     return(-1);
                 }
                 *(q++) = *(p++);
@@ -1038,11 +1020,7 @@ xmlSecOpenSSLX509NameStringRead(xmlSecByte **str, int *strLen,
         }
     }
     if(((p - (*str)) < (*strLen)) && ((*p) != delim)) {
-        xmlSecError(XMLSEC_ERRORS_HERE,
-                    NULL,
-                    NULL,
-                    XMLSEC_ERRORS_R_INVALID_SIZE,
-                    "buffer is too small");
+        xmlSecInvalidSizeOtherError("buffer is too small", NULL);
         return(-1);
     }
     (*strLen) -= (p - (*str));
@@ -1050,7 +1028,7 @@ xmlSecOpenSSLX509NameStringRead(xmlSecByte **str, int *strLen,
     return((ingoreTrailingSpaces) ? nonSpace - res + 1 : q - res);
 }
 
-/**
+/*
  * This function DOES NOT create duplicates for X509_NAME_ENTRY objects!
  */
 static STACK_OF(X509_NAME_ENTRY)*

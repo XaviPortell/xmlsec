@@ -1,4 +1,4 @@
-/**
+/*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
  * XML Parser transform and utility functions.
@@ -86,6 +86,7 @@ static xmlSecTransformKlass xmlSecParserKlass = {
     NULL,                                       /* void* reserved0; */
     NULL,                                       /* void* reserved1; */
 };
+
 
 /**
  * xmlSecTransformXmlParserGetKlass:

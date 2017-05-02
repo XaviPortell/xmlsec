@@ -1,5 +1,5 @@
-/**
- * XMLSec library
+/*
+ * XML Security Library (http://www.aleksey.com/xmlsec).
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
@@ -46,6 +46,7 @@ static int      xmlSecOpenSSLDummyPasswordCallback      (char *buf,
 
 /* conversion from ptr to func "the right way" */
 XMLSEC_PTR_TO_FUNC_IMPL(pem_password_cb)
+XMLSEC_FUNC_TO_PTR_IMPL(pem_password_cb)
 
 
 /**
@@ -60,14 +61,15 @@ XMLSEC_PTR_TO_FUNC_IMPL(pem_password_cb)
  */
 int
 xmlSecOpenSSLAppInit(const char* config) {
-    
-#if (OPENSSL_VERSION_NUMBER < 0x10100000)
+#if !defined(XMLSEC_OPENSSL_API_110)
+
     ERR_load_crypto_strings();
     OPENSSL_config(NULL);
     OpenSSL_add_all_algorithms();
-#else /* OPENSSL_VERSION_NUMBER < 0x10100000 */
+
+#else /* !defined(XMLSEC_OPENSSL_API_110) */
     int ret;
-    
+
     ret = OPENSSL_init_crypto(OPENSSL_INIT_LOAD_CRYPTO_STRINGS | 
                               OPENSSL_INIT_ADD_ALL_CIPHERS |
                               OPENSSL_INIT_ADD_ALL_DIGESTS |
@@ -79,7 +81,7 @@ xmlSecOpenSSLAppInit(const char* config) {
         xmlSecOpenSSLError("OPENSSL_init_crypto", NULL);
         return(-1);
     }
-#endif /* OPENSSL_VERSION_NUMBER < 0x10100000 */
+#endif /* !defined(XMLSEC_OPENSSL_API_110) */
 
     if((RAND_status() != 1) && (xmlSecOpenSSLAppLoadRANDFile(NULL) != 1)) {
         xmlSecInternalError("xmlSecOpenSSLAppLoadRANDFile", NULL);
@@ -107,28 +109,22 @@ int
 xmlSecOpenSSLAppShutdown(void) {
     xmlSecOpenSSLAppSaveRANDFile(NULL);
 
-#if (OPENSSL_VERSION_NUMBER < 0x10100000)
-    RAND_cleanup();
-    EVP_cleanup();
+    /* OpenSSL 1.1.0+ does not require explicit cleanup */
+#if !defined(XMLSEC_OPENSSL_API_110)
 
 #ifndef XMLSEC_NO_X509
     X509_TRUST_cleanup();
 #endif /* XMLSEC_NO_X509 */
 
+    RAND_cleanup();
+    EVP_cleanup();
+
     ENGINE_cleanup();
     CONF_modules_unload(1);
-
     CRYPTO_cleanup_all_ex_data();
-
-    /* finally cleanup errors */
-#if (defined(XMLSEC_OPENSSL_100) || defined(XMLSEC_OPENSSL_110))
     ERR_remove_thread_state(NULL);
-#else
-    ERR_remove_state(0);
-#endif /* defined(XMLSEC_OPENSSL_100) || defined(XMLSEC_OPENSSL_110) */
-
     ERR_free_strings();
-#endif /* (OPENSSL_VERSION_NUMBER < 0x10100000) */
+#endif /* !defined(XMLSEC_OPENSSL_API_110) */
 
     /* done */
     return(0);
@@ -1295,10 +1291,15 @@ xmlSecOpenSSLDefaultPasswordCallback(char *buf, int bufsize, int verify, void *u
     /* try 3 times */
     for(i = 0; i < 3; i++) {
         if(filename != NULL) {
-            xmlSecStrPrintf(prompt, sizeof(prompt), BAD_CAST "Enter password for \"%s\" file: ", filename);
+            ret = xmlStrPrintf(prompt, sizeof(prompt), "Enter password for \"%s\" file: ", filename);
         } else {
-            xmlSecStrPrintf(prompt, sizeof(prompt), BAD_CAST "Enter password: ");
+            ret = xmlStrPrintf(prompt, sizeof(prompt), "Enter password: ");
         }
+        if(ret < 0) {
+            xmlSecXmlError("xmlStrPrintf", NULL);
+            return(-1);
+        }
+
         ret = EVP_read_pw_string(buf, bufsize, (char*)prompt, 0);
         if(ret != 0) {
             xmlSecOpenSSLError("EVP_read_pw_string", NULL);
@@ -1311,9 +1312,13 @@ xmlSecOpenSSLDefaultPasswordCallback(char *buf, int bufsize, int verify, void *u
         }
 
         if(filename != NULL) {
-            xmlSecStrPrintf(prompt, sizeof(prompt), BAD_CAST "Enter password for \"%s\" file again: ", filename);
+            ret = xmlStrPrintf(prompt, sizeof(prompt), "Enter password for \"%s\" file again: ", filename);
         } else {
-            xmlSecStrPrintf(prompt, sizeof(prompt), BAD_CAST "Enter password again: ");
+            ret = xmlStrPrintf(prompt, sizeof(prompt), "Enter password again: ");
+        }
+        if(ret < 0) {
+            xmlSecXmlError("xmlStrPrintf", NULL);
+            return(-1);
         }
 
         buf2 = (char*)xmlMalloc(bufsize);

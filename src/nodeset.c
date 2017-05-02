@@ -1,4 +1,4 @@
-/**
+/*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
  * Enchanced nodes set
@@ -188,11 +188,8 @@ xmlSecNodeSetOneContains(xmlSecNodeSetPtr nset, xmlNodePtr node, xmlNodePtr pare
         }
         return(1);
     default:
-        xmlSecError(XMLSEC_ERRORS_HERE,
-                    NULL,
-                    NULL,
-                    XMLSEC_ERRORS_R_INVALID_TYPE,
-                    "type=%d", nset->type);
+        xmlSecInvalidIntegerTypeError("node set type", nset->type,
+                "supported nodeset type", NULL);
     }
 
     return(0);
@@ -492,13 +489,19 @@ static int
 xmlSecNodeSetDumpTextNodesWalkCallback(xmlSecNodeSetPtr nset, xmlNodePtr cur,
                                    xmlNodePtr parent ATTRIBUTE_UNUSED,
                                    void* data) {
+    int ret;
     xmlSecAssert2(nset != NULL, -1);
     xmlSecAssert2(cur != NULL, -1);
     xmlSecAssert2(data != NULL, -1);
 
-    if(cur->type == XML_TEXT_NODE) {
-        xmlOutputBufferWriteString((xmlOutputBufferPtr)data,
-                                    (char*)(cur->content));
+    if(cur->type != XML_TEXT_NODE) {
+        return(0);
+    }
+    ret = xmlOutputBufferWriteString((xmlOutputBufferPtr)data,
+            (char*)(cur->content));
+    if(ret < 0) {
+        xmlSecXmlError("xmlOutputBufferWriteString", NULL);
+        return(-1);
     }
     return(0);
 }
@@ -563,11 +566,8 @@ xmlSecNodeSetDebugDump(xmlSecNodeSetPtr nset, FILE *output) {
         return;
     default:
         fprintf(output, "(unknown=%d)\n", nset->type);
-        xmlSecError(XMLSEC_ERRORS_HERE,
-                    NULL,
-                    NULL,
-                    XMLSEC_ERRORS_R_INVALID_TYPE,
-                    "type=%d", nset->type);
+        xmlSecInvalidIntegerTypeError("node set type", nset->type,
+                "supported nodeset type", NULL);
     }
 
     l = xmlXPathNodeSetGetLength(nset->nodes);

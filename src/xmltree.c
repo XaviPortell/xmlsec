@@ -1,4 +1,4 @@
-/**
+/*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
  * Common XML Doc utility functions
@@ -682,12 +682,7 @@ xmlSecAddIDs(xmlDocPtr doc, xmlNodePtr cur, const xmlChar** ids) {
                         if(tmp == NULL) {
                             xmlAddID(NULL, doc, name, attr);
                         } else if(tmp != attr) {
-                            xmlSecError(XMLSEC_ERRORS_HERE,
-                                        NULL,
-                                        NULL,
-                                        XMLSEC_ERRORS_R_INVALID_DATA,
-                                        "id=%s already defined",
-                                        xmlSecErrorsSafeString(name));
+                            xmlSecInvalidStringDataError("id", name, "unique id (id already defined)", NULL);
                         }
                         xmlFree(name);
                     }
@@ -707,144 +702,6 @@ xmlSecAddIDs(xmlDocPtr doc, xmlNodePtr cur, const xmlChar** ids) {
         children = children->next;
     }
 }
-
-/**
- * xmlSecGenerateAndAddID:
- * @node:                       the node to ID attr to.
- * @attrName:                   the ID attr name.
- * @prefix:                     the prefix to add to the generated ID (can be NULL).
- * @len:                        the length of ID.
- *
- * Generates a unique ID in the format <@prefix>base64-encoded(@len random bytes)
- * and puts it in the attribute @attrName.
- *
- * Returns: 0 on success or a negative value if an error occurs.
- */
-int
-xmlSecGenerateAndAddID(xmlNodePtr node, const xmlChar* attrName, const xmlChar* prefix, xmlSecSize len) {
-    xmlChar* id;
-    int count;
-
-    xmlSecAssert2(node != NULL, -1);
-    xmlSecAssert2(attrName != NULL, -1);
-
-    /* we will try 5 times before giving up */
-    for(count = 0; count < 5; count++) {
-        id = xmlSecGenerateID(prefix, len);
-        if(id == NULL) {
-            xmlSecInternalError("xmlSecGenerateID", NULL);
-            return(-1);
-        }
-
-        if((node->doc == NULL) || (xmlGetID(node->doc, id) == NULL)) {
-            /* this is a unique ID in the document and we can use it */
-            if(xmlSetProp(node, attrName, id) == NULL) {
-                xmlSecXmlError("xmlSetProp", NULL);
-                xmlFree(id);
-                return(-1);
-            }
-
-            xmlFree(id);
-            return(0);
-        }
-        xmlFree(id);
-    }
-
-    return(-1);
-}
-
-/**
- * xmlSecGenerateID:
- * @prefix:                     the prefix to add to the generated ID (can be NULL).
- * @len:                        the length of ID.
- *
- * Generates a unique ID in the format <@prefix>base64-encoded(@len random bytes).
- * The caller is responsible for freeing returned string using @xmlFree function.
- *
- * Returns: pointer to generated ID string or NULL if an error occurs.
- */
-xmlChar*
-xmlSecGenerateID(const xmlChar* prefix, xmlSecSize len) {
-    xmlSecBuffer buffer;
-    xmlSecSize i, binLen;
-    xmlChar* res;
-    xmlChar* p;
-    int ret;
-
-    xmlSecAssert2(len > 0, NULL);
-
-    /* we will do base64 decoding later */
-    binLen = (3 * len + 1) / 4;
-
-    ret = xmlSecBufferInitialize(&buffer, binLen + 1);
-    if(ret < 0) {
-        xmlSecInternalError("xmlSecBufferInitialize", NULL);
-        return(NULL);
-    }
-    xmlSecAssert2(xmlSecBufferGetData(&buffer) != NULL, NULL);
-    xmlSecAssert2(xmlSecBufferGetMaxSize(&buffer) >= binLen, NULL);
-
-    ret = xmlSecBufferSetSize(&buffer, binLen);
-    if(ret < 0) {
-        xmlSecInternalError("xmlSecBufferSetSize", NULL);
-        xmlSecBufferFinalize(&buffer);
-        return(NULL);
-    }
-    xmlSecAssert2(xmlSecBufferGetSize(&buffer) == binLen, NULL);
-
-    /* create random bytes */
-    for(i = 0; i < binLen; i++) {
-        (xmlSecBufferGetData(&buffer)) [i] = (xmlSecByte) (256.0 * rand() / (RAND_MAX + 1.0));
-    }
-
-    /* base64 encode random bytes */
-    res = xmlSecBase64Encode(xmlSecBufferGetData(&buffer), xmlSecBufferGetSize(&buffer), 0);
-    if((res == NULL) || (xmlStrlen(res) == 0)) {
-        xmlSecInternalError("xmlSecBase64Encode", NULL);
-        xmlSecBufferFinalize(&buffer);
-        return(NULL);
-    }
-    xmlSecBufferFinalize(&buffer);
-
-    /* truncate the generated id attribute if needed */
-    if(xmlStrlen(res) > (int)len) {
-        res[len] = '\0';
-    }
-
-    /* we need to cleanup base64 encoded id because ID attr can't have '+' or '/' characters */
-    for(p = res; (*p) != '\0'; p++) {
-        if(((*p) == '+') || ((*p) == '/')) {
-            (*p) = '_';
-        }
-    }
-
-    /* add prefix if exist */
-    if(prefix) {
-        xmlChar* tmp;
-        xmlSecSize tmpLen;
-
-        tmpLen = xmlStrlen(prefix) + xmlStrlen(res) + 1;
-        tmp = xmlMalloc(tmpLen + 1);
-        if(tmp == NULL) {
-            xmlSecMallocError(tmpLen + 1, NULL);
-            xmlFree(res);
-            return(NULL);
-        }
-
-        xmlSecStrPrintf(tmp, tmpLen, BAD_CAST "%s%s", prefix, res);
-        xmlFree(res);
-        res = tmp;
-    } else {
-        /* no prefix: check that ID attribute starts from a letter */
-        if(!(((res[0] >= 'A') && (res[0] <= 'Z')) ||
-             ((res[0] >= 'a') && (res[0] <= 'z')))) {
-             res[0] = 'A';
-        }
-    }
-
-    return(res);
-}
-
 
 /**
  * xmlSecCreateTree:
@@ -993,6 +850,7 @@ xmlChar*
 xmlSecGetQName(xmlNodePtr node, const xmlChar* href, const xmlChar* local) {
     xmlChar* qname;
     xmlNsPtr ns;
+    int ret;
 
     xmlSecAssert2(node != NULL, NULL);
     xmlSecAssert2(local != NULL, NULL);
@@ -1015,7 +873,13 @@ xmlSecGetQName(xmlNodePtr node, const xmlChar* href, const xmlChar* local) {
             xmlSecMallocError(len, NULL);
             return(NULL);
         }
-        xmlSecStrPrintf(qname, len, BAD_CAST "%s:%s", ns->prefix, local);
+
+        ret = xmlStrPrintf(qname, len, "%s:%s", ns->prefix, local);
+        if(ret < 0) {
+            xmlSecXmlError("xmlStrPrintf", NULL);
+            xmlFree(qname);
+            return(NULL);
+        }
     } else {
         qname = xmlStrdup(local);
         if(qname == NULL) {

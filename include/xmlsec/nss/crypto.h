@@ -1,5 +1,5 @@
-/**
- * XMLSec library
+/*
+ * XML Security Library (http://www.aleksey.com/xmlsec).
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
@@ -185,6 +185,60 @@ XMLSEC_CRYPTO_EXPORT xmlSecKeyDataId    xmlSecNssKeyDataDsaGetKlass     (void);
 XMLSEC_CRYPTO_EXPORT xmlSecTransformId xmlSecNssTransformDsaSha1GetKlass(void);
 
 #endif /* XMLSEC_NO_DSA */
+
+
+/********************************************************************
+ *
+ * ECDSA transform
+ *
+ *******************************************************************/
+#ifndef XMLSEC_NO_ECDSA
+
+/**
+ * xmlSecNssKeyDataEcdsaId:
+ *
+ * The ECDSA key klass.
+ */
+#define xmlSecNssKeyDataEcdsaId xmlSecNssKeyDataEcdsaGetKlass()
+XMLSEC_CRYPTO_EXPORT xmlSecKeyDataId xmlSecNssKeyDataEcdsaGetKlass(void);
+
+#ifndef XMLSEC_NO_SHA1
+
+/**
+ * xmlSecNssTransformEcdsaSha1Id:
+ *
+ * The ECDSA SHA1 signature transform klass.
+ */
+#define xmlSecNssTransformEcdsaSha1Id xmlSecNssTransformEcdsaSha1GetKlass()
+XMLSEC_CRYPTO_EXPORT xmlSecTransformId xmlSecNssTransformEcdsaSha1GetKlass(void);
+
+#endif /* XMLSEC_NO_SHA1 */
+
+#ifndef XMLSEC_NO_SHA256
+
+/**
+ * xmlSecNssTransformEcdsaSha256Id:
+ *
+ * The ECDSA SHA256 signature transform klass.
+ */
+#define xmlSecNssTransformEcdsaSha256Id xmlSecNssTransformEcdsaSha256GetKlass()
+XMLSEC_CRYPTO_EXPORT xmlSecTransformId xmlSecNssTransformEcdsaSha256GetKlass(void);
+
+#endif /* XMLSEC_NO_SHA256 */
+
+#ifndef XMLSEC_NO_SHA512
+
+/**
+ * xmlSecNssTransformEcdsaSha512Id:
+ *
+ * The ECDSA SHA512 signature transform klass.
+ */
+#define xmlSecNssTransformEcdsaSha512Id xmlSecNssTransformEcdsaSha512GetKlass()
+XMLSEC_CRYPTO_EXPORT xmlSecTransformId xmlSecNssTransformEcdsaSha512GetKlass(void);
+
+#endif /* XMLSEC_NO_SHA512 */
+
+#endif /* XMLSEC_NO_ECDSA */
 
 
 /********************************************************************

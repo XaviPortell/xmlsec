@@ -1,6 +1,6 @@
 
-/**
- * XMLSec library
+/*
+ * XML Security Library (http://www.aleksey.com/xmlsec).
  *
  * X509 support
  *
@@ -573,13 +573,11 @@ xmlSecGnuTLSKeyDataX509XmlRead(xmlSecKeyDataId id, xmlSecKeyPtr key,
         return(-1);
     }
 
-    if((keyInfoCtx->flags & XMLSEC_KEYINFO_FLAGS_X509DATA_DONT_VERIFY_CERTS) == 0) {
-        ret = xmlSecGnuTLSKeyDataX509VerifyAndExtractKey(data, key, keyInfoCtx);
-        if(ret < 0) {
-            xmlSecInternalError("xmlSecGnuTLSKeyDataX509VerifyAndExtractKey",
-                                xmlSecKeyDataKlassGetName(id));
-            return(-1);
-        }
+    ret = xmlSecGnuTLSKeyDataX509VerifyAndExtractKey(data, key, keyInfoCtx);
+    if(ret < 0) {
+        xmlSecInternalError("xmlSecGnuTLSKeyDataX509VerifyAndExtractKey",
+                            xmlSecKeyDataKlassGetName(id));
+        return(-1);
     }
     return(0);
 }
@@ -1608,11 +1606,7 @@ xmlSecGnuTLSX509CertGetKey(gnutls_x509_crt_t cert) {
 
     default:
         {
-            xmlSecError(XMLSEC_ERRORS_HERE,
-                        NULL,
-                        "gnutls_x509_crt_get_pk_algorithm",
-                        XMLSEC_ERRORS_R_INVALID_TYPE,
-                        "Unsupported algorithm %d", (int)alg);
+            xmlSecInvalidIntegerTypeError("key_alg", alg, "supported algorithm", NULL);
             return(NULL);
         }
     }

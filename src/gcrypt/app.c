@@ -1,5 +1,5 @@
-/**
- * XMLSec library
+/*
+ * XML Security Library (http://www.aleksey.com/xmlsec).
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
@@ -67,7 +67,7 @@ Noteworthy changes in version 1.4.3 (2008-09-18)
     /* NOTE configure.in defines GCRYPT_MIN_VERSION */
     if (!gcry_check_version (GCRYPT_MIN_VERSION)) {
         xmlSecGCryptError2("gcry_check_version", GPG_ERR_NO_ERROR, NULL,
-                           "min_version=%d", (int)GCRYPT_MIN_VERSION);
+                           "min_version=%ld", (long)GCRYPT_MIN_VERSION);
         return(-1);
     }
 

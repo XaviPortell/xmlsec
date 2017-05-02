@@ -1,6 +1,5 @@
-/**
- *
- * XMLSec library
+/*
+ * XML Security Library (http://www.aleksey.com/xmlsec).
  *
  * AES Algorithm support
  *
@@ -507,16 +506,13 @@ xmlSecNssKeyTransportExecute(xmlSecTransformPtr transform, int last, xmlSecTrans
             rtv = xmlSecNssKeyTransportCtxInit(context, inBuf, outBuf, operation, transformCtx);
             if(rtv < 0) {
                 xmlSecInternalError("xmlSecNssKeyTransportCtxInit",
-                                    xmlSecTransformGetName(transform));
+                        xmlSecTransformGetName(transform));
                 return(-1);
             }
         }
 
         if((context->material == NULL) && (last != 0)) {
-            xmlSecError(XMLSEC_ERRORS_HERE,
-                    xmlSecErrorsSafeString(xmlSecTransformGetName(transform)),
-                    NULL,
-                    XMLSEC_ERRORS_R_INVALID_STATUS,
+            xmlSecInvalidTransfromStatusError2(transform,
                     "No enough data to intialize transform");
             return(-1);
         }
@@ -525,7 +521,7 @@ xmlSecNssKeyTransportExecute(xmlSecTransformPtr transform, int last, xmlSecTrans
             rtv = xmlSecNssKeyTransportCtxUpdate(context, inBuf, outBuf, operation, transformCtx);
             if(rtv < 0) {
                 xmlSecInternalError("xmlSecNssKeyTransportCtxUpdate",
-                                    xmlSecTransformGetName(transform));
+                        xmlSecTransformGetName(transform));
                 return(-1);
             }
         }
@@ -534,14 +530,15 @@ xmlSecNssKeyTransportExecute(xmlSecTransformPtr transform, int last, xmlSecTrans
             rtv = xmlSecNssKeyTransportCtxFinal(context, inBuf, outBuf, operation, transformCtx);
             if(rtv < 0) {
                 xmlSecInternalError("xmlSecNssKeyTransportCtxFinal",
-                                    xmlSecTransformGetName(transform));
+                        xmlSecTransformGetName(transform));
                 return(-1);
             }
             transform->status = xmlSecTransformStatusFinished;
         }
     } else if(transform->status == xmlSecTransformStatusFinished) {
         if(xmlSecBufferGetSize(inBuf) != 0) {
-            xmlSecInvalidTransfromStatusError(transform);
+            xmlSecInvalidTransfromStatusError2(transform,
+                    "More data available in the input buffer");
             return(-1);
         }
     } else {

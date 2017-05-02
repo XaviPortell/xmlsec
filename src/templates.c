@@ -1,4 +1,4 @@
-/**
+/*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
  * Creating signature and encryption templates.
@@ -1578,7 +1578,7 @@ xmlSecTmplTransformAddC14NInclNamespaces(xmlNodePtr transformNode,
  * @nsList:             the NULL terminated list of namespace prefix/href pairs
  *                      (optional).
  *
- * Writes XPath transform infromation to the <dsig:Transform/> node
+ * Writes XPath transform information to the <dsig:Transform/> node
  * @node.
  *
  * Returns: 0 for success or a negative value otherwise.
@@ -1621,7 +1621,7 @@ xmlSecTmplTransformAddXPath(xmlNodePtr transformNode, const xmlChar *expression,
  * @nsList:             the NULL terminated list of namespace prefix/href pairs.
  *                      (optional).
  *
- * Writes XPath2 transform infromation to the <dsig:Transform/> node
+ * Writes XPath2 transform information to the <dsig:Transform/> node
  * @node.
  *
  * Returns: 0 for success or a negative value otherwise.
@@ -1659,7 +1659,7 @@ xmlSecTmplTransformAddXPath2(xmlNodePtr transformNode, const xmlChar* type,
  * @nsList:             the NULL terminated list of namespace prefix/href pairs.
  *                      (optional).
  *
- * Writes XPoniter transform infromation to the <dsig:Transform/> node
+ * Writes XPointer transform information to the <dsig:Transform/> node
  * @node.
  *
  * Returns: 0 for success or a negative value otherwise.
@@ -1704,29 +1704,32 @@ xmlSecTmplNodeWriteNsList(xmlNodePtr parentNode, const xmlChar** nsList) {
     xmlSecAssert2(parentNode != NULL, -1);
     xmlSecAssert2(nsList != NULL, -1);
 
+    /* nsList contains pairs of prefix/href with NULL at the end. We use special
+    "#default" prefix instead of NULL prefix */
     ptr = nsList;
     while((*ptr) != NULL) {
+        /* get next prefix/href pair */
         if(xmlStrEqual(BAD_CAST "#default", (*ptr))) {
             prefix = NULL;
         } else {
             prefix = (*ptr);
         }
-        if((++ptr) == NULL) {
-            xmlSecError(XMLSEC_ERRORS_HERE,
-                        NULL,
-                        NULL,
-                        XMLSEC_ERRORS_R_INVALID_DATA,
-                        "unexpected end of ns list");
+        href = *(++ptr);
+        if(href == NULL) {
+            xmlSecInvalidDataError("unexpected end of ns list", NULL);
             return(-1);
         }
-        href = *(ptr++);
 
+        /* create namespace node */
         ns = xmlNewNs(parentNode, href, prefix);
         if(ns == NULL) {
             xmlSecXmlError2("xmlNewNs", NULL,
                             "prefix=%s", xmlSecErrorsSafeString(prefix));
             return(-1);
         }
+
+        /* next pair */
+        ++ptr;
     }
     return(0);
 }

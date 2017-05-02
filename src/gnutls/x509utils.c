@@ -1,5 +1,5 @@
-/**
- * XMLSec library
+/*
+ * XML Security Library (http://www.aleksey.com/xmlsec).
  *
  * X509 support
  *
@@ -732,6 +732,7 @@ xmlSecGnuTLSASN1IntegerWrite(const unsigned char * data, size_t len) {
     unsigned long long int val = 0;
     size_t ii = 0;
     int shift = 0;
+    int ret;
 
     xmlSecAssert2(data != NULL, NULL);
     xmlSecAssert2(len <= 9, NULL);
@@ -744,10 +745,16 @@ xmlSecGnuTLSASN1IntegerWrite(const unsigned char * data, size_t len) {
     res = (xmlChar*)xmlMalloc(resLen + 1);
     if(res == NULL) {
         xmlSecMallocError(resLen + 1, NULL);
-        return (NULL);
+        return(NULL);
     }
 
-    xmlSecStrPrintf(res, resLen, BAD_CAST "%llu", val);
+    ret = xmlStrPrintf(res, resLen, "%llu", val);
+    if(ret < 0) {
+        xmlSecXmlError("xmlStrPrintf", NULL);
+        xmlFree(res);
+        return(NULL);
+    }
+
     return(res);
 }
 
@@ -1032,11 +1039,7 @@ xmlSecGnuTLSCreateKeyDataAndAdoptPrivKey(gnutls_x509_privkey_t priv_key) {
         break;
 #endif /* XMLSEC_NO_DSA */
     default:
-        xmlSecError(XMLSEC_ERRORS_HERE,
-                    NULL,
-                    "gnutls_x509_privkey_get_pk_algorithm",
-                    XMLSEC_ERRORS_R_INVALID_TYPE,
-                    "Unsupported algorithm %d", (int)key_alg);
+        xmlSecInvalidIntegerTypeError("key_alg", key_alg, "supported algorithm", NULL);
         return(NULL);
     }
 
@@ -1361,12 +1364,7 @@ xmlSecGnuTLSDnAttrsParse(const xmlChar * dn,
                 if((ch == ',') || (ch == ';') || (ch == '\0')) {
                     state = xmlSecGnuTLSDnParseState_BeforeNameComponent;
                 } else {
-                    xmlSecError(XMLSEC_ERRORS_HERE,
-                                NULL,
-                                "",
-                                XMLSEC_ERRORS_R_INVALID_DATA,
-                                "Unexpected character %c (expected space or ',' or ';')",
-                                ch);
+                    xmlSecInvalidIntegerDataError("ch", ch, "space,',',';','\\0'", NULL);
                     goto done;
                 }
             } else {
@@ -1383,12 +1381,7 @@ xmlSecGnuTLSDnAttrsParse(const xmlChar * dn,
 
     /* check end state */
     if(state != xmlSecGnuTLSDnParseState_BeforeNameComponent) {
-        xmlSecError(XMLSEC_ERRORS_HERE,
-                    NULL,
-                    "",
-                    XMLSEC_ERRORS_R_INVALID_DATA,
-                    "Unexpected state %d at the end of parsing",
-                    (int)state);
+        xmlSecInvalidIntegerDataError("state", state, "xmlSecGnuTLSDnParseState_BeforeNameComponent", NULL);
         goto done;
     }
 

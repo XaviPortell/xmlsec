@@ -1,5 +1,5 @@
-/**
- * XMLSec library
+/*
+ * XML Security Library (http://www.aleksey.com/xmlsec).
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
@@ -123,6 +123,19 @@ xmlSecCryptoGetFunctions_nss(void) {
 #ifndef XMLSEC_NO_DSA
     gXmlSecNssFunctions->transformDsaSha1GetKlass       = xmlSecNssTransformDsaSha1GetKlass;
 #endif /* XMLSEC_NO_DSA */
+
+    /******************************* ECDSA ******************************/
+#ifndef XMLSEC_NO_ECDSA
+#ifndef XMLSEC_NO_SHA1
+    gXmlSecNssFunctions->transformEcdsaSha1GetKlass = xmlSecNssTransformEcdsaSha1GetKlass;
+#endif /* XMLSEC_NO_SHA1 */
+#ifndef XMLSEC_NO_SHA256
+    gXmlSecNssFunctions->transformEcdsaSha256GetKlass = xmlSecNssTransformEcdsaSha256GetKlass;
+#endif /* XMLSEC_NO_SHA256 */
+#ifndef XMLSEC_NO_SHA512
+    gXmlSecNssFunctions->transformEcdsaSha512GetKlass = xmlSecNssTransformEcdsaSha512GetKlass;
+#endif /* XMLSEC_NO_SHA512 */
+#endif /* XMLSEC_NO_ECDSA */
 
     /******************************* HMAC ********************************/
 #ifndef XMLSEC_NO_HMAC

@@ -1,4 +1,4 @@
-/**
+/*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
  * General functions and forward declarations.
@@ -86,6 +86,7 @@ typedef struct _xmlSecEncCtx                    xmlSecEncCtx, *xmlSecEncCtxPtr;
 XMLSEC_EXPORT int                               xmlSecInit              (void);
 XMLSEC_EXPORT int                               xmlSecShutdown          (void);
 XMLSEC_EXPORT const xmlChar *                   xmlSecGetDefaultCrypto  (void);
+XMLSEC_EXPORT void                              xmlSecSetExternalEntityLoader (xmlExternalEntityLoader);
 
 /**
  * XMLSEC_CRYPTO:
@@ -96,6 +97,22 @@ XMLSEC_EXPORT const xmlChar *                   xmlSecGetDefaultCrypto  (void);
  * Returns the default crypto engine.
  */
 #define XMLSEC_CRYPTO                          (xmlSecGetDefaultCrypto())
+
+/*
+ * XMLSEC_DEPRECATED function definition
+ */
+#if !defined(IN_XMLSEC)
+#ifdef __GNUC__
+#define XMLSEC_DEPRECATED __attribute__((deprecated))
+#elif defined(_MSC_VER)
+#define XMLSEC_DEPRECATED __declspec(deprecated)
+#else /* defined(_MSC_VER) */
+#pragma message("WARNING: You need to implement XMLSEC_DEPRECATED for this compiler")
+#define XMLSEC_DEPRECATED
+#endif /* defined(_MSC_VER) */
+#else  /* !defined(IN_XMLSEC) */
+#define XMLSEC_DEPRECATED
+#endif /* !defined(IN_XMLSEC) */
 
 /***********************************************************************
  *
@@ -138,79 +155,6 @@ XMLSEC_EXPORT int       xmlSecCheckVersionExt   (int major,
                                                  int minor,
                                                  int subminor,
                                                  xmlSecCheckVersionMode mode);
-
-/**
- * ATTRIBUTE_UNUSED:
- *
- * Macro used to signal to GCC unused function parameters
- */
-#ifdef __GNUC__
-#ifdef HAVE_ANSIDECL_H
-#include <ansidecl.h>
-#endif
-#ifndef ATTRIBUTE_UNUSED
-#define ATTRIBUTE_UNUSED
-#endif
-#else
-#define ATTRIBUTE_UNUSED
-#endif
-
-/***********************************************************************
- *
- * Helpers to convert from void* to function pointer, this silence
- * gcc warning
- *
- *     warning: ISO C forbids conversion of object pointer to function
- *     pointer type
- *
- * The workaround is to declare a union that does the conversion. This is
- * guaranteed (ISO/IEC 9899:1990 "C89"/"C90") to match exactly.
- *
- ***********************************************************************/
-
-/**
- * XMLSEC_PTR_TO_FUNC_IMPL:
- * @func_type:          the function type.
- *
- * Macro declares helper functions to convert between "void *" pointer and
- * function pointer.
- */
-#define XMLSEC_PTR_TO_FUNC_IMPL(func_type) \
-    union xmlSecPtrToFuncUnion_ ##func_type { \
-        void *ptr; \
-        func_type * func; \
-    } ; \
-    static func_type * xmlSecPtrToFunc_ ##func_type(void * ptr) { \
-         union xmlSecPtrToFuncUnion_ ##func_type x; \
-         x.ptr = ptr; \
-         return (x.func); \
-    } \
-    static void * xmlSecFuncToPtr_ ##func_type(func_type * func) { \
-         union xmlSecPtrToFuncUnion_ ##func_type x; \
-         x.func = func; \
-         return (x.ptr); \
-    }
-
-/**
- * XMLSEC_PTR_TO_FUNC:
- * @func_type:          the function type.
- * @ptr:                the "void*" pointer to be converted.
- *
- * Macro converts from "void*" pointer to "func_type" function pointer.
- */
-#define XMLSEC_PTR_TO_FUNC(func_type, ptr) \
-    xmlSecPtrToFunc_ ##func_type((ptr))
-
-/**
- * XMLSEC_FUNC_TO_PTR:
- * @func_type:          the function type.
- * @func:               the "func_type" function pointer to be converted.
- *
- * Macro converts from "func_type" function pointer to "void*" pointer.
- */
-#define XMLSEC_FUNC_TO_PTR(func_type, func) \
-    xmlSecFuncToPtr_ ##func_type((func))
-
 
 #ifdef __cplusplus
 }

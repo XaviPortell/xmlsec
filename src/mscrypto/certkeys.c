@@ -1,5 +1,5 @@
-/**
- * XMLSec library
+/*
+ * XML Security Library (http://www.aleksey.com/xmlsec).
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
@@ -469,11 +469,7 @@ xmlSecMSCryptoKeyDataAdoptCert(xmlSecKeyDataPtr data, PCCERT_CONTEXT pCert, xmlS
         }
         ctx->dwKeySpec = 0;
     } else {
-        xmlSecError(XMLSEC_ERRORS_HERE,
-                    NULL,
-                    NULL,
-                    XMLSEC_ERRORS_R_INVALID_TYPE,
-                    "Unsupported keytype");
+        xmlSecInvalidIntegerTypeError("keytype", type, "supported keytype", NULL);
         return(-1);
     }
 
@@ -903,11 +899,9 @@ xmlSecMSCryptoCertAdopt(PCCERT_CONTEXT pCert, xmlSecKeyDataType type) {
 #endif /* XMLSEC_NO_GOST*/
 
     if (NULL == data) {
-        xmlSecError(XMLSEC_ERRORS_HERE,
-                    NULL,
-                    NULL,
-                    XMLSEC_ERRORS_R_INVALID_TYPE,
-                    "PCCERT_CONTEXT key type %s not supported", pCert->pCertInfo->SubjectPublicKeyInfo.Algorithm.pszObjId);
+        xmlSecInvalidIntegerTypeError("PCCERT_CONTEXT key type",
+                pCert->pCertInfo->SubjectPublicKeyInfo.Algorithm.pszObjId,
+                "supported keytype", NULL);
         return(NULL);
     }
 
@@ -1202,13 +1196,9 @@ xmlSecMSCryptoKeyDataRsaXmlRead(xmlSecKeyDataId id, xmlSecKeyPtr key,
     pubKey->bitlen          = xmlSecBnGetSize(&modulus) * 8;    /* Number of bits in prime modulus */
     pubKey->pubexp          = 0;
     if(sizeof(pubKey->pubexp) < xmlSecBnGetSize(&exponent)) {
-        xmlSecError(XMLSEC_ERRORS_HERE,
-                    NULL,
-                    NULL,
-                    XMLSEC_ERRORS_R_INVALID_SIZE,
-                    "sizeof(pubKey->pubexp) < exponent size=%d",
-                    sizeof(pubKey->pubexp),
-                    xmlSecBnGetSize(&exponent));
+        xmlSecInvalidSizeLessThanError("exponent size",
+                sizeof(pubKey->pubexp), xmlSecBnGetSize(&exponent),
+                NULL);
         goto done;
     }
     xmlSecAssert2(xmlSecBnGetData(&exponent) != NULL, -1);
@@ -1322,11 +1312,8 @@ xmlSecMSCryptoKeyDataRsaXmlWrite(xmlSecKeyDataId id, xmlSecKeyPtr key,
         return(-1);
     }
     if (dwBlobLen < sizeof(PUBLICKEYSTRUC)) {
-        xmlSecError(XMLSEC_ERRORS_HERE,
-                    xmlSecErrorsSafeString(xmlSecKeyDataKlassGetName(id)),
-                    NULL,
-                    XMLSEC_ERRORS_R_INVALID_DATA,
-                    "blobLen=%ld", dwBlobLen);
+        xmlSecInvalidSizeLessThanError("Key blob", dwBlobLen, sizeof(PUBLICKEYSTRUC),
+                xmlSecKeyDataKlassGetName(id));
         xmlSecBufferFinalize(&buf);
         return(-1);
     }
@@ -1363,12 +1350,9 @@ xmlSecMSCryptoKeyDataRsaXmlWrite(xmlSecKeyDataId id, xmlSecKeyPtr key,
     modulusLen      = pubKey->bitlen / 8;
 
     if (dwBlobLen < sizeof(PUBLICKEYSTRUC) + sizeof(RSAPUBKEY) + modulusLen) {
-        xmlSecError(XMLSEC_ERRORS_HERE,
-                    xmlSecErrorsSafeString(xmlSecKeyDataKlassGetName(id)),
-                    NULL,
-                    XMLSEC_ERRORS_R_INVALID_DATA,
-                    "blobLen=%ld; modulusLen=%d",
-                    dwBlobLen, modulusLen);
+        xmlSecInvalidSizeLessThanError("Key blob",
+                dwBlobLen, sizeof(PUBLICKEYSTRUC) + sizeof(RSAPUBKEY) + modulusLen,
+                xmlSecKeyDataKlassGetName(id));
         xmlSecBufferFinalize(&buf);
         return(-1);
     }
@@ -2053,11 +2037,8 @@ xmlSecMSCryptoKeyDataDsaXmlWrite(xmlSecKeyDataId id, xmlSecKeyPtr key,
         return(-1);
     }
     if (dwBlobLen < sizeof(PUBLICKEYSTRUC)) {
-        xmlSecError(XMLSEC_ERRORS_HERE,
-                    xmlSecErrorsSafeString(xmlSecKeyDataKlassGetName(id)),
-                    NULL,
-                    XMLSEC_ERRORS_R_INVALID_DATA,
-                    "blobLen=%ld", dwBlobLen);
+        xmlSecInvalidSizeLessThanError("Key blob", dwBlobLen, sizeof(PUBLICKEYSTRUC),
+                xmlSecKeyDataKlassGetName(id));
         xmlSecBufferFinalize(&buf);
         return(-1);
     }
@@ -2095,12 +2076,9 @@ xmlSecMSCryptoKeyDataDsaXmlWrite(xmlSecKeyDataId id, xmlSecKeyPtr key,
 
     /* we assume that sizeof(q) < 0x14, sizeof(g) <= sizeof(p) and sizeof(y) <= sizeof(p) */
     if (dwBlobLen < sizeof(PUBLICKEYSTRUC) + sizeof(DSSPUBKEY) + 3 * keyLen + 0x14 + sizeof(DSSSEED)) {
-        xmlSecError(XMLSEC_ERRORS_HERE,
-                    xmlSecErrorsSafeString(xmlSecKeyDataKlassGetName(id)),
-                    NULL,
-                    XMLSEC_ERRORS_R_INVALID_DATA,
-                    "blobLen=%ld; keyLen=%d",
-                    dwBlobLen, keyLen);
+        xmlSecInvalidSizeLessThanError("Key blob",
+                dwBlobLen, sizeof(PUBLICKEYSTRUC) + sizeof(DSSPUBKEY) + 3 * keyLen + 0x14 + sizeof(DSSSEED),
+                xmlSecKeyDataKlassGetName(id));
         xmlSecBufferFinalize(&buf);
         return(-1);
     }

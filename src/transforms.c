@@ -1,4 +1,4 @@
-/**
+/*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
  * The Transforms Element (http://www.w3.org/TR/xmldsig-core/#sec-Transforms)
@@ -753,7 +753,7 @@ xmlSecTransformCtxSetUri(xmlSecTransformCtxPtr ctx, const xmlChar* uri, xmlNodeP
         nodeSetType = xmlSecNodeSetTreeWithoutComments;
         useVisa3DHack = 1;
     } else {
-        static const xmlChar tmpl[] = "xpointer(id(\'%s\'))";
+        static const char tmpl[] = "xpointer(id(\'%s\'))";
         xmlSecSize size;
 
         /* we need to add "xpointer(id('..')) because otherwise we have
@@ -1854,11 +1854,9 @@ xmlSecTransformDefaultGetDataType(xmlSecTransformPtr transform, xmlSecTransformM
             }
             break;
         default:
-            xmlSecError(XMLSEC_ERRORS_HERE,
-                        xmlSecErrorsSafeString(xmlSecTransformGetName(transform)),
-                        NULL,
-                        XMLSEC_ERRORS_R_INVALID_DATA,
-                        "mode=%d", mode);
+            xmlSecInvalidIntegerDataError("mode", mode,
+                    "xmlSecTransformModePush,xmlSecTransformModePop",
+                    xmlSecTransformGetName(transform));
             return(xmlSecTransformDataTypeUnknown);
     }
 
@@ -1915,8 +1913,6 @@ xmlSecTransformDefaultPushBin(xmlSecTransformPtr transform, const xmlSecByte* da
         }
 
         /* process data */
-        inSize = xmlSecBufferGetSize(&(transform->inBuf));
-        outSize = xmlSecBufferGetSize(&(transform->outBuf));
         finalData = (((dataSize == 0) && (final != 0)) ? 1 : 0);
         ret = xmlSecTransformExecute(transform, finalData, transformCtx);
         if(ret < 0) {

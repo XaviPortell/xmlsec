@@ -30,6 +30,10 @@ var versionFile = ".\\configure.txt";
 var optsFileIn = baseDir + "\\config.h.in";
 var optsFile = baseDir + "\\config.h";
 
+/* Input and output files regarding the xmlsec version. */
+var versionHeaderIn = baseDir + "\\include\\xmlsec\\version.h.in";
+var versionHeader = baseDir + "\\include\\xmlsec\\version.h";
+
 /* Version strings for the binary distribution. Will be filled later 
    in the code. */
 var verMajorXmlSec;
@@ -40,7 +44,6 @@ var verMicroXmlSec;
 var withCrypto = "openssl";
 var withDefaultCrypto = "openssl";
 var withOpenSSL = 0;
-var withOpenSSLVersion = "";
 var withNss = 0;
 var withMSCrypto = 0;
 var withLibXSLT = 1;
@@ -99,7 +102,7 @@ function usage()
 	txt += "either 'yes' or 'no'.\n\n";
 	txt += "XmlSec Library options, default value given in parentheses:\n\n";
 	txt += "  crypto:     Crypto engines list, first is default: \"openssl\",\n";
-	txt += "              \"openssl=098\", \"openssl=100\", \"openssl=110\", \n";
+	txt += "              \"openssl=100\", \"openssl=110\", \n";
 	txt += "              \"nss\", \"mscrypto\" (\"" + withCrypto + "\");\n"
  	txt += "  xslt:       LibXSLT is used (" + (withLibXSLT? "yes" : "no")  + ")\n";	
  	txt += "  iconv:      Use the iconv library (" + (withIconv? "yes" : "no")  + ")\n";	
@@ -161,7 +164,6 @@ function discoverVersion()
 	vf.WriteLine("WITH_CRYPTO=" + withCrypto);	
 	vf.WriteLine("WITH_DEFAULT_CRYPTO=" + withDefaultCrypto);	
 	vf.WriteLine("WITH_OPENSSL=" + withOpenSSL);	
-	vf.WriteLine("WITH_OPENSSL_VERSION=XMLSEC_OPENSSL_" + withOpenSSLVersion);	
 	vf.WriteLine("WITH_NSS=" + withNss);	
 	vf.WriteLine("WITH_MSCRYPTO=" + withMSCrypto);	
 	vf.WriteLine("WITH_LIBXSLT=" + (withLibXSLT ? "1" : "0"));
@@ -199,6 +201,43 @@ function configureXmlSec()
 		} else if (s.search(/\@XMLSECVERSION_NUMBER\@/) != -1) {
 			of.WriteLine(s.replace(/\@XMLSECVERSION_NUMBER\@/, 
 				verMajorXmlSec*10000 + verMinorXmlSec*100 + verMicroXmlSec*1));
+		} else
+			of.WriteLine(ln);
+	}
+	ofi.Close();
+	of.Close();
+}
+
+/* This one will generate version.h from version.h.in. */
+function configureXmlSecVersion()
+{
+	var fso, ofi, of, ln, s;
+	fso = new ActiveXObject("Scripting.FileSystemObject");
+	if (fso.FileExists(versionHeader)) {
+		// version.h is already generated, nothing to do.
+		return;
+	}
+
+	ofi = fso.OpenTextFile(versionHeaderIn, 1);
+	of = fso.CreateTextFile(versionHeader, true);
+	while (ofi.AtEndOfStream != true) {
+		ln = ofi.ReadLine();
+		s = new String(ln);
+		if (s.search(/\@XMLSEC_VERSION_MAJOR\@/) != -1) {
+			of.WriteLine(s.replace(/\@XMLSEC_VERSION_MAJOR\@/,
+				verMajorXmlSec));
+		} else if (s.search(/\@XMLSEC_VERSION_MINOR\@/) != -1) {
+			of.WriteLine(s.replace(/\@XMLSEC_VERSION_MINOR\@/,
+				verMinorXmlSec));
+		} else if (s.search(/\@XMLSEC_VERSION_SUBMINOR\@/) != -1) {
+			of.WriteLine(s.replace(/\@XMLSEC_VERSION_SUBMINOR\@/,
+				verMicroXmlSec));
+		} else if (s.search(/\@XMLSEC_VERSION\@/) != -1) {
+			of.WriteLine(s.replace(/\@XMLSEC_VERSION\@/,
+				verMajorXmlSec + "." + verMinorXmlSec + "." + verMicroXmlSec));
+		} else if (s.search(/\@XMLSEC_VERSION_INFO\@/) != -1) {
+			of.WriteLine(s.replace(/\@XMLSEC_VERSION_INFO\@/,
+				(parseInt(verMajorXmlSec) + parseInt(verMinorXmlSec)) + ":" + verMicroXmlSec + ":" + verMinorXmlSec));
 		} else
 			of.WriteLine(ln);
 	}
@@ -316,19 +355,12 @@ for (j = 0; j < crlist.length; j++) {
 	if (crlist[j] == "openssl") {
 		curcrypto="openssl";
 		withOpenSSL = 1;
-		withOpenSSLVersion = "110"; /* default */
-	} else if (crlist[j] == "openssl=098") {
-		curcrypto="openssl";
-		withOpenSSL = 1;
-		withOpenSSLVersion = "098";
 	} else if (crlist[j] == "openssl=100") {
 		curcrypto="openssl";
 		withOpenSSL = 1;
-		withOpenSSLVersion = "100";
 	} else if (crlist[j] == "openssl=110") {
 		curcrypto="openssl";
 		withOpenSSL = 1;
-		withOpenSSLVersion = "110";
 	} else if (crlist[j] == "nss") {
 		curcrypto="nss";
 		withNss = 1;
@@ -358,6 +390,8 @@ WScript.Echo(baseName + " version: " + verMajorXmlSec + "." + verMinorXmlSec + "
 
 // Configure libxmlsec.
 configureXmlSec();
+// Generate version.h.
+configureXmlSecVersion();
 if (error != 0) {
 	WScript.Echo("Configuration failed, aborting.");
 	WScript.Quit(error);
@@ -375,7 +409,6 @@ txtOut += "----------------------------\n";
 txtOut += "         Use Crypto: " + withCrypto + "\n";
 txtOut += " Use Default Crypto: " + withDefaultCrypto + "\n";
 txtOut += "        Use OpenSSL: " + boolToStr(withOpenSSL) + "\n";
-txtOut += "Use OpenSSL Version: " + withOpenSSLVersion + "\n";
 txtOut += "            Use NSS: " + boolToStr(withNss) + "\n";
 txtOut += "       Use MSCrypto: " + boolToStr(withMSCrypto) + "\n";
 txtOut += "        Use LibXSLT: " + boolToStr(withLibXSLT) + "\n";

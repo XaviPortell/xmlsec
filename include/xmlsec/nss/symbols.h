@@ -1,5 +1,5 @@
-/**
- * XMLSec library
+/*
+ * XML Security Library (http://www.aleksey.com/xmlsec).
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
@@ -65,6 +65,9 @@ extern "C" {
 #define xmlSecTransformDes3CbcId                xmlSecNssTransformDes3CbcId
 #define xmlSecTransformKWDes3Id                 xmlSecNssTransformKWDes3Id
 #define xmlSecTransformDsaSha1Id                xmlSecNssTransformDsaSha1Id
+#define xmlSecTransformEcdsaSha1Id              xmlSecNssTransformEcdsaSha1Id
+#define xmlSecTransformEcdsaSha256Id            xmlSecNssTransformEcdsaSha256Id
+#define xmlSecTransformEcdsaSha512Id            xmlSecNssTransformEcdsaSha512Id
 #define xmlSecTransformHmacMd5Id                xmlSecNssTransformHmacMd5Id
 #define xmlSecTransformHmacRipemd160Id          xmlSecNssTransformHmacRipemd160Id
 #define xmlSecTransformHmacSha1Id               xmlSecNssTransformHmacSha1Id

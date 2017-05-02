@@ -1,5 +1,5 @@
-/**
- * XMLSec library
+/*
+ * XML Security Library (http://www.aleksey.com/xmlsec).
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
@@ -260,11 +260,7 @@ xmlSecGCryptBlockCipherCtxFinal(xmlSecGCryptBlockCipherCtxPtr ctx,
         inSize = blockLen;
     } else {
         if(inSize != (xmlSecSize)blockLen) {
-            xmlSecError(XMLSEC_ERRORS_HERE,
-                        xmlSecErrorsSafeString(cipherName),
-                        NULL,
-                        XMLSEC_ERRORS_R_INVALID_DATA,
-                        "data=%d;block=%d", inSize, blockLen);
+            xmlSecInvalidSizeError("Input data", inSize, blockLen, cipherName);
             return(-1);
         }
     }
@@ -299,12 +295,8 @@ xmlSecGCryptBlockCipherCtxFinal(xmlSecGCryptBlockCipherCtxPtr ctx,
     if(encrypt == 0) {
         /* check padding */
         if(inSize < outBuf[blockLen - 1]) {
-            xmlSecError(XMLSEC_ERRORS_HERE,
-                        xmlSecErrorsSafeString(cipherName),
-                        NULL,
-                        XMLSEC_ERRORS_R_INVALID_DATA,
-                        "padding=%d;buffer=%d",
-                        outBuf[blockLen - 1], inSize);
+            xmlSecInvalidSizeLessThanError("Input data padding",
+                    inSize, outBuf[blockLen - 1], cipherName);
             return(-1);
         }
         outLen = inSize - outBuf[blockLen - 1];
@@ -515,12 +507,8 @@ xmlSecGCryptBlockCipherSetKey(xmlSecTransformPtr transform, xmlSecKeyPtr key) {
     xmlSecAssert2(buffer != NULL, -1);
 
     if(xmlSecBufferGetSize(buffer) < keySize) {
-        xmlSecError(XMLSEC_ERRORS_HERE,
-                    xmlSecErrorsSafeString(xmlSecTransformGetName(transform)),
-                    NULL,
-                    XMLSEC_ERRORS_R_INVALID_KEY_DATA_SIZE,
-                    "keySize=%d;expected=%d",
-                    xmlSecBufferGetSize(buffer), keySize);
+        xmlSecInvalidKeyDataSizeError(xmlSecBufferGetSize(buffer), keySize,
+                xmlSecTransformGetName(transform));
         return(-1);
     }
 
@@ -569,11 +557,8 @@ xmlSecGCryptBlockCipherExecute(xmlSecTransformPtr transform, int last, xmlSecTra
             }
         }
         if((ctx->ctxInitialized == 0) && (last != 0)) {
-            xmlSecError(XMLSEC_ERRORS_HERE,
-                        xmlSecErrorsSafeString(xmlSecTransformGetName(transform)),
-                        NULL,
-                        XMLSEC_ERRORS_R_INVALID_DATA,
-                        "not enough data to initialize transform");
+            xmlSecInvalidDataError("not enough data to initialize transform",
+                                    xmlSecTransformGetName(transform));
             return(-1);
         }
         if(ctx->ctxInitialized != 0) {

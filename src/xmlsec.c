@@ -1,4 +1,4 @@
-/**
+/*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
  * General functions.
@@ -22,6 +22,53 @@
 #include <xmlsec/app.h>
 #include <xmlsec/io.h>
 #include <xmlsec/errors.h>
+
+/*
+ * Custom external entity handler, denies all files except the initial
+ * document we're parsing (input_id == 1)
+ */
+/* default external entity loader, pointer saved during xmlInit */
+static xmlExternalEntityLoader
+xmlSecDefaultExternalEntityLoader = NULL;
+
+/*
+ * xmlSecNoXxeExternalEntityLoader:
+ * @URL:        the URL for the entity to load
+ * @ID:         public ID for the entity to load
+ * @ctxt:       XML parser context, or NULL
+ *
+ * See libxml2's xmlLoadExternalEntity and xmlNoNetExternalEntityLoader.
+ * This function prevents any external (file or network) entities from being loaded.
+ */
+static xmlParserInputPtr
+xmlSecNoXxeExternalEntityLoader(const char *URL, const char *ID,
+                          xmlParserCtxtPtr ctxt) {
+    if (ctxt == NULL) {
+        return(NULL);
+    }
+    if (ctxt->input_id == 1) {
+        return xmlSecDefaultExternalEntityLoader((const char *) URL, ID, ctxt);
+    }
+    xmlSecXmlError2("xmlSecNoXxeExternalEntityLoader", NULL,
+                    "illegal external entity='%s'", xmlSecErrorsSafeString(URL));
+    return(NULL);
+}
+
+/*
+ * xmlSecSetExternalEntityLoader:
+ * @entityLoader:       the new entity resolver function, or NULL to restore 
+ *                      libxml2's default handler
+ *
+ * Wrapper for xmlSetExternalEntityLoader.
+ */
+void
+xmlSecSetExternalEntityLoader(xmlExternalEntityLoader entityLoader) {
+    if (entityLoader == NULL) {
+        entityLoader = xmlSecDefaultExternalEntityLoader;
+    }
+    xmlSetExternalEntityLoader(entityLoader);
+}
+
 
 /**
  * xmlSecInit:
@@ -53,6 +100,11 @@ xmlSecInit(void) {
         return(-1);
     }
 
+    /* initialise safe external entity loader */
+    if (!xmlSecDefaultExternalEntityLoader) {
+        xmlSecDefaultExternalEntityLoader = xmlGetExternalEntityLoader();
+    }
+    xmlSetExternalEntityLoader(xmlSecNoXxeExternalEntityLoader);
 
 
     /* we use rand() function to generate id attributes */
@@ -113,39 +165,27 @@ int
 xmlSecCheckVersionExt(int major, int minor, int subminor, xmlSecCheckVersionMode mode) {
     /* we always want to have a match for major version number */
     if(major != XMLSEC_VERSION_MAJOR) {
-        xmlSecError(XMLSEC_ERRORS_HERE,
-                    NULL,
-                    NULL,
-                    XMLSEC_ERRORS_R_INVALID_VERSION,
-                    "expected major version=%d;real major version=%d",
-                    XMLSEC_VERSION_MAJOR, major);
+        xmlSecOtherError3(XMLSEC_ERRORS_R_INVALID_VERSION, NULL,
+                "expected major version=%d;real major version=%d",
+                XMLSEC_VERSION_MAJOR, major);
         return(0);
     }
 
     switch(mode) {
     case xmlSecCheckVersionExactMatch:
         if((minor != XMLSEC_VERSION_MINOR) || (subminor != XMLSEC_VERSION_SUBMINOR)) {
-            xmlSecError(XMLSEC_ERRORS_HERE,
-                        NULL,
-                        NULL,
-                        XMLSEC_ERRORS_R_INVALID_VERSION,
-                        "mode=exact;expected minor version=%d;real minor version=%d;expected subminor version=%d;real subminor version=%d",
-                        XMLSEC_VERSION_MINOR, minor,
-                        XMLSEC_VERSION_SUBMINOR, subminor);
+            xmlSecOtherError5(XMLSEC_ERRORS_R_INVALID_VERSION, NULL,
+                    "mode=exact;expected minor version=%d;real minor version=%d;expected subminor version=%d;real subminor version=%d",
+                    XMLSEC_VERSION_MINOR, minor, XMLSEC_VERSION_SUBMINOR, subminor);
             return(0);
         }
         break;
     case xmlSecCheckVersionABICompatible:
-        if((minor > XMLSEC_VERSION_MINOR) ||
-           ((minor == XMLSEC_VERSION_MINOR) &&
-            (subminor > XMLSEC_VERSION_SUBMINOR))) {
-            xmlSecError(XMLSEC_ERRORS_HERE,
-                        NULL,
-                        NULL,
-                        XMLSEC_ERRORS_R_INVALID_VERSION,
-                        "mode=abi compatible;expected minor version=%d;real minor version=%d;expected subminor version=%d;real subminor version=%d",
-                        XMLSEC_VERSION_MINOR, minor,
-                        XMLSEC_VERSION_SUBMINOR, subminor);
+        if((minor > XMLSEC_VERSION_MINOR) || ((minor == XMLSEC_VERSION_MINOR) &&
+                (subminor > XMLSEC_VERSION_SUBMINOR))) {
+            xmlSecOtherError5(XMLSEC_ERRORS_R_INVALID_VERSION, NULL,
+                    "mode=abi compatible;expected minor version=%d;real minor version=%d;expected subminor version=%d;real subminor version=%d",
+                    XMLSEC_VERSION_MINOR, minor, XMLSEC_VERSION_SUBMINOR, subminor);
             return(0);
         }
         break;

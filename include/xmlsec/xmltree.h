@@ -1,4 +1,4 @@
-/**
+/*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
  * Common XML utility functions
@@ -88,13 +88,6 @@ XMLSEC_EXPORT int               xmlSecNodeEncodeAndSetContent
 XMLSEC_EXPORT void              xmlSecAddIDs            (xmlDocPtr doc,
                                                          xmlNodePtr cur,
                                                          const xmlChar** ids);
-XMLSEC_EXPORT int               xmlSecGenerateAndAddID  (xmlNodePtr node,
-                                                         const xmlChar* attrName,
-                                                         const xmlChar* prefix,
-                                                         xmlSecSize len);
-XMLSEC_EXPORT xmlChar*          xmlSecGenerateID        (const xmlChar* prefix,
-                                                         xmlSecSize len);
-
 XMLSEC_EXPORT xmlDocPtr         xmlSecCreateTree        (const xmlChar* rootNodeName,
                                                          const xmlChar* rootNodeNs);
 XMLSEC_EXPORT int               xmlSecIsEmptyNode       (xmlNodePtr node);

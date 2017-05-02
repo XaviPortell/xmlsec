@@ -512,6 +512,19 @@ static xmlSecAppCmdLineParam idAttrParam = {
     NULL
 };    
 
+static xmlSecAppCmdLineParam xxeParam = { 
+    xmlSecAppCmdLineTopicAll,
+    "--xxe",
+    NULL,   
+    "--xxe"
+    "\n\tenable External Entity resolution."
+    "\n\tWARNING: this may allow the reading of arbitrary files and URLs,"
+    "\n\tcontrolled by the input XML document.  Use with caution!",
+    xmlSecAppCmdLineParamTypeFlag,
+    xmlSecAppCmdLineParamFlagNone,
+    NULL
+};    
+
 
 /****************************************************************
  *
@@ -825,6 +838,7 @@ static xmlSecAppCmdLineParamPtr parameters[] = {
     &disableErrorMsgsParam,
     &printCryptoErrorMsgsParam,
     &helpParam,
+    &xxeParam,
         
     /* MUST be the last one */
     NULL
@@ -1000,6 +1014,11 @@ int main(int argc, const char **argv) {
         goto fail;
     }
     
+    /* enable XXE? */
+    if(xmlSecAppCmdLineParamIsSet(&xxeParam)) {
+        xmlSecSetExternalEntityLoader( NULL );     // reset to libxml2's default handler
+    }
+
     /* get the "repeats" number */
     if(xmlSecAppCmdLineParamIsSet(&repeatParam) && 
        (xmlSecAppCmdLineParamGetInt(&repeatParam, 1) > 0)) {
@@ -1845,21 +1864,20 @@ xmlSecAppPrepareKeyInfoReadCtx(xmlSecKeyInfoCtxPtr keyInfoCtx) {
             fprintf(stderr, "Error: invalid value for option \"%s\".\n", 
                     enabledKeyDataParam.fullName);
             return(-1);
-        } else {
-            xmlSecKeyDataId dataId;
-            const char* p;
-            
-            for(p = value->strListValue; (p != NULL) && ((*p) != '\0'); p += strlen(p)) {
-                dataId = xmlSecKeyDataIdListFindByName(xmlSecKeyDataIdsGet(), BAD_CAST p, xmlSecKeyDataUsageAny);
-                if(dataId == xmlSecKeyDataIdUnknown) {
-                    fprintf(stderr, "Error: key data \"%s\" is unknown.\n", p);
-                    return(-1);
-                }
-                ret = xmlSecPtrListAdd(&(keyInfoCtx->enabledKeyData), (const xmlSecPtr)dataId);
-                if(ret < 0) {
-                    fprintf(stderr, "Error: failed to enable key data \"%s\".\n", p);
-                    return(-1);
-                }
+        }
+        xmlSecKeyDataId dataId;
+        const char* p;
+
+        for(p = value->strListValue; (p != NULL) && ((*p) != '\0'); p += strlen(p)) {
+            dataId = xmlSecKeyDataIdListFindByName(xmlSecKeyDataIdsGet(), BAD_CAST p, xmlSecKeyDataUsageAny);
+            if(dataId == xmlSecKeyDataIdUnknown) {
+                fprintf(stderr, "Error: key data \"%s\" is unknown.\n", p);
+                return(-1);
+            }
+            ret = xmlSecPtrListAdd(&(keyInfoCtx->enabledKeyData), (const xmlSecPtr)dataId);
+            if(ret < 0) {
+                fprintf(stderr, "Error: failed to enable key data \"%s\".\n", p);
+                return(-1);
             }
         }
     }
@@ -2314,41 +2332,40 @@ xmlSecAppXmlDataCreate(const char* filename, const xmlChar* defStartNodeName, co
                     idAttrParam.fullName);
             xmlSecAppXmlDataDestroy(data);
             return(NULL);
+        }
+        xmlChar* attrName = (value->paramNameValue != NULL) ? BAD_CAST value->paramNameValue : BAD_CAST "id";
+        xmlChar* nodeName;
+        xmlChar* nsHref;
+        xmlChar* buf;
+
+        buf = xmlStrdup(BAD_CAST value->strValue);
+        if(buf == NULL) {
+            fprintf(stderr, "Error: failed to duplicate string \"%s\"\n", value->strValue);
+            xmlSecAppXmlDataDestroy(data);
+            return(NULL);
+        }
+        nodeName = (xmlChar*)strrchr((char*)buf, ':');
+        if(nodeName != NULL) {
+            (*(nodeName++)) = '\0';
+            nsHref = buf;
         } else {
-            xmlChar* attrName = (value->paramNameValue != NULL) ? BAD_CAST value->paramNameValue : BAD_CAST "id";
-            xmlChar* nodeName;
-            xmlChar* nsHref;
-            xmlChar* buf;
-            
-            buf = xmlStrdup(BAD_CAST value->strValue);
-            if(buf == NULL) {
-                fprintf(stderr, "Error: failed to duplicate string \"%s\"\n", value->strValue);
+            nodeName = buf;
+            nsHref = NULL;
+        }
+
+        /* process children first because it does not matter much but does simplify code */
+        cur = xmlSecGetNextElementNode(data->doc->children);
+        while(cur != NULL) {
+            if(xmlSecAppAddIDAttr(cur, attrName, nodeName, nsHref) < 0) {
+                fprintf(stderr, "Error: failed to add ID attribute \"%s\" for node \"%s\"\n", attrName, value->strValue);
+                xmlFree(buf);
                 xmlSecAppXmlDataDestroy(data);
                 return(NULL);    
             }
-            nodeName = (xmlChar*)strrchr((char*)buf, ':');
-            if(nodeName != NULL) {
-                (*(nodeName++)) = '\0';
-                nsHref = buf;
-            } else {
-                nodeName = buf;
-                nsHref = NULL;
-            }
-
-            /* process children first because it does not matter much but does simplify code */
-            cur = xmlSecGetNextElementNode(data->doc->children);
-            while(cur != NULL) {
-                if(xmlSecAppAddIDAttr(cur, attrName, nodeName, nsHref) < 0) {
-                    fprintf(stderr, "Error: failed to add ID attribute \"%s\" for node \"%s\"\n", attrName, value->strValue);
-                    xmlFree(buf);
-                    xmlSecAppXmlDataDestroy(data);
-                    return(NULL);    
-                }
-                cur = xmlSecGetNextElementNode(cur->next);
-            }
-
-            xmlFree(buf);
+            cur = xmlSecGetNextElementNode(cur->next);
         }
+
+        xmlFree(buf);
     }
 
 

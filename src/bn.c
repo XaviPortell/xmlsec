@@ -1,4 +1,4 @@
-/**
+/*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
  * Big Numbers.
@@ -202,14 +202,14 @@ xmlSecBnFromString(xmlSecBnPtr bn, const xmlChar* str, xmlSecSize base) {
     }
 
     /* figure out if it is positive or negative number */
-    positive = 1;
+    positive = 1; /* no sign, positive by default */
     i = 0;
     while(i < len) {
         ch = str[i++];
 
         /* skip spaces */
         if(isspace(ch)) {
-                continue;
+            continue;
         }
 
         /* check if it is + or - */
@@ -221,24 +221,11 @@ xmlSecBnFromString(xmlSecBnPtr bn, const xmlChar* str, xmlSecSize base) {
             break;
         }
 
-        /* otherwise, it must be start of the number */
-        nn = xmlSecBnLookupTable[ch];
-        if((nn >= 0) && ((xmlSecSize)nn < base)) {
-            xmlSecAssert2(i > 0, -1);
-
-            /* no sign, positive by default */
-            positive = 1;
-            --i; /* make sure that we will look at this character in next loop */
-            break;
-        } else {
-            xmlSecError(XMLSEC_ERRORS_HERE,
-                    NULL,
-                    NULL,
-                    XMLSEC_ERRORS_R_INVALID_DATA,
-                    "char=%c;base=%d",
-                    ch, base);
-            return (-1);
-        }
+        /* otherwise, it must be start of the number, make sure that we will look
+         * at this character in next loop */
+        xmlSecAssert2(i > 0, -1);
+        --i;
+        break;
     }
 
     /* now parse the number itself */
@@ -248,15 +235,9 @@ xmlSecBnFromString(xmlSecBnPtr bn, const xmlChar* str, xmlSecSize base) {
             continue;
         }
 
-        xmlSecAssert2(ch <= sizeof(xmlSecBnLookupTable), -1);
         nn = xmlSecBnLookupTable[ch];
-        if((nn < 0) || ((xmlSecSize)nn > base)) {
-            xmlSecError(XMLSEC_ERRORS_HERE,
-                    NULL,
-                    NULL,
-                    XMLSEC_ERRORS_R_INVALID_DATA,
-                    "char=%c;base=%d",
-                    ch, base);
+        if((nn < 0) || ((xmlSecSize)nn >= base)) {
+            xmlSecInvalidIntegerDataError2("char", nn, "base", base, "0 <= char < base", NULL);
             return (-1);
         }
 

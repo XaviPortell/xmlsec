@@ -1,5 +1,5 @@
-/**
- * XMLSec library
+/*
+ * XML Security Library (http://www.aleksey.com/xmlsec).
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
@@ -250,12 +250,8 @@ xmlSecMSCryptoKWAesSetKey(xmlSecTransformPtr transform, xmlSecKeyPtr key) {
 
     keySize = xmlSecBufferGetSize(buffer);
     if(keySize < ctx->keySize) {
-        xmlSecError(XMLSEC_ERRORS_HERE,
-                    xmlSecErrorsSafeString(xmlSecTransformGetName(transform)),
-                    NULL,
-                    XMLSEC_ERRORS_R_INVALID_KEY_DATA_SIZE,
-                    "key=%d;expected=%d",
-                    keySize, ctx->keySize);
+        xmlSecInvalidKeyDataSizeError(keySize, ctx->keySize,
+                xmlSecTransformGetName(transform));
         return(-1);
     }
 

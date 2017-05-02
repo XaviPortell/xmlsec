@@ -1,10 +1,10 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT([xmlsec1],[1.2.23],[http://www.aleksey.com/xmlsec])
+AC_INIT([xmlsec1],[1.2.24],[http://www.aleksey.com/xmlsec])
 
 XMLSEC_PACKAGE=xmlsec1
 XMLSEC_VERSION_MAJOR=1
 XMLSEC_VERSION_MINOR=2
-XMLSEC_VERSION_SUBMINOR=23
+XMLSEC_VERSION_SUBMINOR=24
 XMLSEC_VERSION="$XMLSEC_VERSION_MAJOR.$XMLSEC_VERSION_MINOR.$XMLSEC_VERSION_SUBMINOR"
 XMLSEC_VERSION_INFO=`echo $XMLSEC_VERSION | awk -F. '{ printf "%d:%d:%d", $1+$2, $3, $2 }'`
 XMLSEC_VERSION_SAFE=`echo $XMLSEC_VERSION | sed 's/\./_/g'`
@@ -136,7 +136,6 @@ XMLSEC_CRYPTO_EXTRA_LDFLAGS=
 dnl should separate extra LDFLAGS for xmlsec and crypto libs ?
 dnl should --enable-runtime-pseudo-reloc for mingw and cygwin ?
 
-xmlsec_sharedlib_hack="no"
 if test -n "$shrext"; then
   XMLSEC_SHLIBSFX="$shrext"
 else
@@ -154,7 +153,13 @@ case "${host}" in
 	XMLSEC_EXTRA_LDFLAGS="-no-undefined -avoid-version"
 	XMLSEC_CRYPTO_EXTRA_LDFLAGS="-no-undefined -avoid-version"
 	XMLSEC_SHLIBSFX=".dll.a"
-	xmlsec_sharedlib_hack="yes"
+        # To avoid problem with loading of a shared library (dlopen or
+        # equivalent) at run time on some platforms we need to link
+        # everything statically (it works without hack on 9x and under
+        # emulation; on nt 5.x (w2k,xp) the error is 998: "Invalid
+        # access to memory location").
+        enable_static_linking="yes"
+        enable_crypto_dl="no"
 	;;
  *-*-cygwin*)
 	XMLSEC_EXTRA_LDFLAGS="-no-undefined"
@@ -164,12 +169,6 @@ case "${host}" in
         XMLSEC_SHLIBSFX=".dylib"
         ;;
 esac
-
-# To avoid problem with loading of a shared library (dlopen or equivalent)
-# at run time on some platforms we need to link crypto modules with extra
-# source. It's work without hack on 9x and under emulation.
-# On nt 5.x (w2k,xp) the error is 998("Invalid access to memory location").
-AM_CONDITIONAL(SHAREDLIB_HACK, [test "z$xmlsec_sharedlib_hack" = "zyes"])
 
 dnl ==========================================================================
 dnl Hack for autoconf version mismatch
@@ -225,7 +224,7 @@ fi
 dnl ==========================================================================
 dnl find libxml
 dnl ==========================================================================
-LIBXML_MIN_VERSION="2.7.4"
+LIBXML_MIN_VERSION="2.8.0"
 LIBXML_CONFIG="xml2-config"
 LIBXML_CFLAGS=""
 LIBXML_LIBS=""
@@ -389,7 +388,7 @@ ac_openssl_lib_dir="/usr/local/lib /usr/lib /usr/lib64 /usr/local /usr/local/ssl
 ac_openssl_inc_dir="/usr/local/include /usr/include /usr/local /usr/local/ssl /usr/pkg /usr/local/ssl/include"
 
 XMLSEC_NO_OPENSSL="1"
-OPENSSL_MIN_VERSION="0.9.8"
+OPENSSL_MIN_VERSION="1.0.0"
 OPENSSL_VERSION=""
 OPENSSL_CFLAGS=""
 OPENSSL_LIBS=""
@@ -427,12 +426,6 @@ elif test "z$PKGCONFIG_FOUND" = "zyes" ; then
         PKG_CHECK_MODULES(OPENSSL, openssl >= 1.0.0,
             [OPENSSL_VERSION="1.0.0"],
             [OPENSSL_VERSION=""])
-    fi
-
-    if test "z$OPENSSL_VERSION" = "z" ; then
-        PKG_CHECK_MODULES(OPENSSL, openssl >= 0.9.8,
-    	    [OPENSSL_VERSION="0.9.8"],
-	    [OPENSSL_VERSION=""])
     fi
 
     if test "z$OPENSSL_VERSION" = "z" ; then
@@ -485,14 +478,28 @@ fi
 if test "z$OPENSSL_FOUND" = "zyes" -a "z$OPENSSL_VERSION" = "z" ; then
     AC_MSG_CHECKING(for openssl libraries >= $OPENSSL_MIN_VERSION) 
 
-    dnl Check the OpenSSL version    
+    dnl Check the OpenSSL version; if you change this code then you probably
+    dnl want to change include/openssl/crypto.h as well.
     OLD_CPPFLAGS=$CPPFLAGS
     CPPFLAGS="$OPENSSL_CFLAGS"
 
     if test "z$OPENSSL_VERSION" = "z" ; then
         AC_EGREP_CPP(yes,[
             #include <openssl/opensslv.h>
-        #if OPENSSL_VERSION_NUMBER >= 0x10100000L && !defined(LIBRESSL_VERSION_NUMBER)
+        #if OPENSSL_VERSION_NUMBER == 0x20000000L && defined(LIBRESSL_VERSION_NUMBER)
+        yes
+        #endif
+    ],[
+        OPENSSL_VERSION="1.0.0 (libressl)"
+    ],[
+        OPENSSL_VERSION=""
+    ])
+    fi
+
+    if test "z$OPENSSL_VERSION" = "z" ; then
+        AC_EGREP_CPP(yes,[
+            #include <openssl/opensslv.h>
+        #if OPENSSL_VERSION_NUMBER >= 0x10100000L
         yes
         #endif
     ],[
@@ -516,19 +523,6 @@ if test "z$OPENSSL_FOUND" = "zyes" -a "z$OPENSSL_VERSION" = "z" ; then
     fi
 
     if test "z$OPENSSL_VERSION" = "z" ; then
-        AC_EGREP_CPP(yes,[
-    	    #include <openssl/opensslv.h>
-	    #if OPENSSL_VERSION_NUMBER >= 0x00908000L
-		yes
-	    #endif
-	],[
-	    OPENSSL_VERSION="0.9.8"
-	],[
-	    OPENSSL_VERSION=""
-	])
-    fi
-
-    if test "z$OPENSSL_VERSION" = "z" ; then
         AC_MSG_RESULT(no)
     else
         AC_MSG_RESULT([yes ('$OPENSSL_VERSION')])
@@ -538,32 +532,7 @@ if test "z$OPENSSL_FOUND" = "zyes" -a "z$OPENSSL_VERSION" = "z" ; then
 fi    
 
 if test "z$OPENSSL_FOUND" = "zyes" ; then
-    dnl Check availability of ECDSA
-    OLD_CPPFLAGS=$CPPFLAGS
-    CPPFLAGS="$OPENSSL_CFLAGS"
-
-    AC_EGREP_CPP(yes,[
-	#include <openssl/opensslconf.h>
-	#ifdef OPENSSL_NO_ECDSA
-	    yes
-	#endif
-    ],[
-	OPENSSL_CFLAGS="$OPENSSL_CFLAGS -DXMLSEC_NO_ECDSA=1"
-    ]) 
-    CPPFLAGS=$OLD_CPPFLAGS
-fi
-
-if test "z$OPENSSL_FOUND" = "zyes" ; then
     XMLSEC_NO_OPENSSL="0"
-    if test "z$OPENSSL_VERSION" = "z0.9.8" ; then
-	OPENSSL_CFLAGS="$OPENSSL_CFLAGS -DXMLSEC_OPENSSL_098=1 -DXMLSEC_NO_ECDSA=1 -DXMLSEC_NO_SHA256=1"
-    fi
-    if test "z$OPENSSL_VERSION" = "z1.0.0" ; then
-	OPENSSL_CFLAGS="$OPENSSL_CFLAGS -DXMLSEC_OPENSSL_100=1"
-    fi    
-    if test "z$OPENSSL_VERSION" = "z1.1.0" ; then
-    	OPENSSL_CFLAGS="$OPENSSL_CFLAGS -DXMLSEC_OPENSSL_110=1"
-    fi    
     OPENSSL_CFLAGS="$OPENSSL_CFLAGS -DXMLSEC_CRYPTO_OPENSSL=1"
     XMLSEC_CRYPTO_LIST="$XMLSEC_CRYPTO_LIST openssl"
 else
@@ -598,7 +567,7 @@ dnl ==========================================================================
 XMLSEC_NO_NSS="1"
 SEAMONKEY_MIN_VERSION="1.0"
 MOZILLA_MIN_VERSION="1.4"
-NSS_MIN_VERSION="3.9"
+NSS_MIN_VERSION="3.11.1"
 NSPR_MIN_VERSION="4.4.1"
 NSS_CFLAGS=""
 NSS_LIBS=""
@@ -1409,6 +1378,20 @@ else
 fi    
 AM_CONDITIONAL(XMLSEC_NO_XMLENC, test "z$XMLSEC_NO_XMLENC" = "z1")
 AC_SUBST(XMLSEC_NO_XMLENC)
+
+dnl ==========================================================================
+dnl See do we need soap support (deprecated)
+dnl ==========================================================================
+AC_MSG_CHECKING(for soap support)
+AC_ARG_ENABLE(soap,     [  --enable-soap           enable soap support (no)])
+if test "z$enable_soap" = "zyes" ; then
+    XMLSEC_ENABLE_SOAP="1"
+    AC_MSG_RESULT(yes)
+else
+    XMLSEC_ENABLE_SOAP="0"
+    AC_MSG_RESULT(no)
+fi    
+AM_CONDITIONAL(XMLSEC_ENABLE_SOAP, test "z$XMLSEC_ENABLE_SOAP" = "z1")
 
 dnl ==========================================================================
 dnl See do we need docs
