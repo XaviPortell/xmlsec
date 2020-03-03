@@ -1,13 +1,19 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
- * DES Algorithm support
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
  *
  * Copyright (C) 2003 Cordys R&D BV, All rights reserved.
  */
+/**
+ * SECTION:symkeys
+ * @Short_description: Symmetric keys implementation for Microsoft Crypto API.
+ * @Stability: Private
+ *
+ */
+
 #include "globals.h"
 
 #include <stdlib.h>
@@ -137,6 +143,7 @@ xmlSecMSCryptoSymKeyDataGenerate(xmlSecKeyDataPtr data, xmlSecSize sizeBits, xml
 
     xmlSecAssert2(xmlSecMSCryptoSymKeyDataCheckId(data), -1);
     xmlSecAssert2(sizeBits > 0, -1);
+    UNREFERENCED_PARAMETER(type);
 
     buffer = xmlSecKeyDataBinaryValueGetBuffer(data);
     xmlSecAssert2(buffer != NULL, -1);
@@ -201,8 +208,6 @@ xmlSecMSCryptoSymKeyDataKlassCheck(xmlSecKeyDataKlass* klass) {
     {
         return(0);
     }
-
-    return(0);
 }
 
 
@@ -224,9 +229,8 @@ xmlSecMSCryptoCreatePrivateExponentOneKey(HCRYPTPROV hProv, HCRYPTKEY *hPrivateK
     DWORD keyBlobLen;
     PUBLICKEYSTRUC* pubKeyStruc;
     RSAPUBKEY* rsaPubKey;
-    DWORD bitLen;
+    DWORD bitLen, n;
     BYTE *ptr;
-    int n;
     BOOL res = FALSE;
 
     xmlSecAssert2(hProv != 0, FALSE);

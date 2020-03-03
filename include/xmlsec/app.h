@@ -16,10 +16,6 @@
 #error To use dynamic crypto engines loading define XMLSEC_CRYPTO_DYNAMIC_LOADING
 #endif /* !defined(IN_XMLSEC) && !defined(XMLSEC_CRYPTO_DYNAMIC_LOADING) */
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
 #include <libxml/tree.h>
 #include <libxml/xmlIO.h>
 
@@ -29,6 +25,10 @@ extern "C" {
 #include <xmlsec/keysmngr.h>
 #include <xmlsec/transforms.h>
 #include <xmlsec/dl.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 /**********************************************************************
  *
@@ -161,6 +161,27 @@ XMLSEC_EXPORT xmlSecTransformId                 xmlSecTransformAes192CbcGetKlass
  */
 #define xmlSecTransformAes256CbcId              xmlSecTransformAes256CbcGetKlass()
 XMLSEC_EXPORT xmlSecTransformId                 xmlSecTransformAes256CbcGetKlass(void);
+/**
+* xmlSecTransformAes128GcmId:
+*
+* The AES128 GCM cipher transform klass.
+*/
+#define xmlSecTransformAes128GcmId              xmlSecTransformAes128GcmGetKlass()
+XMLSEC_EXPORT xmlSecTransformId                 xmlSecTransformAes128GcmGetKlass(void);
+/**
+* xmlSecTransformAes192GcmId:
+*
+* The AES192 GCM cipher transform klass.
+*/
+#define xmlSecTransformAes192GcmId              xmlSecTransformAes192GcmGetKlass()
+XMLSEC_EXPORT xmlSecTransformId                 xmlSecTransformAes192GcmGetKlass(void);
+/**
+* xmlSecTransformAes256GcmId:
+*
+* The AES256 GCM cipher transform klass.
+*/
+#define xmlSecTransformAes256GcmId              xmlSecTransformAes256GcmGetKlass()
+XMLSEC_EXPORT xmlSecTransformId                 xmlSecTransformAes256GcmGetKlass(void);
 /**
  * xmlSecTransformKWAes128Id:
  *

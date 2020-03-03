@@ -1,12 +1,17 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
- * Key data.
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
  *
  * Copyright (C) 2002-2016 Aleksey Sanin <aleksey@aleksey.com>. All Rights Reserved.
+ */
+/**
+ * SECTION:keysdata
+ * @Short_description: Crypto key data object functions.
+ * @Stability: Stable
+ *
  */
 
 #include "globals.h"
@@ -25,13 +30,13 @@
 #include <xmlsec/keyinfo.h>
 #include <xmlsec/errors.h>
 
-
 /**************************************************************************
  *
  * Global xmlSecKeyDataIds list functions
  *
  *************************************************************************/
 static xmlSecPtrList xmlSecAllKeyDataIds;
+static int xmlSecImportPersistKey = 0;
 
 /**
  * xmlSecKeyDataIdsGet:
@@ -59,7 +64,7 @@ xmlSecKeyDataIdsInit(void) {
 
     ret = xmlSecPtrListInitialize(xmlSecKeyDataIdsGet(), xmlSecKeyDataIdListId);
     if(ret < 0) {
-        xmlSecInternalError("xmlSecPtrListPtrInitialize(xmlSecKeyDataIdListId)", NULL);
+        xmlSecInternalError("xmlSecPtrListInitialize(xmlSecKeyDataIdListId)", NULL);
         return(-1);
     }
 
@@ -1287,4 +1292,11 @@ xmlSecKeyDataStorePtrListGetKlass(void) {
     return(&xmlSecKeyDataStorePtrListKlass);
 }
 
+void xmlSecImportSetPersistKey(void) {
+    xmlSecImportPersistKey = 1;
+}
+
+int xmlSecImportGetPersistKey(void) {
+    return xmlSecImportPersistKey;
+}
 

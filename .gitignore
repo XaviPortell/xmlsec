@@ -13,6 +13,7 @@ missing
 *.lo
 *.la
 .settings/
+m4/
 apps/xmlsec1
 autom4te.cache/
 config.guess
@@ -64,7 +65,7 @@ docs/api/code
 docs/api/sgml.tmp
 docs/api/xmlsec-*.txt
 docs/api/*.bak
-docs/api/tmpl/base/*.bak
-docs/api/tmpl/openssl/*.bak
-docs/api/tmpl/nss/*.bak
 docs/api/*.types
+docs/api/sgml.stamp
+docs/html.stamp
+

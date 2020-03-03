@@ -1,11 +1,19 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
+ *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
  *
  * Copyright (C) 2010-2016 Aleksey Sanin <aleksey@aleksey.com>. All Rights Reserved.
  */
+/**
+ * SECTION:asymkeys
+ * @Short_description: Asymmetric keys implementation for GCrypt.
+ * @Stability: Private
+ *
+ */
+
 #include "globals.h"
 
 #include <string.h>
@@ -385,7 +393,7 @@ done:
 
 /**
  * xmlSecGCryptNodeGetMpiValue:
- * @cur: the poitner to an XML node.
+ * @cur: the pointer to an XML node.
  *
  * Converts the node content from CryptoBinary format
  * (http://www.w3.org/TR/xmldsig-core/#sec-CryptoBinary)

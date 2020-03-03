@@ -1,13 +1,19 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
- * Memory buffer.
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
  *
  * Copyright (C) 2002-2016 Aleksey Sanin <aleksey@aleksey.com>. All Rights Reserved.
  */
+/**
+ * SECTION:buffer
+ * @Short_description:Binary memory buffer functions.
+ * @Stability: Stable
+ *
+ */
+
 #include "globals.h"
 
 #include <stdlib.h>
@@ -49,7 +55,7 @@ xmlSecBufferSetDefaultAllocMode(xmlSecAllocMode defAllocMode, xmlSecSize defInit
  * xmlSecBufferCreate:
  * @size:               the intial size.
  *
- * Allocates and initalizes new memory buffer with given size.
+ * Allocates and initializes new memory buffer with given size.
  * Caller is responsible for calling #xmlSecBufferDestroy function
  * to free the buffer.
  *
@@ -79,7 +85,7 @@ xmlSecBufferCreate(xmlSecSize size) {
  * xmlSecBufferDestroy:
  * @buf:                the pointer to buffer object.
  *
- * Desrtoys buffer object created with #xmlSecBufferCreate function.
+ * Destroys buffer object created with #xmlSecBufferCreate function.
  */
 void
 xmlSecBufferDestroy(xmlSecBufferPtr buf) {
@@ -114,7 +120,7 @@ xmlSecBufferInitialize(xmlSecBufferPtr buf, xmlSecSize size) {
  * xmlSecBufferFinalize:
  * @buf:                the pointer to buffer object.
  *
- * Frees allocated resource for a buffer intialized with #xmlSecBufferInitialize
+ * Frees allocated resource for a buffer initialized with #xmlSecBufferInitialize
  * function.
  */
 void
@@ -437,31 +443,34 @@ xmlSecBufferRemoveTail(xmlSecBufferPtr buf, xmlSecSize size) {
 int
 xmlSecBufferReadFile(xmlSecBufferPtr buf, const char* filename) {
     xmlSecByte buffer[1024];
-    FILE* f;
-    int ret, len;
+    FILE* f = NULL;
+    size_t len;
+    int ret;
 
     xmlSecAssert2(buf != NULL, -1);
     xmlSecAssert2(filename != NULL, -1);
 
+#ifndef _MSC_VER
     f = fopen(filename, "rb");
+#else
+    fopen_s(&f, filename, "rb");
+#endif /* _MSC_VER */
     if(f == NULL) {
         xmlSecIOError("fopen", filename, NULL);
         return(-1);
     }
 
-    while(1) {
+    while(!feof(f)) {
         len = fread(buffer, 1, sizeof(buffer), f);
-        if(len == 0) {
-            break;
-        }else if(len < 0) {
+        if(ferror(f)) {
             xmlSecIOError("fread", filename, NULL);
             fclose(f);
             return(-1);
         }
 
-        ret = xmlSecBufferAppend(buf, buffer, len);
+        ret = xmlSecBufferAppend(buf, buffer, XMLSEC_SIZE_BAD_CAST(len));
         if(ret < 0) {
-            xmlSecInternalError2("xmlSecBufferAppend", NULL, "size=%d", len);
+            xmlSecInternalError2("xmlSecBufferAppend", NULL, "size=%d", XMLSEC_SIZE_BAD_CAST(len));
             fclose(f);
             return(-1);
         }
@@ -527,7 +536,7 @@ xmlSecBufferBase64NodeContentRead(xmlSecBufferPtr buf, xmlNodePtr node) {
  * xmlSecBufferBase64NodeContentWrite:
  * @buf:                the pointer to buffer object.
  * @node:               the pointer to a node.
- * @columns:            the max line size fro base64 encoded data.
+ * @columns:            the max line size for base64 encoded data.
  *
  * Sets the content of the @node to the base64 encoded buffer data.
  *

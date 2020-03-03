@@ -1,11 +1,19 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
+ *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
  *
  * Copyright (C) 2002-2016 Aleksey Sanin <aleksey@aleksey.com>. All Rights Reserved.
  */
+/**
+ * SECTION:evp
+ * @Short_description: Private/public (EVP) keys implementation for OpenSSL.
+ * @Stability: Stable
+ *
+ */
+
 #include "globals.h"
 
 #include <string.h>
@@ -19,6 +27,7 @@
 #include <xmlsec/keyinfo.h>
 #include <xmlsec/transforms.h>
 #include <xmlsec/errors.h>
+#include <xmlsec/private.h>
 
 #include <xmlsec/openssl/crypto.h>
 #include <xmlsec/openssl/bn.h>
@@ -150,6 +159,17 @@ static inline int DSA_set0_key(DSA *d, BIGNUM *pub_key, BIGNUM *priv_key) {
 #endif /* XMLSEC_NO_DSA */
 
 #endif /* !defined(XMLSEC_OPENSSL_API_110) */
+
+#ifdef OPENSSL_IS_BORINGSSL
+#ifndef XMLSEC_NO_RSA
+static inline int RSA_test_flags(const RSA *r, int flags) {
+    xmlSecAssert2(r != NULL, 0);
+    return(r->flags & flags);
+}
+#endif /* XMLSEC_NO_RSA */
+
+#endif /* OPENSSL_IS_BORINGSSL */
+
 
 /**************************************************************************
  *
@@ -968,6 +988,7 @@ xmlSecOpenSSLKeyDataDsaGenerate(xmlSecKeyDataPtr data, xmlSecSize sizeBits, xmlS
 
     xmlSecAssert2(xmlSecKeyDataCheckId(data, xmlSecOpenSSLKeyDataDsaId), -1);
     xmlSecAssert2(sizeBits > 0, -1);
+    UNREFERENCED_PARAMETER(type);
 
     dsa = DSA_new();
     if(dsa == NULL) {
@@ -1279,6 +1300,7 @@ xmlSecOpenSSLKeyDataEcdsaFinalize(xmlSecKeyDataPtr data) {
 
 static xmlSecKeyDataType
 xmlSecOpenSSLKeyDataEcdsaGetType(xmlSecKeyDataPtr data ATTRIBUTE_UNUSED) {
+    UNREFERENCED_PARAMETER(data);
     /* XXX-MAK: Fix this. */
     return(xmlSecKeyDataTypePublic | xmlSecKeyDataTypePrivate);
 }
@@ -1294,7 +1316,7 @@ xmlSecOpenSSLKeyDataEcdsaGetSize(xmlSecKeyDataPtr data) {
     xmlSecAssert2(xmlSecKeyDataCheckId(data, xmlSecOpenSSLKeyDataEcdsaId), 0);
 
     ecdsa = xmlSecOpenSSLKeyDataEcdsaGetEcdsa(data);
-    if((ecdsa == NULL)) {
+    if(ecdsa == NULL) {
         return(0);
     }
 
@@ -1783,6 +1805,7 @@ xmlSecOpenSSLKeyDataRsaGenerate(xmlSecKeyDataPtr data, xmlSecSize sizeBits, xmlS
 
     xmlSecAssert2(xmlSecKeyDataCheckId(data, xmlSecOpenSSLKeyDataRsaId), -1);
     xmlSecAssert2(sizeBits > 0, -1);
+    UNREFERENCED_PARAMETER(type);
 
     /* create exponent */
     e = BN_new();
@@ -1850,7 +1873,7 @@ xmlSecOpenSSLKeyDataRsaGetType(xmlSecKeyDataPtr data) {
     if(n != NULL && e != NULL) {
         if(d != NULL) {
             return(xmlSecKeyDataTypePrivate | xmlSecKeyDataTypePublic);
-        } else if(RSA_test_flags(rsa, (RSA_FLAG_EXT_PKEY | RSA_FLAG_CACHE_PRIVATE)) != 0) {
+        } else if(RSA_test_flags(rsa, (RSA_FLAG_EXT_PKEY)) != 0) {
             /*
              * !!! HACK !!! Also see DSA key
              * We assume here that engine *always* has private key.

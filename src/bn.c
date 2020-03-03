@@ -1,7 +1,6 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
- * Big Numbers.
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
@@ -9,6 +8,13 @@
  * Copyright (C) 2002-2016 Aleksey Sanin <aleksey@aleksey.com>. All Rights Reserved.
  * Copyright (C) 2003 Cordys R&D BV, All rights reserved.
  */
+/**
+ * SECTION:bn
+ * @Short_description: Big numbers support functions.
+ * @Stability: Stable
+ *
+ */
+
 #include "globals.h"
 
 #include <stdlib.h>
@@ -197,7 +203,7 @@ xmlSecBnFromString(xmlSecBnPtr bn, const xmlChar* str, xmlSecSize base) {
      */
     ret = xmlSecBufferSetMaxSize(bn, xmlSecBufferGetSize(bn) + len / 2 + 1 + 1);
     if(ret < 0) {
-        xmlSecInternalError2("xmlSecBnRevLookupTable", NULL, "size=%d", len / 2 + 1);
+        xmlSecInternalError2("xmlSecBufferSetMaxSize", NULL, "size=%d", len / 2 + 1);
         return (-1);
     }
 
@@ -315,7 +321,7 @@ xmlSecBnToString(xmlSecBnPtr bn, xmlSecSize base) {
     size = xmlSecBufferGetSize(bn);
     ret = xmlSecBnInitialize(&bn2, size);
     if(ret < 0) {
-        xmlSecInternalError2("xmlSecBnCreate", NULL, "size=%d", size);
+        xmlSecInternalError2("xmlSecBnInitialize", NULL, "size=%d", size);
         return (NULL);
     }
 
@@ -373,7 +379,8 @@ xmlSecBnToString(xmlSecBnPtr bn, xmlSecSize base) {
     xmlSecAssert2(i < len, NULL);
 
     /* we might have '0' at the beggining, remove it but keep one zero */
-    for(len = i; (len > 1) && (res[len - 1] == '0'); len--);
+    for(len = i; (len > 1) && (res[len - 1] == '0'); len--) {
+    }
     res[len] = '\0';
 
     /* add "-" for negative numbers */
@@ -752,7 +759,7 @@ xmlSecBnCompareReverse(xmlSecBnPtr bn, const xmlSecByte* data, xmlSecSize dataSi
 /**
  * xmlSecBnGetNodeValue:
  * @bn:         the pointer to BN.
- * @cur:        the poitner to an XML node.
+ * @cur:        the pointer to an XML node.
  * @format:     the BN format.
  * @reverse:    if set then reverse read buffer after reading.
  *
@@ -819,7 +826,7 @@ xmlSecBnGetNodeValue(xmlSecBnPtr bn, xmlNodePtr cur, xmlSecBnFormat format, int 
 /**
  * xmlSecBnSetNodeValue:
  * @bn:                 the pointer to BN.
- * @cur:                the poitner to an XML node.
+ * @cur:                the pointer to an XML node.
  * @format:             the BN format.
  * @reverse:            the flag that indicates whether to reverse the buffer before writing.
  * @addLineBreaks:      the flag; it is equal to 1 then linebreaks will be added before and after new buffer content.
@@ -889,7 +896,7 @@ xmlSecBnSetNodeValue(xmlSecBnPtr bn, xmlNodePtr cur, xmlSecBnFormat format, int 
  * xmlSecBnBlobSetNodeValue:
  * @data:       the pointer to BN blob.
  * @dataSize:   the size of BN blob.
- * @cur:        the poitner to an XML node.
+ * @cur:        the pointer to an XML node.
  * @format:     the BN format.
  * @reverse:    the flag that indicates whether to reverse the buffer before writing.
  * @addLineBreaks:  if the flag is equal to 1 then

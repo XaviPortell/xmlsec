@@ -1,14 +1,18 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
- * X509 support
- *
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
  *
  * Copyright (C) 2003 Cordys R&D BV, All rights reserved.
  * Copyright (C) 2003-2016 Aleksey Sanin <aleksey@aleksey.com>. All Rights Reserved.
+ */
+/**
+ * SECTION:x509
+ * @Short_description: X509 certificates implementation for Microsoft Crypto API. 
+ * @Stability: Stable
+ *
  */
 
 #include "globals.h"
@@ -392,7 +396,9 @@ xmlSecMSCryptoKeyDataX509GetCert(xmlSecKeyDataPtr data, xmlSecSize pos) {
     xmlSecAssert2(ctx->hMemStore != 0, NULL);
     xmlSecAssert2(ctx->numCerts > pos, NULL);
 
-    while ((pCert = CertEnumCertificatesInStore(ctx->hMemStore, pCert)) && (pos > 0)) {
+    pCert = CertEnumCertificatesInStore(ctx->hMemStore, pCert);
+    while ((pCert != NULL) && (pos > 0)) {
+      pCert = CertEnumCertificatesInStore(ctx->hMemStore, pCert);
       pos--;
     }
 
@@ -470,7 +476,9 @@ xmlSecMSCryptoKeyDataX509GetCrl(xmlSecKeyDataPtr data, xmlSecSize pos) {
     xmlSecAssert2(ctx->hMemStore != 0, NULL);
     xmlSecAssert2(ctx->numCrls > pos, NULL);
 
-    while ((pCRL = CertEnumCRLsInStore(ctx->hMemStore, pCRL)) && (pos > 0)) {
+    pCRL = CertEnumCRLsInStore(ctx->hMemStore, pCRL);
+    while ((pCRL != NULL) && (pos > 0)) {
+      pCRL = CertEnumCRLsInStore(ctx->hMemStore, pCRL);
       pos--;
     }
 
@@ -1055,6 +1063,7 @@ xmlSecMSCryptoX509SubjectNameNodeWrite(PCCERT_CONTEXT cert, xmlNodePtr node, xml
 
     xmlSecAssert2(cert != NULL, -1);
     xmlSecAssert2(node != NULL, -1);
+    UNREFERENCED_PARAMETER(keyInfoCtx);
 
     buf = xmlSecMSCryptoX509NameWrite(&(cert->pCertInfo->Subject));
     if(buf == NULL) {
@@ -1189,6 +1198,7 @@ xmlSecMSCryptoX509IssuerSerialNodeWrite(PCCERT_CONTEXT cert,
 
     xmlSecAssert2(cert != NULL, -1);
     xmlSecAssert2(node != NULL, -1);
+    UNREFERENCED_PARAMETER(keyInfoCtx);
 
     /* create xml nodes */
     cur = xmlSecEnsureEmptyChild(node, xmlSecNodeX509IssuerSerial, xmlSecDSigNs);
@@ -1297,6 +1307,7 @@ xmlSecMSCryptoX509SKINodeWrite(PCCERT_CONTEXT cert, xmlNodePtr node, xmlSecKeyIn
 
     xmlSecAssert2(cert != NULL, -1);
     xmlSecAssert2(node != NULL, -1);
+    UNREFERENCED_PARAMETER(keyInfoCtx);
 
     buf = xmlSecMSCryptoX509SKIWrite(cert);
     if(buf == NULL) {
@@ -1668,9 +1679,9 @@ xmlSecMSCryptoX509NameWrite(PCERT_NAME_BLOB nm) {
         return(NULL);
     }
 
-    res = xmlSecMSCryptoConvertTstrToUtf8(resT);
+    res = xmlSecWin32ConvertTstrToUtf8(resT);
     if (NULL == res) {
-        xmlSecInternalError("xmlSecMSCryptoConvertTstrToUtf8", NULL);
+        xmlSecInternalError("xmlSecWin32ConvertTstrToUtf8", NULL);
         xmlFree(resT);
         return(NULL);
     }
@@ -1727,7 +1738,7 @@ xmlSecMSCryptoX509SKIWrite(PCCERT_CONTEXT cert) {
 
     xmlSecAssert2(cert != NULL, NULL);
 
-    /* First check if the SKI extension actually exists, otherwise we get a SHA1 hash o fthe key/cert */
+    /* First check if the SKI extension actually exists, otherwise we get a SHA1 hash of the key/cert */
     pCertExt = CertFindExtension(szOID_SUBJECT_KEY_IDENTIFIER, cert->pCertInfo->cExtension, cert->pCertInfo->rgExtension);
     if (pCertExt == NULL) {
         xmlSecMSCryptoError("CertFindExtension", NULL);

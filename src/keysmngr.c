@@ -1,12 +1,17 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
- * Keys Manager.
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
  *
  * Copyright (C) 2002-2016 Aleksey Sanin <aleksey@aleksey.com>. All Rights Reserved.
+ */
+/**
+ * SECTION:keysmngr
+ * @Short_description: Keys manager object functions.
+ * @Stability: Stable
+ *
  */
 #include "globals.h"
 
@@ -25,6 +30,8 @@
 #include <xmlsec/transforms.h>
 #include <xmlsec/keysmngr.h>
 #include <xmlsec/errors.h>
+#include <xmlsec/private.h>
+
 
 /****************************************************************************
  *
@@ -381,7 +388,7 @@ xmlSecSimpleKeysStoreAdoptKey(xmlSecKeyStorePtr store, xmlSecKeyPtr key) {
  */
 int
 xmlSecSimpleKeysStoreLoad(xmlSecKeyStorePtr store, const char *uri,
-                            xmlSecKeysMngrPtr keysMngr) {
+                            xmlSecKeysMngrPtr keysMngr ATTRIBUTE_UNUSED) {
     xmlDocPtr doc;
     xmlNodePtr root;
     xmlNodePtr cur;
@@ -391,6 +398,7 @@ xmlSecSimpleKeysStoreLoad(xmlSecKeyStorePtr store, const char *uri,
 
     xmlSecAssert2(xmlSecKeyStoreCheckId(store, xmlSecSimpleKeysStoreId), -1);
     xmlSecAssert2(uri != NULL, -1);
+    UNREFERENCED_PARAMETER(keysMngr);
 
     doc = xmlParseFile(uri);
     if(doc == NULL) {
@@ -427,7 +435,7 @@ xmlSecSimpleKeysStoreLoad(xmlSecKeyStorePtr store, const char *uri,
         }
 
         keyInfoCtx.mode           = xmlSecKeyInfoModeRead;
-        keyInfoCtx.keysMngr       = keysMngr;
+        keyInfoCtx.keysMngr       = NULL;
         keyInfoCtx.flags          = XMLSEC_KEYINFO_FLAGS_DONT_STOP_ON_KEY_FOUND |
                                     XMLSEC_KEYINFO_FLAGS_X509DATA_DONT_VERIFY_CERTS;
         keyInfoCtx.keyReq.keyId   = xmlSecKeyDataIdUnknown;

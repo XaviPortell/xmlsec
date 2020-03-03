@@ -1,12 +1,20 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
+ *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
  *
  * Copyright (C) 2003 Cordys R&D BV, All rights reserved.
  * Copyright (C) 2003-2016 Aleksey Sanin <aleksey@aleksey.com>. All Rights Reserved.
  */
+/**
+ * SECTION:app
+ * @Short_description: Application support functions for Microsoft Crypto API.
+ * @Stability: Stable
+ *
+ */
+
 #include "globals.h"
 
 #include <string.h>
@@ -18,6 +26,8 @@
 #include <xmlsec/keys.h>
 #include <xmlsec/transforms.h>
 #include <xmlsec/errors.h>
+#include <xmlsec/keysdata.h>
+#include <xmlsec/xmltree.h>
 
 #include <xmlsec/mscrypto/app.h>
 #include <xmlsec/mscrypto/crypto.h>
@@ -26,6 +36,10 @@
 #include <xmlsec/mscrypto/x509.h>
 #include "private.h"
 
+#ifndef PKCS12_NO_PERSIST_KEY
+/* Windows Server 2003 and Windows XP:  This value is not supported. */
+#  define PKCS12_NO_PERSIST_KEY	0x00008000
+#endif
 
 /* I don't see any other way then to use a global var to get the
  * config info to the mscrypto keysstore :(  WK
@@ -58,20 +72,12 @@ xmlSecMSCryptoAppInit(const char* config) {
             return (-1);
         }
 
-#ifdef UNICODE
-        gXmlSecMSCryptoAppCertStoreName = xmlSecMSCryptoConvertLocaleToUnicode(config);
+        gXmlSecMSCryptoAppCertStoreName = xmlSecWin32ConvertUtf8ToTstr((const xmlChar *)config);
         if (gXmlSecMSCryptoAppCertStoreName == NULL) {
-            xmlSecInternalError2("xmlSecMSCryptoConvertLocaleToUnicode", NULL,
+            xmlSecInternalError2("xmlSecWin32ConvertUtf8ToTstr", NULL,
                                  "config=%s", xmlSecErrorsSafeString(config));
             return (-1);
         }
-#else  /* UNICODE */
-        gXmlSecMSCryptoAppCertStoreName = xmlStrdup(config);
-        if (gXmlSecMSCryptoAppCertStoreName == NULL) {
-            xmlSecStrdupError(config, NULL);
-            return (-1);
-        }
-#endif /* UNICODE */
     }
 
     return(0);
@@ -204,6 +210,9 @@ xmlSecMSCryptoAppKeyLoadMemory(const xmlSecByte* data, xmlSecSize dataSize, xmlS
     xmlSecAssert2(data != NULL, NULL);
     xmlSecAssert2(dataSize > 0, NULL);
     xmlSecAssert2(format == xmlSecKeyDataFormatCertDer, NULL);
+    UNREFERENCED_PARAMETER(pwd);
+    UNREFERENCED_PARAMETER(pwdCallback);
+    UNREFERENCED_PARAMETER(pwdCallbackCtx);
 
     pCert = CertCreateCertificateContext(X509_ASN_ENCODING | PKCS_7_ASN_ENCODING, data, dataSize);
     if (NULL == pCert) {
@@ -475,14 +484,19 @@ xmlSecMSCryptoAppPkcs12LoadMemory(const xmlSecByte* data,
     PCCERT_CONTEXT tmpcert = NULL;
     PCCERT_CONTEXT pCert = NULL;
     WCHAR* wcPwd = NULL;
+    DWORD dwFlags;
     xmlSecKeyDataPtr x509Data = NULL;
     xmlSecKeyDataPtr keyData = NULL;
     xmlSecKeyPtr key = NULL;
-        int ret;
+    int ret;
+    DWORD dwData = 0;
+    DWORD dwDataLen;
 
     xmlSecAssert2(data != NULL, NULL);
     xmlSecAssert2(dataSize > 1, NULL);
     xmlSecAssert2(pwd != NULL, NULL);
+    UNREFERENCED_PARAMETER(pwdCallback);
+    UNREFERENCED_PARAMETER(pwdCallbackCtx);
 
     memset(&pfx, 0, sizeof(pfx));
     pfx.pbData = (BYTE *)data;
@@ -494,9 +508,9 @@ xmlSecMSCryptoAppPkcs12LoadMemory(const xmlSecByte* data,
         goto done;
     }
 
-    wcPwd = xmlSecMSCryptoConvertLocaleToUnicode(pwd);
+    wcPwd = xmlSecWin32ConvertLocaleToUnicode(pwd);
     if (wcPwd == NULL) {
-        xmlSecInternalError("xmlSecMSCryptoConvertLocaleToUnicode(pw)", NULL);
+        xmlSecInternalError("xmlSecWin32ConvertLocaleToUnicode(pw)", NULL);
         goto done;
     }
 
@@ -505,7 +519,11 @@ xmlSecMSCryptoAppPkcs12LoadMemory(const xmlSecByte* data,
         goto done;
     }
 
-    hCertStore = PFXImportCertStore(&pfx, wcPwd, CRYPT_EXPORTABLE | PKCS12_NO_PERSIST_KEY);
+    dwFlags = CRYPT_EXPORTABLE;
+    if (!xmlSecImportGetPersistKey()) {
+        dwFlags |= PKCS12_NO_PERSIST_KEY;
+    }
+    hCertStore = PFXImportCertStore(&pfx, wcPwd, dwFlags);
     if (NULL == hCertStore) {
         xmlSecMSCryptoError("PFXImportCertStore", NULL);
         goto done;
@@ -519,12 +537,12 @@ xmlSecMSCryptoAppPkcs12LoadMemory(const xmlSecByte* data,
 
     while (1) {
         pCert = CertEnumCertificatesInStore(hCertStore, pCert);
-        if(pCert != NULL) {
+        if(pCert == NULL) {
             break;
         }
-        DWORD dwData = 0;
-        DWORD dwDataLen = sizeof(DWORD);
+        dwDataLen = sizeof(DWORD);
 
+        dwData = 0;
         /* Find the certificate that has the private key */
         if((TRUE == CertGetCertificateContextProperty(pCert, CERT_KEY_SPEC_PROP_ID, &dwData, &dwDataLen)) && (dwData > 0)) {
             tmpcert = CertDuplicateCertificateContext(pCert);

@@ -1,11 +1,19 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
+ *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
  *
  * Copyright (C) 2002-2016 Aleksey Sanin <aleksey@aleksey.com>. All Rights Reserved.
  */
+/**
+ * SECTION:hmac
+ * @Short_description: HMAC transforms implementation for GCrypt.
+ * @Stability: Private
+ *
+ */
+
 #ifndef XMLSEC_NO_HMAC
 #include "globals.h"
 
@@ -387,7 +395,7 @@ xmlSecGCryptHmacVerify(xmlSecTransformPtr transform,
         return(0);
     }
 
-    /* we check the last byte separatelly */
+    /* we check the last byte separately */
     xmlSecAssert2(dataSize > 0, -1);
     mask = last_byte_masks[ctx->dgstSize % 8];
     if((ctx->dgst[dataSize - 1] & mask) != (data[dataSize - 1]  & mask)) {

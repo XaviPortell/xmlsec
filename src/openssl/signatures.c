@@ -1,15 +1,24 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
+ *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
  *
  * Copyright (C) 2002-2016 Aleksey Sanin <aleksey@aleksey.com>. All Rights Reserved.
  */
+/**
+ * SECTION:signatures
+ * @Short_description: Signatures implementation for OpenSSL.
+ * @Stability: Private
+ *
+ */
+
 #include "globals.h"
 
 #include <string.h>
 
+#include <openssl/bn.h>
 #include <openssl/evp.h>
 #include <openssl/rand.h>
 #include <openssl/sha.h>
@@ -231,8 +240,6 @@ xmlSecOpenSSLSignatureCheckId(xmlSecTransformPtr transform) {
     {
         return(0);
     }
-
-    return(0);
 }
 
 static int
@@ -1051,8 +1058,12 @@ xmlSecOpenSSLSignatureEcdsaVerify(xmlSecOpenSSLSignatureCtxPtr ctx, const xmlSec
         goto done;
     }
 
-    /* check size */
-    if(signSize != 2 * signHalfSize) {
+    /* check size: we expect the r and s to be the same size and match the size of
+     * the key (RFC 6931); however some  implementations (e.g. Java) cut leading zeros:
+     * https://github.com/lsh123/xmlsec/issues/228 */
+    if((signSize < 2 * signHalfSize) && (signSize % 2 == 0)) {
+        signHalfSize = signSize / 2;
+    } else if(signSize != 2 * signHalfSize) {
         xmlSecInvalidSizeError("ECDSA signature", signSize, 2 * signHalfSize,
                                NULL);
         goto done;

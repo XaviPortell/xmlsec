@@ -11,12 +11,12 @@
 #ifndef __XMLSEC_LIST_H__
 #define __XMLSEC_LIST_H__
 
+#include <xmlsec/xmlsec.h>
+#include <xmlsec/buffer.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
-
-#include <xmlsec/xmlsec.h>
-#include <xmlsec/buffer.h>
 
 typedef const struct _xmlSecPtrListKlass                        xmlSecPtrListKlass,
                                                                 *xmlSecPtrListId;
@@ -147,7 +147,7 @@ typedef void                    (*xmlSecPtrDebugDumpItemMethod) (xmlSecPtr ptr,
 /**
  * xmlSecPtrListKlass:
  * @name:               the list klass name.
- * @duplicateItem:      the duplciate item method.
+ * @duplicateItem:      the duplicate item method.
  * @destroyItem:        the destroy item method.
  * @debugDumpItem:      the debug dump item method.
  * @debugXmlDumpItem:   the debug dump item in xml format method.

@@ -1,13 +1,19 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
- * DES Algorithm support
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
  *
  * Copyright (C) 2002-2016 Aleksey Sanin <aleksey@aleksey.com>. All Rights Reserved.
  */
+/**
+ * SECTION:kw_des
+ * @Short_description: DES Key Transport transforms implementation for Microsoft Crypto API.
+ * @Stability: Private
+ *
+ */
+
 #ifndef XMLSEC_NO_DES
 #include "globals.h"
 
@@ -483,7 +489,6 @@ xmlSecMSCryptoKWDes3GenerateRandom(void * context,
                                    xmlSecByte * out, xmlSecSize outSize) 
 {
     xmlSecMSCryptoKWDes3CtxPtr ctx = (xmlSecMSCryptoKWDes3CtxPtr)context;
-    int ret;
 
     xmlSecAssert2(ctx != NULL, -1);
     xmlSecAssert2(ctx->desCryptProvider != 0, -1);
@@ -507,7 +512,6 @@ xmlSecMSCryptoKWDes3BlockEncrypt(void * context,
     xmlSecMSCryptoKWDes3CtxPtr ctx = (xmlSecMSCryptoKWDes3CtxPtr)context;
     DWORD dwBlockLen, dwBlockLenLen, dwCLen;
     HCRYPTKEY cryptKey = 0;
-    int ret;
 
     xmlSecAssert2(ctx != NULL, -1);
     xmlSecAssert2(xmlSecBufferGetData(&(ctx->keyBuffer)) != NULL, -1);
@@ -580,7 +584,6 @@ xmlSecMSCryptoKWDes3BlockDecrypt(void * context,
     xmlSecMSCryptoKWDes3CtxPtr ctx = (xmlSecMSCryptoKWDes3CtxPtr)context;
     DWORD dwBlockLen, dwBlockLenLen, dwCLen;
     HCRYPTKEY cryptKey = 0;
-    int ret;
 
     xmlSecAssert2(ctx != NULL, -1);
     xmlSecAssert2(xmlSecBufferGetData(&(ctx->keyBuffer)) != NULL, -1);

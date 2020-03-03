@@ -5,8 +5,11 @@ SUBDIRS 	    = include src
 if XMLSEC_APPS
 SUBDIRS += apps
 endif
+if XMLSEC_MANS
+SUBDIRS += man
+endif
 if XMLSEC_DOCS
-SUBDIRS += man docs
+SUBDIRS += docs
 endif
 TEST_APP 	    = apps/xmlsec1$(EXEEXT)
 DEFAULT_CRYPTO	= @XMLSEC_DEFAULT_CRYPTO@
@@ -74,7 +77,7 @@ else
 PRECHECK_COMMANDS= \
 	export LD_LIBRARY_PATH="$(ABS_BUILDDIR)/src/.libs:$$LD_LIBRARY_PATH" ; \
 	for i in $(XMLSEC_CRYPTO_LIST) ; do \
-	    export LD_LIBRARY_PATH="$(ABS_BUILDDIR)/src/$$i/.libs:$$LD_LIBRARY_PATH" ; \
+	    export LTDL_LIBRARY_PATH="$(ABS_BUILDDIR)/src/$$i/.libs:$$LTDL_LIBRARY_PATH" ; \
 	done && \
 	cd $(ABS_SRCDIR) \
 	$(NULL)	
@@ -96,7 +99,7 @@ check: check-all check-info
 
 check-all: $(TEST_APP) 
 	for crypto in $(CHECK_CRYPTO_LIST) ; do \
-		make check-crypto-$$crypto ; \
+		make check-crypto-$$crypto || exit 1 ; \
 	done
 
 check-crypto-%: $(TEST_APP) 

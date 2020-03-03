@@ -11,15 +11,15 @@
 #ifndef __XMLSEC_KEYSDATA_H__
 #define __XMLSEC_KEYSDATA_H__
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
 #include <libxml/tree.h>
 
 #include <xmlsec/xmlsec.h>
 #include <xmlsec/buffer.h>
 #include <xmlsec/list.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 /****************************************************************************
  *
@@ -137,7 +137,7 @@ typedef unsigned int                                    xmlSecKeyDataUsage;
 /**
  * xmlSecKeyDataType:
  *
- * The key data type (public/private, session/permanet, etc.).
+ * The key data type (public/private, session/permanent, etc.).
  */
 typedef unsigned int                            xmlSecKeyDataType;
 
@@ -378,7 +378,7 @@ typedef int                     (*xmlSecKeyDataInitMethod)      (xmlSecKeyDataPt
 /**
  * xmlSecKeyDataDuplicateMethod:
  * @dst:                the pointer to destination key data.
- * @src:                the poiniter to source key data.
+ * @src:                the pointer to source key data.
  *
  * Key data specific duplication (copy) method.
  *
@@ -829,6 +829,10 @@ struct _xmlSecKeyDataStoreKlass {
 #define xmlSecKeyDataStorePtrListId     xmlSecKeyDataStorePtrListGetKlass()
 XMLSEC_EXPORT xmlSecPtrListId   xmlSecKeyDataStorePtrListGetKlass       (void);
 
+#ifdef XMLSEC_PRIVATE
+XMLSEC_EXPORT void xmlSecImportSetPersistKey                            (void);
+XMLSEC_EXPORT int xmlSecImportGetPersistKey                             (void);
+#endif
 
 #ifdef __cplusplus
 }

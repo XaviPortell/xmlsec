@@ -1,16 +1,24 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
+ *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
  *
  * Copyright (C) 2002-2016 Aleksey Sanin <aleksey@aleksey.com>. All Rights Reserved.
  */
+/**
+ * SECTION:app
+ * @Short_description: Application support functions for Skeleton.
+ * @Stability: Stable
+ *
+ */
+
 #include "globals.h"
 
 #include <string.h>
 
-/* TODO: aadd Skeleton include files */
+/* TODO: add Skeleton include files */
 
 #include <xmlsec/xmlsec.h>
 #include <xmlsec/keys.h>

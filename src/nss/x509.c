@@ -1,14 +1,19 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
- * X509 support
- *
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
  *
  * Copyright (c) 2003 America Online, Inc.  All rights reserved.
  */
+/**
+ * SECTION:x509
+ * @Short_description: X509 certificates implementation for NSS.
+ * @Stability: Stable
+ *
+ */
+
 #include "globals.h"
 
 #ifndef XMLSEC_NO_X509
@@ -1735,14 +1740,16 @@ xmlSecNssASN1IntegerWrite(SECItem *num) {
 
     xmlSecAssert2(num != NULL, NULL);
     xmlSecAssert2(num->type == siBuffer, NULL);
-    xmlSecAssert2(num->len <= 9, NULL);
     xmlSecAssert2(num->data != NULL, NULL);
 
     /* HACK : to be fixed after
      * NSS bug http://bugzilla.mozilla.org/show_bug.cgi?id=212864 is fixed
      */
     for(ii = num->len; ii > 0; --ii, shift += 8) {
-        val |= ((PRUint64)num->data[ii - 1]) << shift;
+        xmlSecAssert2(shift < 64 || num->data[ii - 1] == 0, NULL);
+        if(num->data[ii - 1] != 0) {
+            val |= ((PRUint64)num->data[ii - 1]) << shift;
+        }
     }
 
     res = (xmlChar*)xmlMalloc(resLen + 1);

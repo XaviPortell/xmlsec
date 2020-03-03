@@ -1,7 +1,7 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
- * All the string constans.
+ * All the string constants.
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
@@ -11,13 +11,13 @@
 #ifndef __XMLSEC_STRINGS_H__
 #define __XMLSEC_STRINGS_H__
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
 #include <libxml/tree.h>
 
 #include <xmlsec/xmlsec.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 /*************************************************************************
  *
@@ -112,6 +112,15 @@ XMLSEC_EXPORT_VAR const xmlChar xmlSecHrefAes192Cbc[];
 
 XMLSEC_EXPORT_VAR const xmlChar xmlSecNameAes256Cbc[];
 XMLSEC_EXPORT_VAR const xmlChar xmlSecHrefAes256Cbc[];
+
+XMLSEC_EXPORT_VAR const xmlChar xmlSecNameAes128Gcm[];
+XMLSEC_EXPORT_VAR const xmlChar xmlSecHrefAes128Gcm[];
+
+XMLSEC_EXPORT_VAR const xmlChar xmlSecNameAes192Gcm[];
+XMLSEC_EXPORT_VAR const xmlChar xmlSecHrefAes192Gcm[];
+
+XMLSEC_EXPORT_VAR const xmlChar xmlSecNameAes256Gcm[];
+XMLSEC_EXPORT_VAR const xmlChar xmlSecHrefAes256Gcm[];
 
 XMLSEC_EXPORT_VAR const xmlChar xmlSecNameKWAes128[];
 XMLSEC_EXPORT_VAR const xmlChar xmlSecHrefKWAes128[];

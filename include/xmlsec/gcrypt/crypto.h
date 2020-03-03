@@ -9,14 +9,16 @@
 #ifndef __XMLSEC_GCRYPT_CRYPTO_H__
 #define __XMLSEC_GCRYPT_CRYPTO_H__
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
 #include <xmlsec/xmlsec.h>
 #include <xmlsec/keys.h>
 #include <xmlsec/transforms.h>
 #include <xmlsec/dl.h>
+
+#include <gcrypt.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 XMLSEC_CRYPTO_EXPORT xmlSecCryptoDLFunctionsPtr xmlSecCryptoGetFunctions_gcrypt(void);
 
@@ -151,7 +153,6 @@ XMLSEC_CRYPTO_EXPORT xmlSecTransformId xmlSecGCryptTransformKWDes3GetKlass(void)
  *
  *******************************************************************/
 #ifndef XMLSEC_NO_DSA
-#include <gcrypt.h>
 
 /**
  * xmlSecGCryptKeyDataDsaId:
@@ -281,7 +282,6 @@ XMLSEC_CRYPTO_EXPORT xmlSecTransformId xmlSecGCryptTransformHmacSha512GetKlass(v
  *
  *******************************************************************/
 #ifndef XMLSEC_NO_RSA
-#include <gcrypt.h>
 
 /**
  * xmlSecGCryptKeyDataRsaId:

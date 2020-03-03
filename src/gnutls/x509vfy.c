@@ -1,14 +1,19 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
- * X509 support
- *
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
  *
  * Copyright (C) 2010-2016 Aleksey Sanin <aleksey@aleksey.com>. All Rights Reserved.
  */
+/**
+ * SECTION:x509vfy
+ * @Short_description: X509 certificates verification support functions for GnuTLS.
+ * @Stability: Private
+ *
+ */
+
 #include "globals.h"
 
 #ifndef XMLSEC_NO_X509
@@ -290,6 +295,9 @@ xmlSecGnuTLSX509StoreVerify(xmlSecKeyDataStorePtr store,
     if((keyInfoCtx->flags & XMLSEC_KEYINFO_FLAGS_X509DATA_SKIP_STRICT_CHECKS) != 0) {
         flags |= GNUTLS_VERIFY_ALLOW_SIGN_RSA_MD2;
         flags |= GNUTLS_VERIFY_ALLOW_SIGN_RSA_MD5;
+#if GNUTLS_VERSION_NUMBER >= 0x030600
+        flags |= GNUTLS_VERIFY_ALLOW_SIGN_WITH_SHA1;
+#endif
     }
 
     /* We are going to build all possible cert chains and try to verify them */

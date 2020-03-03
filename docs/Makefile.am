@@ -9,12 +9,14 @@ EXTRA_DIST=\
 	$(builddir)/*.html     \
 	$(builddir)/*.ico      \
 	$(builddir)/xmlsec.xsl \
+	$(builddir)/xmlsec-ga.xsl \
 	$(NULL)
 
 XMLSEC1_MAN=$(top_builddir)/man/xmlsec1.1
 XMLSEC_HTML=$(builddir)/xmlsec-man.html
 
-all: docs
+all:
+	@echo "======= Run 'make docs' in the xmlsec/docs folder to rebuild docs"
 
 # docs is legacy
 docs: docs-copy man-docs docs-format
@@ -22,7 +24,7 @@ docs: docs-copy man-docs docs-format
 docs-copy:
 	@( \
 		echo "Copying docs..."; \
-		if [ z"$(srcdir)" != z"$(builddir)" ]; \
+		if [ z"$(srcdir)" != z"$(builddir)" -a z"`uname`" != z"Darwin" ]; \
 		then \
 		    $(CP) -ru $(srcdir)/*.html $(srcdir)/*.ico $(srcdir)/images $(builddir)/  ; \
 		    chmod u+w $(builddir)/*.html ; \
@@ -69,6 +71,19 @@ docs-format:
 	    echo Cleaning $$i ; \
 	    sed 's/\xA0/ /g' $$i > $$i.tmp ; \
 	    mv $$i.tmp $$i ; \
+	done)
+docs-format-ga:
+	@(echo "Formatting html documents to add Google Analytics"; \
+	for i in `find $(builddir) -name "*.html" -print`; \
+	do \
+	    echo "Processing $$i"; \
+	    $(XSLTPROC) --html --output $$i.tmp $(srcdir)/xmlsec-ga.xsl $$i; \
+	    if [ $$? != 0 ]; \
+	    then \
+			echo "ERROR: processing file $$i"; \
+			exit 1; \
+	    fi; \
+	    mv $$i.tmp $$i; \
 	done)
 else
 # do nothing

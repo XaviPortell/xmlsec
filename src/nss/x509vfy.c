@@ -1,14 +1,19 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
- * X509 support
- *
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
  *
  * Copyright (c) 2003 America Online, Inc.  All rights reserved.
  */
+/**
+ * SECTION:x509vfy
+ * @Short_description: X509 certificates verification support functions for NSS.
+ * @Stability: Private
+ *
+ */
+
 #include "globals.h"
 
 #ifndef XMLSEC_NO_X509
@@ -397,6 +402,7 @@ xmlSecNssGetCertName(const xmlChar * name) {
     }
 
     PORT_Free(tmp);
+    xmlFree(name2);
     return(res);
 }
 
@@ -709,7 +715,8 @@ xmlSecNssNumToItem(SECItem *it, PRUint64 ui)
     ** require progressively more space. Start from 1 because byte at 
     ** position 0 is zero
     */
-    for(zeros_len = 1; (zeros_len < sizeof(bb)) && (bb[zeros_len] == 0); ++zeros_len);
+    for(zeros_len = 1; (zeros_len < sizeof(bb)) && (bb[zeros_len] == 0); ++zeros_len) {
+    }
 
     it->len = sizeof(bb) - (zeros_len - 1);
     it->data = (unsigned char *)PORT_Alloc(it->len);

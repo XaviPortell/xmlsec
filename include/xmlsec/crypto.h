@@ -11,10 +11,6 @@
 #ifndef __XMLSEC_CRYPTO_H__
 #define __XMLSEC_CRYPTO_H__
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
 #include <xmlsec/xmlsec.h>
 
 /* include nothing if we compile xmlsec library itself */
@@ -40,6 +36,12 @@ extern "C" {
 #include <xmlsec/mscrypto/x509.h>
 #include <xmlsec/mscrypto/symbols.h>
 #else /* XMLSEC_CRYPTO_MSCRYPTO */
+#ifdef XMLSEC_CRYPTO_MSCNG
+#include <xmlsec/mscng/app.h>
+#include <xmlsec/mscng/crypto.h>
+#include <xmlsec/mscng/x509.h>
+#include <xmlsec/mscng/symbols.h>
+#else /* XMLSEC_CRYPTO_MSCNG */
 #ifdef XMLSEC_CRYPTO_NSS
 #include <xmlsec/nss/app.h>
 #include <xmlsec/nss/crypto.h>
@@ -60,16 +62,13 @@ extern "C" {
 #endif /* XMLSEC_CRYPTO_GCRYPT */
 #endif /* XMLSEC_CRYPTO_GNUTLS */
 #endif /* XMLSEC_CRYPTO_NSS */
+#endif /* XMLSEC_CRYPTO_MSCNG */
 #endif /* XMLSEC_CRYPTO_MSCRYPTO */
 #endif /* XMLSEC_CRYPTO_OPENSSL */
 #endif /* XMLSEC_CRYPTO_DYNAMIC_LOADING */
 
 #endif /* IN_XMLSEC_CRYPTO */
 #endif /* IN_XMLSEC */
-
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
 
 #endif /* __XMLSEC_CRYPTO_H__ */
 

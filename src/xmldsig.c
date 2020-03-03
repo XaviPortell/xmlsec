@@ -1,15 +1,20 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
- * "XML Digital Signature" implementation
- *  http://www.w3.org/TR/xmldsig-core/
- *  http://www.w3.org/Signature/Overview.html
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
  *
  * Copyright (C) 2002-2016 Aleksey Sanin <aleksey@aleksey.com>. All Rights Reserved.
  */
+/**
+ * SECTION:xmldsig
+ * @Short_description: XML Digital Signature functions.
+ * @Stability: Stable
+ *
+ * [XML Digital Signature](http://www.w3.org/TR/xmldsig-core/) implementation.
+ */
+
 #include "globals.h"
 
 #ifndef XMLSEC_NO_XMLDSIG
@@ -283,7 +288,7 @@ xmlSecDSigCtxSign(xmlSecDSigCtxPtr dsigCtx, xmlNodePtr tmpl) {
     /* read signature template */
     ret = xmlSecDSigCtxProcessSignatureNode(dsigCtx, tmpl);
     if(ret < 0) {
-        xmlSecInternalError("xmlSecDSigCtxSignatureProcessNode", NULL);
+        xmlSecInternalError("xmlSecDSigCtxProcessSignatureNode", NULL);
         return(-1);
     }
     xmlSecAssert2(dsigCtx->signMethod != NULL, -1);
@@ -338,7 +343,7 @@ xmlSecDSigCtxVerify(xmlSecDSigCtxPtr dsigCtx, xmlNodePtr node) {
     /* read signature info */
     ret = xmlSecDSigCtxProcessSignatureNode(dsigCtx, node);
     if(ret < 0) {
-        xmlSecInternalError("xmlSecDSigCtxSignatureProcessNode", NULL);
+        xmlSecInternalError("xmlSecDSigCtxProcessSignatureNode", NULL);
         return(-1);
     }
     xmlSecAssert2(dsigCtx->signMethod != NULL, -1);
@@ -625,7 +630,7 @@ xmlSecDSigCtxProcessSignedInfoNode(xmlSecDSigCtxPtr dsigCtx, xmlNodePtr node, xm
         dsigCtx->c14nMethod = xmlSecTransformCtxCreateAndAppend(&(dsigCtx->transformCtx),
                                                               dsigCtx->defC14NMethodId);
         if(dsigCtx->c14nMethod == NULL) {
-            xmlSecInternalError("xmlSecTransformCtxAppend", NULL);
+            xmlSecInternalError("xmlSecTransformCtxCreateAndAppend", NULL);
             return(-1);
         }
     } else {
@@ -657,6 +662,7 @@ xmlSecDSigCtxProcessSignedInfoNode(xmlSecDSigCtxPtr dsigCtx, xmlNodePtr node, xm
                                 xmlSecNodeGetName(cur));
             return(-1);
         }
+        cur = xmlSecGetNextElementNode(cur->next);
     } else if(dsigCtx->defSignMethodId != xmlSecTransformIdUnknown) {
         /* the dsig spec does require SignatureMethod node
          * to be present but in some case it application might decide to
@@ -664,7 +670,7 @@ xmlSecDSigCtxProcessSignedInfoNode(xmlSecDSigCtxPtr dsigCtx, xmlNodePtr node, xm
         dsigCtx->signMethod = xmlSecTransformCtxCreateAndAppend(&(dsigCtx->transformCtx),
                                                               dsigCtx->defSignMethodId);
         if(dsigCtx->signMethod == NULL) {
-            xmlSecInternalError("xmlSecTransformCtxAppend", NULL);
+            xmlSecInternalError("xmlSecTransformCtxCreateAndAppend", NULL);
             return(-1);
         }
     } else {
@@ -677,9 +683,6 @@ xmlSecDSigCtxProcessSignedInfoNode(xmlSecDSigCtxPtr dsigCtx, xmlNodePtr node, xm
     dsigCtx->signMethod->operation = dsigCtx->operation;
 
     /* read references */
-    if(cur != NULL) {
-        cur = xmlSecGetNextElementNode(cur->next);
-    }
     while((cur != NULL) && (xmlSecCheckNodeName(cur, xmlSecNodeReference, xmlSecDSigNs))) {
         /* record first reference node */
         if((*firstReferenceNode) == NULL) {
@@ -1359,7 +1362,7 @@ xmlSecDSigReferenceCtxProcessNode(xmlSecDSigReferenceCtxPtr dsigRefCtx, xmlNodeP
         dsigRefCtx->digestMethod = xmlSecTransformCtxCreateAndAppend(&(dsigRefCtx->transformCtx),
                                                               dsigRefCtx->dsigCtx->defSignMethodId);
         if(dsigRefCtx->digestMethod == NULL) {
-            xmlSecInternalError("xmlSecTransformCtxAppend", NULL);
+            xmlSecInternalError("xmlSecTransformCtxCreateAndAppend", NULL);
             return(-1);
         }
     } else {

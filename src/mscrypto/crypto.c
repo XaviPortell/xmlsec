@@ -1,6 +1,7 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
+ *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
  *
@@ -8,6 +9,13 @@
  * Copyright (C) 2003-2016 Aleksey Sanin <aleksey@aleksey.com>. All Rights Reserved.
  * Copyright (c) 2005-2006 Cryptocom LTD (http://www.cryptocom.ru).
  */
+/**
+ * SECTION:crypto
+ * @Short_description: Crypto transforms implementation for Microsoft Crypto API.
+ * @Stability: Stable
+ *
+ */
+
 #include "globals.h"
 
 #include <string.h>
@@ -93,6 +101,11 @@ xmlSecCryptoGetFunctions_mscrypto(void) {
     gXmlSecMSCryptoFunctions->keyDataGost2001GetKlass           = xmlSecMSCryptoKeyDataGost2001GetKlass;
 #endif /* XMLSEC_NO_GOST*/
 
+#ifndef XMLSEC_NO_GOST2012
+    gXmlSecMSCryptoFunctions->keyDataGostR3410_2012_256GetKlass = xmlSecMSCryptoKeyDataGost2012_256GetKlass;
+    gXmlSecMSCryptoFunctions->keyDataGostR3410_2012_512GetKlass = xmlSecMSCryptoKeyDataGost2012_512GetKlass;
+#endif /* XMLSEC_NO_GOST2012*/
+
 #ifndef XMLSEC_NO_X509
     gXmlSecMSCryptoFunctions->keyDataX509GetKlass               = xmlSecMSCryptoKeyDataX509GetKlass;
     gXmlSecMSCryptoFunctions->keyDataRawX509CertGetKlass        = xmlSecMSCryptoKeyDataRawX509CertGetKlass;
@@ -138,6 +151,14 @@ xmlSecCryptoGetFunctions_mscrypto(void) {
 #ifndef XMLSEC_NO_GOST
     gXmlSecMSCryptoFunctions->transformGost2001GostR3411_94GetKlass             = xmlSecMSCryptoTransformGost2001GostR3411_94GetKlass;
 #endif /* XMLSEC_NO_GOST */
+
+#ifndef XMLSEC_NO_GOST2012
+    gXmlSecMSCryptoFunctions->transformGostR3411_2012_256GetKlass               = xmlSecMSCryptoTransformGostR3411_2012_256GetKlass;
+    gXmlSecMSCryptoFunctions->transformGostR3410_2012GostR3411_2012_256GetKlass = xmlSecMSCryptoTransformGost2012_256GetKlass;
+
+    gXmlSecMSCryptoFunctions->transformGostR3411_2012_512GetKlass               = xmlSecMSCryptoTransformGostR3411_2012_512GetKlass;
+    gXmlSecMSCryptoFunctions->transformGostR3410_2012GostR3411_2012_512GetKlass = xmlSecMSCryptoTransformGost2012_512GetKlass;
+#endif /* XMLSEC_NO_GOST2012 */
 
 #ifndef XMLSEC_NO_GOST
     gXmlSecMSCryptoFunctions->transformGostR3411_94GetKlass             = xmlSecMSCryptoTransformGostR3411_94GetKlass;
@@ -333,7 +354,7 @@ static xmlSecMSCryptoProviderInfo xmlSecMSCryptoProviderInfo_Random[] = {
  * Returns: 0 on success or a negative value otherwise.
  */
 int
-xmlSecMSCryptoGenerateRandom(xmlSecBufferPtr buffer, size_t size) {
+xmlSecMSCryptoGenerateRandom(xmlSecBufferPtr buffer, xmlSecSize size) {
     HCRYPTPROV hProv = 0;
     int ret;
 
@@ -398,7 +419,7 @@ xmlSecMSCryptoGetErrorMessage(DWORD dwError, xmlChar * out, xmlSecSize outSize) 
     }
 
 #ifdef UNICODE
-    ret = WideCharToMultiByte(CP_UTF8, 0, errorText, -1, out, outSize, NULL, NULL);
+    ret = WideCharToMultiByte(CP_UTF8, 0, errorText, -1, (LPSTR)out, outSize, NULL, NULL);
     if(ret <= 0) {
         out[0] = '\0';
         goto done;
@@ -409,7 +430,7 @@ xmlSecMSCryptoGetErrorMessage(DWORD dwError, xmlChar * out, xmlSecSize outSize) 
         out[0] = '\0';
         goto done;
     }
-    ret = WideCharToMultiByte(CP_UTF8, 0, errorTextW, -1, out, outSize, NULL, NULL);
+    ret = WideCharToMultiByte(CP_UTF8, 0, errorTextW, -1, (LPSTR)out, outSize, NULL, NULL);
     if(ret <= 0) {
         out[0] = '\0';
         goto done;
@@ -453,35 +474,7 @@ xmlSecMSCryptoErrorsDefaultCallback(const char* file, int line, const char* func
  */
 LPWSTR
 xmlSecMSCryptoConvertUtf8ToUnicode(const xmlChar* str) {
-    LPWSTR res = NULL;
-    int len;
-    int ret;
-
-    xmlSecAssert2(str != NULL, NULL);
-
-    /* call MultiByteToWideChar first to get the buffer size */
-    ret = MultiByteToWideChar(CP_UTF8, 0, (LPCCH)str, -1, NULL, 0);
-    if(ret <= 0) {
-        return(NULL);
-    }
-    len = ret + 1;
-
-    /* allocate buffer */
-    res = (LPWSTR)xmlMalloc(sizeof(WCHAR) * len);
-    if(res == NULL) {
-        xmlSecMallocError(sizeof(WCHAR) * len, NULL);
-        return(NULL);
-    }
-
-    /* convert */
-    ret = MultiByteToWideChar(CP_UTF8, 0, (LPCCH)str, -1, res, len);
-    if(ret <= 0) {
-        xmlFree(res);
-        return(NULL);
-    }
-
-    /* done */
-    return(res);
+    return(xmlSecWin32ConvertUtf8ToUnicode(str));
 }
 
 /**
@@ -492,37 +485,9 @@ xmlSecMSCryptoConvertUtf8ToUnicode(const xmlChar* str) {
  *
  * Returns: a pointer to newly allocated string (must be freed with xmlFree) or NULL if an error occurs.
  */
-xmlChar* 
+xmlChar*
 xmlSecMSCryptoConvertUnicodeToUtf8(LPCWSTR str) {
-    xmlChar * res = NULL;
-    int len;
-    int ret;
-
-    xmlSecAssert2(str != NULL, NULL);
-
-    /* call WideCharToMultiByte first to get the buffer size */
-    ret = WideCharToMultiByte(CP_UTF8, 0, str, -1, NULL, 0, NULL, NULL);
-    if(ret <= 0) {
-        return(NULL);
-    }
-    len = ret + 1;
-
-    /* allocate buffer */
-    res = (xmlChar*)xmlMalloc(sizeof(xmlChar) * len);
-    if(res == NULL) {
-        xmlSecMallocError(sizeof(xmlChar) * len, NULL);
-        return(NULL);
-    }
-
-    /* convert */
-    ret = WideCharToMultiByte(CP_UTF8, 0, str, -1, (LPSTR)res, len, NULL, NULL);
-    if(ret <= 0) {
-        xmlFree(res);
-        return(NULL);
-    }
-
-    /* done */
-    return(res);
+    return(xmlSecWin32ConvertUnicodeToUtf8(str));
 }
 
 /**
@@ -535,35 +500,7 @@ xmlSecMSCryptoConvertUnicodeToUtf8(LPCWSTR str) {
  */
 LPWSTR
 xmlSecMSCryptoConvertLocaleToUnicode(const char* str) {
-    LPWSTR res = NULL;
-    int len;
-    int ret;
-
-    xmlSecAssert2(str != NULL, NULL);
-
-    /* call MultiByteToWideChar first to get the buffer size */
-    ret = MultiByteToWideChar(CP_ACP, 0, str, -1, NULL, 0);
-    if(ret <= 0) {
-        return(NULL);
-    }
-    len = ret;
-
-    /* allocate buffer */
-    res = (LPWSTR)xmlMalloc(sizeof(WCHAR) * len);
-    if(res == NULL) {
-        xmlSecMallocError(sizeof(WCHAR) * len, NULL);
-        return(NULL);
-    }
-
-    /* convert */
-    ret = MultiByteToWideChar(CP_ACP, 0, str, -1, res, len);
-    if(ret <= 0) {
-        xmlFree(res);
-        return(NULL);
-    }
-
-    /* done */
-    return(res);
+    return(xmlSecWin32ConvertLocaleToUnicode(str));
 }
 
 /**
@@ -576,45 +513,7 @@ xmlSecMSCryptoConvertLocaleToUnicode(const char* str) {
  */
 xmlChar* 
 xmlSecMSCryptoConvertLocaleToUtf8(const char * str) {
-    LPWSTR strW = NULL;
-    xmlChar * res = NULL;
-    int len;
-    int ret;
-
-    xmlSecAssert2(str != NULL, NULL);
-
-    strW = xmlSecMSCryptoConvertLocaleToUnicode(str);
-    if(strW == NULL) {
-        return(NULL);
-    }
-
-    /* call WideCharToMultiByte first to get the buffer size */
-    ret = WideCharToMultiByte(CP_ACP, 0, strW, -1, NULL, 0, NULL, NULL);
-    if(ret <= 0) {
-        xmlFree(strW);
-        return(NULL);
-    }
-    len = ret + 1;
-
-    /* allocate buffer */
-    res = (xmlChar*)xmlMalloc(sizeof(xmlChar) * len);
-    if(res == NULL) {
-        xmlSecMallocError(sizeof(xmlChar) * len, NULL);
-        xmlFree(strW);
-        return(NULL);
-    }
-
-    /* convert */
-    ret = WideCharToMultiByte(CP_ACP, 0, strW, -1, (LPSTR)res, len, NULL, NULL);
-    if(ret <= 0) {
-        xmlFree(strW);
-        xmlFree(res);
-        return(NULL);
-    }
-
-    /* done */
-    xmlFree(strW);
-    return(res);
+    return(xmlSecWin32ConvertLocaleToUtf8(str));
 }
 
 /**
@@ -627,45 +526,7 @@ xmlSecMSCryptoConvertLocaleToUtf8(const char * str) {
  */
 char * 
 xmlSecMSCryptoConvertUtf8ToLocale(const xmlChar* str) {
-    LPWSTR strW = NULL;
-    char * res = NULL;
-    int len;
-    int ret;
-
-    xmlSecAssert2(str != NULL, NULL);
-
-    strW = xmlSecMSCryptoConvertUtf8ToUnicode(str);
-    if(strW == NULL) {
-        return(NULL);
-    }
-
-    /* call WideCharToMultiByte first to get the buffer size */
-    ret = WideCharToMultiByte(CP_ACP, 0, strW, -1, NULL, 0, NULL, NULL);
-    if(ret <= 0) {
-        xmlFree(strW);
-        return(NULL);
-    }
-    len = ret + 1;
-
-    /* allocate buffer */
-    res = (char*)xmlMalloc(sizeof(char) * len);
-    if(res == NULL) {
-        xmlSecMallocError(sizeof(char) * len, NULL);
-        xmlFree(strW);
-        return(NULL);
-    }
-
-    /* convert */
-    ret = WideCharToMultiByte(CP_ACP, 0, strW, -1, res, len, NULL, NULL);
-    if(ret <= 0) {
-        xmlFree(strW);
-        xmlFree(res);
-        return(NULL);
-    }
-
-    /* done */
-    xmlFree(strW);
-    return(res);
+    return(xmlSecWin32ConvertUtf8ToLocale(str));
 }
 
 /**
@@ -678,11 +539,7 @@ xmlSecMSCryptoConvertUtf8ToLocale(const xmlChar* str) {
  */
 xmlChar* 
 xmlSecMSCryptoConvertTstrToUtf8(LPCTSTR str) {
-#ifdef UNICODE
-    return xmlSecMSCryptoConvertUnicodeToUtf8(str);
-#else  /* UNICODE */
-    return xmlSecMSCryptoConvertLocaleToUtf8(str);
-#endif /* UNICODE */
+    return(xmlSecWin32ConvertTstrToUtf8(str));
 }
 
 /**
@@ -695,11 +552,7 @@ xmlSecMSCryptoConvertTstrToUtf8(LPCTSTR str) {
  */
 LPTSTR
 xmlSecMSCryptoConvertUtf8ToTstr(const xmlChar*  str) {
-#ifdef UNICODE
-    return xmlSecMSCryptoConvertUtf8ToUnicode(str);
-#else  /* UNICODE */
-    return xmlSecMSCryptoConvertUtf8ToLocale(str);
-#endif /* UNICODE */
+    return(xmlSecWin32ConvertUtf8ToTstr(str));
 }
 
 /********************************************************************

@@ -1,17 +1,22 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
+ *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
  *
  * Copyright (C) 2002-2016 Aleksey Sanin <aleksey@aleksey.com>. All Rights Reserved.
  */
+/**
+ * SECTION:crypto
+ * @Short_description: Crypto transforms implementation for OpenSSL.
+ * @Stability: Stable
+ *
+ */
+
 #include "globals.h"
 
 #include <string.h>
-
-#include <openssl/evp.h>
-#include <openssl/rand.h>
 
 #include <xmlsec/xmlsec.h>
 #include <xmlsec/keys.h>
@@ -21,6 +26,9 @@
 #include <xmlsec/dl.h>
 #include <xmlsec/private.h>
 
+#include <openssl/x509.h>
+#include <openssl/evp.h>
+#include <openssl/rand.h>
 #include <xmlsec/openssl/app.h>
 #include <xmlsec/openssl/crypto.h>
 #include <xmlsec/openssl/x509.h>
@@ -120,6 +128,9 @@ xmlSecCryptoGetFunctions_openssl(void) {
     gXmlSecOpenSSLFunctions->transformAes128CbcGetKlass         = xmlSecOpenSSLTransformAes128CbcGetKlass;
     gXmlSecOpenSSLFunctions->transformAes192CbcGetKlass         = xmlSecOpenSSLTransformAes192CbcGetKlass;
     gXmlSecOpenSSLFunctions->transformAes256CbcGetKlass         = xmlSecOpenSSLTransformAes256CbcGetKlass;
+    gXmlSecOpenSSLFunctions->transformAes128GcmGetKlass         = xmlSecOpenSSLTransformAes128GcmGetKlass;
+    gXmlSecOpenSSLFunctions->transformAes192GcmGetKlass         = xmlSecOpenSSLTransformAes192GcmGetKlass;
+    gXmlSecOpenSSLFunctions->transformAes256GcmGetKlass         = xmlSecOpenSSLTransformAes256GcmGetKlass;
     gXmlSecOpenSSLFunctions->transformKWAes128GetKlass          = xmlSecOpenSSLTransformKWAes128GetKlass;
     gXmlSecOpenSSLFunctions->transformKWAes192GetKlass          = xmlSecOpenSSLTransformKWAes192GetKlass;
     gXmlSecOpenSSLFunctions->transformKWAes256GetKlass          = xmlSecOpenSSLTransformKWAes256GetKlass;
@@ -443,6 +454,7 @@ xmlSecOpenSSLErrorsDefaultCallback(const char* file, int line, const char* func,
 
 static int
 xmlSecOpenSSLErrorsInit(void) {
+#ifndef OPENSSL_IS_BORINGSSL
     static ERR_STRING_DATA xmlSecOpenSSLStrReasons[XMLSEC_ERRORS_MAX_NUMBER + 1];
     static ERR_STRING_DATA xmlSecOpenSSLStrLib[]= {
         { ERR_PACK(XMLSEC_OPENSSL_ERRORS_LIB,0,0),      "xmlsec routines"},
@@ -465,6 +477,7 @@ xmlSecOpenSSLErrorsInit(void) {
     ERR_load_strings(XMLSEC_OPENSSL_ERRORS_LIB, xmlSecOpenSSLStrLib); /* define xmlsec lib name */
     ERR_load_strings(XMLSEC_OPENSSL_ERRORS_LIB, xmlSecOpenSSLStrDefReason); /* define default reason */
     ERR_load_strings(XMLSEC_OPENSSL_ERRORS_LIB, xmlSecOpenSSLStrReasons);
+#endif /* OPENSSL_IS_BORINGSSL */
 
     /* and set default errors callback for xmlsec to us */
     xmlSecErrorsSetCallback(xmlSecOpenSSLErrorsDefaultCallback);
@@ -509,6 +522,3 @@ const xmlChar*
 xmlSecOpenSSLGetDefaultTrustedCertsFolder(void) {
     return(gXmlSecOpenSSLTrustedCertsFolder);
 }
-
-
-

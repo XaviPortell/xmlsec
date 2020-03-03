@@ -9,17 +9,34 @@
 #ifndef __XMLSEC_OPENSSL_CRYPTO_H__
 #define __XMLSEC_OPENSSL_CRYPTO_H__
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
 #include <xmlsec/xmlsec.h>
 #include <xmlsec/keys.h>
 #include <xmlsec/transforms.h>
 #include <xmlsec/dl.h>
 
 #include <openssl/err.h>
+#ifndef OPENSSL_IS_BORINGSSL
 #include <openssl/opensslconf.h>
+#endif /* OPENSSL_IS_BORINGSSL */
+
+#ifndef XMLSEC_NO_DSA
+#include <openssl/dsa.h>
+#include <openssl/evp.h>
+#endif /* XMLSEC_NO_DSA */
+
+#ifndef XMLSEC_NO_ECDSA
+#include <openssl/ecdsa.h>
+#include <openssl/evp.h>
+#endif /* XMLSEC_NO_ECDSA */
+
+#ifndef XMLSEC_NO_RSA
+#include <openssl/rsa.h>
+#include <openssl/evp.h>
+#endif /* XMLSEC_NO_RSA */
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 XMLSEC_CRYPTO_EXPORT xmlSecCryptoDLFunctionsPtr xmlSecCryptoGetFunctions_openssl(void);
 
@@ -43,11 +60,13 @@ XMLSEC_CRYPTO_EXPORT const xmlChar*     xmlSecOpenSSLGetDefaultTrustedCertsFolde
  * What version of the openssl API do we have? (also see configure.ac)
  *
  *******************************************************************/
-#if OPENSSL_VERSION_NUMBER == 0x20000000L && defined(LIBRESSL_VERSION_NUMBER)
-/* Libressl decided to take over OpenSSL version 2.0.0, likely will create
- * issues down the road...
- */
+#if defined(LIBRESSL_VERSION_NUMBER) && LIBRESSL_VERSION_NUMBER < 0x20700000L
+/* LibreSSL decided to take over OpenSSL version 2.0.0, likely will create
+ * issues down the road... */
 #define XMLSEC_OPENSSL_API_100      1
+#elif defined(LIBRESSL_VERSION_NUMBER) && LIBRESSL_VERSION_NUMBER >= 0x20700000L
+/* LibreSSL 2.7 implements (most of) OpenSSL 1.1 API */
+#define XMLSEC_OPENSSL_API_110      1
 #elif OPENSSL_VERSION_NUMBER >= 0x10100000L
 #define XMLSEC_OPENSSL_API_110      1
 #elif OPENSSL_VERSION_NUMBER >= 0x10000000L
@@ -161,6 +180,34 @@ XMLSEC_CRYPTO_EXPORT xmlSecTransformId  xmlSecOpenSSLTransformAes192CbcGetKlass(
 XMLSEC_CRYPTO_EXPORT xmlSecTransformId  xmlSecOpenSSLTransformAes256CbcGetKlass(void);
 
 /**
+* xmlSecOpenSSLTransformAes128GcmId:
+*
+* The AES128 GCM cipher transform klass.
+*/
+#define xmlSecOpenSSLTransformAes128GcmId \
+        xmlSecOpenSSLTransformAes128GcmGetKlass()
+XMLSEC_CRYPTO_EXPORT xmlSecTransformId  xmlSecOpenSSLTransformAes128GcmGetKlass(void);
+
+/**
+* xmlSecOpenSSLTransformAes192GcmId:
+*
+* The AES192 GCM cipher transform klass.
+*/
+#define xmlSecOpenSSLTransformAes192GcmId \
+        xmlSecOpenSSLTransformAes192GcmGetKlass()
+XMLSEC_CRYPTO_EXPORT xmlSecTransformId  xmlSecOpenSSLTransformAes192GcmGetKlass(void);
+
+/**
+* xmlSecOpenSSLTransformAes256GcmId:
+*
+* The AES256 GCM cipher transform klass.
+*/
+#define xmlSecOpenSSLTransformAes256GcmId \
+        xmlSecOpenSSLTransformAes256GcmGetKlass()
+XMLSEC_CRYPTO_EXPORT xmlSecTransformId  xmlSecOpenSSLTransformAes256GcmGetKlass(void);
+
+
+/**
  * xmlSecOpenSSLTransformKWAes128Id:
  *
  * The AES 128 key wrap transform klass.
@@ -232,8 +279,6 @@ XMLSEC_CRYPTO_EXPORT xmlSecTransformId xmlSecOpenSSLTransformKWDes3GetKlass(void
  *
  *******************************************************************/
 #ifndef XMLSEC_NO_DSA
-#include <openssl/dsa.h>
-#include <openssl/evp.h>
 
 /**
  * xmlSecOpenSSLKeyDataDsaId:
@@ -280,8 +325,6 @@ XMLSEC_CRYPTO_EXPORT xmlSecTransformId xmlSecOpenSSLTransformDsaSha256GetKlass(v
  *
  *******************************************************************/
 #ifndef XMLSEC_NO_ECDSA
-#include <openssl/ecdsa.h>
-#include <openssl/evp.h>
 
 /**
  * xmlSecOpenSSLKeyDataEcdsaId:
@@ -388,7 +431,7 @@ XMLSEC_CRYPTO_EXPORT xmlSecTransformId xmlSecOpenSSLTransformGost2001GostR3411_9
  * The GOSTR3411_94 signature transform klass.
  */
 #define xmlSecOpenSSLTransformGostR3411_94Id \
-		xmlSecOpenSSLTransformGostR3411_94GetKlass()
+        xmlSecOpenSSLTransformGostR3411_94GetKlass()
 XMLSEC_CRYPTO_EXPORT xmlSecTransformId xmlSecOpenSSLTransformGostR3411_94GetKlass(void);
 #endif /* XMLSEC_NO_GOST */
 
@@ -446,7 +489,7 @@ XMLSEC_CRYPTO_EXPORT xmlSecTransformId xmlSecOpenSSLTransformGostR3410_2012GostR
  * The GOST R 34.11-2012 256 bit hash transform klass.
  */
 #define xmlSecOpenSSLTransformGostR3411_2012_256Id \
-	xmlSecOpenSSLTransformGostR3411_2012_256GetKlass()
+    xmlSecOpenSSLTransformGostR3411_2012_256GetKlass()
 XMLSEC_CRYPTO_EXPORT xmlSecTransformId xmlSecOpenSSLTransformGostR3411_2012_256GetKlass(void);
 
 
@@ -456,7 +499,7 @@ XMLSEC_CRYPTO_EXPORT xmlSecTransformId xmlSecOpenSSLTransformGostR3411_2012_256G
  * The GOST R 34.11-2012 512 bit hash transform klass.
  */
 #define xmlSecOpenSSLTransformGostR3411_2012_512Id \
-	xmlSecOpenSSLTransformGostR3411_2012_512GetKlass()
+    xmlSecOpenSSLTransformGostR3411_2012_512GetKlass()
 XMLSEC_CRYPTO_EXPORT xmlSecTransformId xmlSecOpenSSLTransformGostR3411_2012_512GetKlass(void);
 
 #endif /* XMLSEC_NO_GOST2012 */
@@ -601,8 +644,6 @@ XMLSEC_CRYPTO_EXPORT xmlSecTransformId xmlSecOpenSSLTransformRipemd160GetKlass(v
  *
  *******************************************************************/
 #ifndef XMLSEC_NO_RSA
-#include <openssl/rsa.h>
-#include <openssl/evp.h>
 
 /**
  * xmlSecOpenSSLKeyDataRsaId:

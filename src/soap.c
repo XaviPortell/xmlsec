@@ -1,12 +1,17 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
- * Simple SOAP messages parsing/creation.
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
  *
  * Copyright (C) 2002-2017 Aleksey Sanin <aleksey@aleksey.com>
+ */
+/**
+ * SECTION:soap
+ * @Short_description: Simple SOAP messages parsing/creation functions.
+ * @Stability: Private
+ *
  */
 #include "globals.h"
 
@@ -811,7 +816,7 @@ xmlSecSoap12AddFaultSubcode(xmlNodePtr faultNode, const xmlChar* subCodeHref, co
     xmlSecAssert2(subCodeHref != NULL, NULL);
     xmlSecAssert2(subCodeName != NULL, NULL);
 
-    /* Code node is the first childern in Fault node */
+    /* Code node is the first children in Fault node */
     cur = xmlSecGetNextElementNode(faultNode->children);
     if((cur == NULL) || !xmlSecCheckNodeName(cur, xmlSecNodeCode, xmlSecSoap12Ns)) {
         xmlSecInvalidNodeError(cur, xmlSecNodeCode, NULL);

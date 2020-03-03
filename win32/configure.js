@@ -1,5 +1,5 @@
 /* Configure script for xmlsec, specific for Windows with Scripting Host.
- * 
+ *
  * This script will configure the libxmlsec build process and create necessary files.
  * Run it with an 'help', or an invalid option and it will tell you what options
  * it accepts.
@@ -34,7 +34,7 @@ var optsFile = baseDir + "\\config.h";
 var versionHeaderIn = baseDir + "\\include\\xmlsec\\version.h.in";
 var versionHeader = baseDir + "\\include\\xmlsec\\version.h";
 
-/* Version strings for the binary distribution. Will be filled later 
+/* Version strings for the binary distribution. Will be filled later
    in the code. */
 var verMajorXmlSec;
 var verMinorXmlSec;
@@ -47,6 +47,7 @@ var withOpenSSL = 0;
 var withOpenSSLVersion = "";
 var withNss = 0;
 var withMSCrypto = 0;
+var withMSCng = 0;
 var withLibXSLT = 1;
 var withIconv = 1;
 var withNT4 = 1;
@@ -54,13 +55,16 @@ var withNT4 = 1;
 /* Win32 build options. */
 var buildUnicode = 1;
 var buildDebug = 0;
+var buildWerror = 0;
+var buildCc = "cl.exe";
+var buildCflags = "";
 var buildStatic = 1;
 var buildWithDLSupport = 1;
 var buildPrefix = ".";
 var buildBinPrefix = "$(PREFIX)\\bin";
 var buildIncPrefix = "$(PREFIX)\\include";
 var buildLibPrefix = "$(PREFIX)\\lib";
-var buildSoPrefix = "$(PREFIX)\\lib";
+var buildSoPrefix = "$(PREFIX)\\bin";
 var buildInclude = ".";
 var buildLib = ".";
 var cruntime = "/MD";
@@ -104,13 +108,16 @@ function usage()
 	txt += "XmlSec Library options, default value given in parentheses:\n\n";
 	txt += "  crypto:     Crypto engines list, first is default: \"openssl\",\n";
 	txt += "              \"openssl=100\", \"openssl=110\", \n";
-	txt += "              \"nss\", \"mscrypto\" (\"" + withCrypto + "\");\n"
- 	txt += "  xslt:       LibXSLT is used (" + (withLibXSLT? "yes" : "no")  + ")\n";	
- 	txt += "  iconv:      Use the iconv library (" + (withIconv? "yes" : "no")  + ")\n";	
- 	txt += "  nt4:        Enable NT 4.0 support (" + (withNT4? "yes" : "no")  + ")\n";	
+	txt += "              \"nss\", \"mscrypto\", \"mscng\" (\"" + withCrypto + "\");\n"
+ 	txt += "  xslt:       LibXSLT is used (" + (withLibXSLT? "yes" : "no")  + ")\n";
+ 	txt += "  iconv:      Use the iconv library (" + (withIconv? "yes" : "no")  + ")\n";
+ 	txt += "  nt4:        Enable NT 4.0 support (" + (withNT4? "yes" : "no")  + ")\n";
 	txt += "\nWin32 build options, default value given in parentheses:\n\n";
 	txt += "  unicode:    Build Unicode version (" + (buildUnicode? "yes" : "no")  + ")\n";
 	txt += "  debug:      Build unoptimised debug executables (" + (buildDebug? "yes" : "no")  + ")\n";
+	txt += "  werror:     Build with warnings as errors(" + (buildWerror? "yes" : "no")  + ")\n";
+	txt += "  cc:         Build with the specified compiler(" + buildCc  + ")\n";
+	txt += "  cflags:     Build with the specified compiler flags('" + buildCflags  + "')\n";
 	txt += "  static:     Link libxmlsec statically to xmlsec (" + (buildStatic? "yes" : "no")  + ")\n";
 	txt += "  with-dl:    Enable dynamic loading of xmlsec-crypto libraries (" + (buildWithDLSupport? "yes" : "no")  + ")\n";
 	txt += "  prefix:     Base directory for the installation (" + buildPrefix + ")\n";
@@ -120,7 +127,7 @@ function usage()
 	txt += "              (" + buildIncPrefix + ")\n";
 	txt += "  libdir:     Directory where static and import libraries should be\n";
 	txt += "              installed (" + buildLibPrefix + ")\n";
-	txt += "  sodir:      Directory where shared libraries should be installed\n"; 
+	txt += "  sodir:      Directory where shared libraries should be installed\n";
 	txt += "              (" + buildSoPrefix + ")\n";
 	txt += "  include:    Additional search path for the compiler, particularily\n";
 	txt += "              where libxml headers can be found (" + buildInclude + ")\n";
@@ -155,24 +162,28 @@ function discoverVersion()
 		} else if(s.search(/^XMLSEC_VERSION_SUBMINOR/) != -1) {
 			vf.WriteLine(s);
 			verMicroXmlSec = s.substring(s.indexOf("=") + 1, s.length)
-		}		
+		}
 	}
 	cf.Close();
 	vf.WriteLine("BASEDIR=" + baseDir);
 	vf.WriteLine("XMLSEC_SRCDIR=" + srcDir);
 	vf.WriteLine("APPS_SRCDIR=" + srcDirApps);
 	vf.WriteLine("BINDIR=" + binDir);
-	vf.WriteLine("WITH_CRYPTO=" + withCrypto);	
-	vf.WriteLine("WITH_DEFAULT_CRYPTO=" + withDefaultCrypto);	
-	vf.WriteLine("WITH_OPENSSL=" + withOpenSSL);	
+	vf.WriteLine("WITH_CRYPTO=" + withCrypto);
+	vf.WriteLine("WITH_DEFAULT_CRYPTO=" + withDefaultCrypto);
+	vf.WriteLine("WITH_OPENSSL=" + withOpenSSL);
 	vf.WriteLine("WITH_OPENSSL_VERSION=XMLSEC_OPENSSL_" + withOpenSSLVersion);
-	vf.WriteLine("WITH_NSS=" + withNss);	
-	vf.WriteLine("WITH_MSCRYPTO=" + withMSCrypto);	
+	vf.WriteLine("WITH_NSS=" + withNss);
+	vf.WriteLine("WITH_MSCRYPTO=" + withMSCrypto);
+	vf.WriteLine("WITH_MSCNG=" + withMSCng);
 	vf.WriteLine("WITH_LIBXSLT=" + (withLibXSLT ? "1" : "0"));
 	vf.WriteLine("WITH_ICONV=" + (withIconv ? "1" : "0"));
 	vf.WriteLine("WITH_NT4=" + (withNT4 ? "1" : "0"));
 	vf.WriteLine("UNICODE=" + (buildUnicode? "1" : "0"));
 	vf.WriteLine("DEBUG=" + (buildDebug? "1" : "0"));
+	vf.WriteLine("WERROR=" + (buildWerror? "1" : "0"));
+	vf.WriteLine("CC=" + buildCc);
+	vf.WriteLine("CFLAGS=" + buildCflags);
 	vf.WriteLine("STATIC=" + (buildStatic? "1" : "0"));
 	vf.WriteLine("WITH_DL=" + (buildWithDLSupport ? "1" : "0"));
 	vf.WriteLine("PREFIX=" + buildPrefix);
@@ -198,10 +209,10 @@ function configureXmlSec()
 		ln = ofi.ReadLine();
 		s = new String(ln);
 		if (s.search(/\@VERSION\@/) != -1) {
-			of.WriteLine(s.replace(/\@VERSION\@/, 
+			of.WriteLine(s.replace(/\@VERSION\@/,
 				verMajorXmlSec + "." + verMinorXmlSec + "." + verMicroXmlSec));
 		} else if (s.search(/\@XMLSECVERSION_NUMBER\@/) != -1) {
-			of.WriteLine(s.replace(/\@XMLSECVERSION_NUMBER\@/, 
+			of.WriteLine(s.replace(/\@XMLSECVERSION_NUMBER\@/,
 				verMajorXmlSec*10000 + verMinorXmlSec*100 + verMicroXmlSec*1));
 		} else
 			of.WriteLine(ln);
@@ -270,7 +281,7 @@ function genReadme(bname, ver, file)
 	f.WriteLine("environment variable.");
 	f.WriteLine("  If you want to make programmes in C which use " + bname + ", you'll");
 	f.WriteLine("likely know how to use the contents of this package. If you don't, please");
-	f.WriteLine("refer to your compiler's documentation."); 
+	f.WriteLine("refer to your compiler's documentation.");
 	f.WriteBlankLines(1);
 	f.WriteLine("  If there is something you cannot keep for yourself, such as a problem,");
 	f.WriteLine("a cheer of joy, a comment or a suggestion, feel free to contact me using");
@@ -305,6 +316,12 @@ for (i = 0; (i < WScript.Arguments.length) && (error == 0); i++) {
 			buildUnicode = strToBool(arg.substring(opt.length + 1, arg.length));
 		else if (opt == "debug")
 			buildDebug = strToBool(arg.substring(opt.length + 1, arg.length));
+		else if (opt == "werror")
+			buildWerror = strToBool(arg.substring(opt.length + 1, arg.length));
+		else if (opt == "cc")
+			buildCc = arg.substring(opt.length + 1, arg.length);
+		else if (opt == "cflags")
+			buildCflags = arg.substring(opt.length + 1, arg.length);
 		else if (opt == "static")
 			buildStatic = strToBool(arg.substring(opt.length + 1, arg.length));
 		else if (opt == "with-dl")
@@ -350,10 +367,10 @@ if (error != 0) {
 
 // Discover crypto support
 var crlist, j, curcrypto;
-crlist = withCrypto.split(",");			
+crlist = withCrypto.split(",");
 withCrypto = "";
 withDefaultCrypto = "";
-for (j = 0; j < crlist.length; j++) {		
+for (j = 0; j < crlist.length; j++) {
 	if (crlist[j] == "openssl") {
 		curcrypto="openssl";
 		withOpenSSL = 1;
@@ -372,6 +389,9 @@ for (j = 0; j < crlist.length; j++) {
 	} else if (crlist[j] == "mscrypto") {
 		curcrypto="mscrypto";
 		withMSCrypto = 1;
+	} else if (crlist[j] == "mscng") {
+		curcrypto="mscng";
+		withMSCng = 1;
 	} else {
 		WScript.Echo("Unknown crypto engine \"" + crlist[j] + "\" is found. Aborting.");
 		WScript.Quit(error);
@@ -417,6 +437,7 @@ txtOut += "        Use OpenSSL: " + boolToStr(withOpenSSL) + "\n";
 txtOut += "Use OpenSSL Version: " + withOpenSSLVersion + "\n";
 txtOut += "            Use NSS: " + boolToStr(withNss) + "\n";
 txtOut += "       Use MSCrypto: " + boolToStr(withMSCrypto) + "\n";
+txtOut += "          Use MSCng: " + boolToStr(withMSCng) + "\n";
 txtOut += "        Use LibXSLT: " + boolToStr(withLibXSLT) + "\n";
 txtOut += "          Use iconv: " + boolToStr(withIconv) + "\n";
 txtOut += "     NT 4.0 support: " + boolToStr(withNT4) + "\n";
@@ -426,6 +447,9 @@ txtOut += "-------------------------\n";
 txtOut += "  C-Runtime option: " + cruntime + "\n";
 txtOut += "           Unicode: " + boolToStr(buildUnicode) + "\n";
 txtOut += "     Debug symbols: " + boolToStr(buildDebug) + "\n";
+txtOut += "Warnings as errors: " + boolToStr(buildWerror) + "\n";
+txtOut += "        C compiler: " + buildCc + "\n";
+txtOut += "  C compiler flags: " + buildCflags + "\n";
 txtOut += "     Static xmlsec: " + boolToStr(buildStatic) + "\n";
 txtOut += " Enable DL support: " + boolToStr(buildWithDLSupport) + "\n";
 txtOut += "    Install prefix: " + buildPrefix + "\n";

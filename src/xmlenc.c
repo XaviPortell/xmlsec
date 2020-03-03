@@ -1,14 +1,20 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
- * "XML Encryption" implementation
- *  http://www.w3.org/TR/xmlenc-core
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
  *
  * Copyright (C) 2002-2016 Aleksey Sanin <aleksey@aleksey.com>. All Rights Reserved.
  */
+/**
+ * SECTION:xmlenc
+ * @Short_description: XML Encryption support.
+ * @Stability: Stable
+ *
+ * [XML Encryption](http://www.w3.org/TR/xmlenc-core) implementation.
+ */
+
 #include "globals.h"
 
 #ifndef XMLSEC_NO_XMLENC
@@ -397,7 +403,7 @@ xmlSecEncCtxXmlEncrypt(xmlSecEncCtxPtr encCtx, xmlNodePtr tmpl, xmlNodePtr node)
         if((encCtx->flags & XMLSEC_ENC_RETURN_REPLACED_NODE) != 0) {
             ret = xmlSecReplaceNodeAndReturn(node, tmpl, &(encCtx->replacedNodeList));
             if(ret < 0) {
-                xmlSecInternalError("xmlSecReplaceNode",
+                xmlSecInternalError("xmlSecReplaceNodeAndReturn",
                                     xmlSecNodeGetName(node));
                 return(-1);
             }
@@ -619,7 +625,7 @@ xmlSecEncCtxDecryptToBuffer(xmlSecEncCtxPtr encCtx, xmlNodePtr node) {
     } else {
         ret = xmlSecTransformCtxExecute(&(encCtx->transformCtx), node->doc);
         if(ret < 0) {
-            xmlSecInternalError("xmlSecTransformCtxBinaryExecute", NULL);
+            xmlSecInternalError("xmlSecTransformCtxExecute", NULL);
             return(NULL);
         }
     }

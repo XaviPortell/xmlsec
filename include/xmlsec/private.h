@@ -16,10 +16,6 @@
 #error "xmlsec/private.h file contains private xmlsec definitions and should not be used outside xmlsec or xmlsec-$crypto libraries"
 #endif /* XMLSEC_PRIVATE */
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
 #include <libxml/tree.h>
 #include <libxml/xmlIO.h>
 
@@ -29,6 +25,19 @@ extern "C" {
 #include <xmlsec/keysmngr.h>
 #include <xmlsec/transforms.h>
 
+#ifdef __GNUC__
+#ifdef HAVE_ANSIDECL_H
+#include <ansidecl.h>
+#endif
+#endif
+
+#ifdef WIN32
+#include <windows.h>
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 /*****************************************************************************
  *
@@ -343,9 +352,12 @@ typedef int                     (*xmlSecCryptoAppKeyCertLoadMemoryMethod)(xmlSec
  * @keyDataX509GetKlass:        the method to get pointer to X509 key data klass.
  * @keyDataRawX509CertGetKlass: the method to get pointer to raw X509 cert key data klass.
  * @x509StoreGetKlass:          the method to get pointer to X509 key data store.
- * @transformAes128CbcGetKlass: the method to get pointer to AES 128 encryption transform.
- * @transformAes192CbcGetKlass: the method to get pointer to AES 192 encryption transform.
- * @transformAes256CbcGetKlass: the method to get pointer to AES 256 encryption transform.
+ * @transformAes128CbcGetKlass: the method to get pointer to AES 128 CBC encryption transform.
+ * @transformAes192CbcGetKlass: the method to get pointer to AES 192 CBC encryption transform.
+ * @transformAes256CbcGetKlass: the method to get pointer to AES 256 CBC encryption transform.
+ * @transformAes128GcmGetKlass: the method to get pointer to AES 128 GCM encryption transform.
+ * @transformAes192GcmGetKlass: the method to get pointer to AES 192 GCM encryption transform.
+ * @transformAes256GcmGetKlass: the method to get pointer to AES 256 GCM encryption transform.
  * @transformKWAes128GetKlass:  the method to get pointer to AES 128 key wrapper transform.
  * @transformKWAes192GetKlass:  the method to get pointer to AES 192 key wrapper transform.
  * @transformKWAes256GetKlass:  the method to get pointer to AES 256 key wrapper transform.
@@ -431,6 +443,9 @@ struct _xmlSecCryptoDLFunctions {
     xmlSecCryptoTransformGetKlassMethod          transformAes128CbcGetKlass;
     xmlSecCryptoTransformGetKlassMethod          transformAes192CbcGetKlass;
     xmlSecCryptoTransformGetKlassMethod          transformAes256CbcGetKlass;
+    xmlSecCryptoTransformGetKlassMethod          transformAes128GcmGetKlass;
+    xmlSecCryptoTransformGetKlassMethod          transformAes192GcmGetKlass;
+    xmlSecCryptoTransformGetKlassMethod          transformAes256GcmGetKlass;
     xmlSecCryptoTransformGetKlassMethod          transformKWAes128GetKlass;
     xmlSecCryptoTransformGetKlassMethod          transformKWAes192GetKlass;
     xmlSecCryptoTransformGetKlassMethod          transformKWAes256GetKlass;
@@ -497,15 +512,21 @@ struct _xmlSecCryptoDLFunctions {
  * Macro used to signal to GCC unused function parameters
  */
 #ifdef __GNUC__
-#ifdef HAVE_ANSIDECL_H
-#include <ansidecl.h>
-#endif
 #ifndef ATTRIBUTE_UNUSED
 #define ATTRIBUTE_UNUSED
 #endif
 #else
 #define ATTRIBUTE_UNUSED
 #endif
+
+/**
+ * UNREFERENCED_PARAMETER:
+ *
+ * Macro used to signal to MSVC unused function parameters
+ */
+#ifndef UNREFERENCED_PARAMETER
+#define UNREFERENCED_PARAMETER(x)
+#endif /* UNREFERENCED_PARAMETER */
 
 /***********************************************************************
  *

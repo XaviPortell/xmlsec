@@ -6,6 +6,13 @@
  *
  * Copyright (C) 2002-2016 Aleksey Sanin <aleksey@aleksey.com>. All Rights Reserved.
  */
+/**
+ * SECTION:app
+ * @Short_description: Application support functions for OpenSSL.
+ * @Stability: Stable
+ *
+ */
+
 #include "globals.h"
 
 #include <string.h>
@@ -32,6 +39,8 @@
 #include <xmlsec/openssl/crypto.h>
 #include <xmlsec/openssl/evp.h>
 #include <xmlsec/openssl/x509.h>
+
+#include "openssl_compat.h"
 
 static int      xmlSecOpenSSLAppLoadRANDFile            (const char *filename);
 static int      xmlSecOpenSSLAppSaveRANDFile            (const char *filename);
@@ -69,14 +78,15 @@ xmlSecOpenSSLAppInit(const char* config) {
 
 #else /* !defined(XMLSEC_OPENSSL_API_110) */
     int ret;
-
-    ret = OPENSSL_init_crypto(OPENSSL_INIT_LOAD_CRYPTO_STRINGS | 
+    uint64_t opts = OPENSSL_INIT_LOAD_CRYPTO_STRINGS |
                               OPENSSL_INIT_ADD_ALL_CIPHERS |
                               OPENSSL_INIT_ADD_ALL_DIGESTS |
-                              OPENSSL_INIT_LOAD_CONFIG |
-                              OPENSSL_INIT_ASYNC |
-                              OPENSSL_INIT_ENGINE_ALL_BUILTIN,
-                              NULL);
+                              OPENSSL_INIT_LOAD_CONFIG;
+#ifndef OPENSSL_IS_BORINGSSL
+    opts |= OPENSSL_INIT_ASYNC | OPENSSL_INIT_ENGINE_ALL_BUILTIN;
+#endif /* OPENSSL_IS_BORINGSSL */
+
+    ret = OPENSSL_init_crypto(opts, NULL);
     if(ret != 1) {
         xmlSecOpenSSLError("OPENSSL_init_crypto", NULL);
         return(-1);
@@ -121,6 +131,7 @@ xmlSecOpenSSLAppShutdown(void) {
 
     ENGINE_cleanup();
     CONF_modules_unload(1);
+
     CRYPTO_cleanup_all_ex_data();
     ERR_remove_thread_state(NULL);
     ERR_free_strings();
@@ -602,6 +613,8 @@ xmlSecOpenSSLAppPkcs12LoadBIO(BIO* bio, const char *pwd,
     int ret;
 
     xmlSecAssert2(bio != NULL, NULL);
+    UNREFERENCED_PARAMETER(pwdCallback);
+    UNREFERENCED_PARAMETER(pwdCallbackCtx);
 
     p12 = d2i_PKCS12_bio(bio, NULL);
     if(p12 == NULL) {
@@ -609,7 +622,7 @@ xmlSecOpenSSLAppPkcs12LoadBIO(BIO* bio, const char *pwd,
         goto done;
     }
 
-    ret = PKCS12_verify_mac(p12, pwd, (pwd != NULL) ? strlen(pwd) : 0);
+    ret = PKCS12_verify_mac(p12, pwd, (pwd != NULL) ? (int)strlen(pwd) : 0);
     if(ret != 1) {
         xmlSecOpenSSLError("PKCS12_verify_mac", NULL);
         goto done;
@@ -1308,7 +1321,7 @@ xmlSecOpenSSLDefaultPasswordCallback(char *buf, int bufsize, int verify, void *u
 
         /* if we don't need to verify password then we are done */
         if(verify == 0) {
-            return(strlen(buf));
+            return((int)strlen(buf));
         }
 
         if(filename != NULL) {
@@ -1338,7 +1351,7 @@ xmlSecOpenSSLDefaultPasswordCallback(char *buf, int bufsize, int verify, void *u
         if(strcmp(buf, buf2) == 0) {
             memset(buf2, 0, bufsize);
             xmlFree(buf2);
-            return(strlen(buf));
+            return((int)strlen(buf));
         }
 
         /* try again */
@@ -1353,13 +1366,25 @@ static int
 xmlSecOpenSSLDummyPasswordCallback(char *buf, int bufsize,
                                    int verify ATTRIBUTE_UNUSED,
                                    void *userdata) {
-    char* password = (char*)userdata;
+    char* password;
+    int passwordlen;
+    UNREFERENCED_PARAMETER(verify);
 
-    if((password == NULL) || ((int)strlen(password) + 1 > bufsize)) {
+    password = (char*)userdata;
+    if(password == NULL) {
+        return(-1);
+    }
+    passwordlen = (int)strlen(password);
+    if(passwordlen + 1 > bufsize) {
         return(-1);
     }
 
+#ifdef WIN32
+    strcpy_s(buf, bufsize, password);
+#else  /* WIN32 */
     strcpy(buf, password);
-    return (strlen(buf));
+#endif /* WIN32 */
+
+    return (passwordlen);
 }
 

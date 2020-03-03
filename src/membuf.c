@@ -1,13 +1,19 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
- * Memory buffer transform
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
  *
  * Copyright (C) 2002-2016 Aleksey Sanin <aleksey@aleksey.com>. All Rights Reserved.
  */
+/**
+ * SECTION:membuf
+ * @Short_description:  Memory buffer transform functions.
+ * @Stability: Stable
+ *
+ */
+
 #include "globals.h"
 
 #include <stdlib.h>
@@ -23,7 +29,6 @@
 #include <xmlsec/base64.h>
 #include <xmlsec/membuf.h>
 #include <xmlsec/errors.h>
-
 
 /*****************************************************************************
  *
@@ -74,7 +79,7 @@ static xmlSecTransformKlass xmlSecTransformMemBufKlass = {
 /**
  * xmlSecTransformMemBufGetKlass:
  *
- * The memory buffer transorm (used to store the data that go through it).
+ * The memory buffer transform (used to store the data that go through it).
  *
  * Returns: memory buffer transform klass.
  */

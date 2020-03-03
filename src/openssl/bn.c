@@ -1,18 +1,25 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
- * Reading/writing BIGNUM values
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
  *
  * Copyright (C) 2002-2016 Aleksey Sanin <aleksey@aleksey.com>. All Rights Reserved.
  */
+/**
+ * SECTION:bn
+ * @Short_description: Big numbers (BIGNUM) support functions implementation for OpenSSL.
+ * @Stability: Stable
+ *
+ */
+
 #include "globals.h"
 
 #include <stdlib.h>
 #include <string.h>
 
+#include <openssl/bn.h>
 #include <libxml/tree.h>
 
 #include <xmlsec/xmlsec.h>
@@ -26,7 +33,7 @@
 
 /**
  * xmlSecOpenSSLNodeGetBNValue:
- * @cur: the poitner to an XML node.
+ * @cur: the pointer to an XML node.
  * @a: the BIGNUM buffer.
  *
  * Converts the node content from CryptoBinary format

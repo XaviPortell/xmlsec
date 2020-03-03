@@ -1,13 +1,20 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
- * XSLT Transform (http://www.w3.org/TR/xmldsig-core/#sec-XSLT)
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
  *
  * Copyright (C) 2002-2016 Aleksey Sanin <aleksey@aleksey.com>. All Rights Reserved.
  */
+/**
+ * SECTION:xslt
+ * @Short_description: XSLT transform implementation.
+ * @Stability: Private
+ *
+ * [XSLT Transform](http://www.w3.org/TR/xmldsig-core/#sec-XSLT) implementation.
+ */
+
 #include "globals.h"
 
 #ifndef XMLSEC_NO_XSLT
@@ -28,7 +35,7 @@
 #include <xmlsec/keys.h>
 #include <xmlsec/parser.h>
 #include <xmlsec/errors.h>
-#include <xmlsec/private/xslt.h>
+#include "xslt.h"
 
 /**************************************************************************
  *
@@ -212,6 +219,10 @@ xmlSecXsltFinalize(xmlSecTransformPtr transform) {
         xsltFreeStylesheet(ctx->xslt);
     }
     if(ctx->parserCtx != NULL) {
+        if(ctx->parserCtx->myDoc != NULL) {
+            xmlFreeDoc(ctx->parserCtx->myDoc);
+	    ctx->parserCtx->myDoc = NULL;
+        }
         xmlFreeParserCtxt(ctx->parserCtx);
     }
     memset(ctx, 0, sizeof(xmlSecXsltCtx));
@@ -491,9 +502,15 @@ xmlSecXslProcess(xmlSecXsltCtxPtr ctx, xmlSecBufferPtr in, xmlSecBufferPtr out) 
     res = 0;
 
 done:
-    if(output != NULL) xmlOutputBufferClose(output);
-    if(docIn != NULL) xmlFreeDoc(docIn);
-    if(docOut != NULL) xmlFreeDoc(docOut);
+    if(output != NULL) {
+        xmlOutputBufferClose(output);
+    }
+    if(docIn != NULL) {
+        xmlFreeDoc(docIn);
+    }
+    if(docOut != NULL) {
+        xmlFreeDoc(docOut);
+    }
     return(res);
 }
 
@@ -528,7 +545,9 @@ xmlSecXsApplyStylesheet(xmlSecXsltCtxPtr ctx, xmlDocPtr doc) {
     }
     
 done:
-    if(xsltCtx != NULL) xsltFreeTransformContext(xsltCtx);
+    if(xsltCtx != NULL) {
+        xsltFreeTransformContext(xsltCtx);
+    }
     return res;    
 }
 

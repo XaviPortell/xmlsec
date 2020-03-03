@@ -1,81 +1,20 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>list: XML Security Library Reference Manual</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="index.html" title="XML Security Library Reference Manual">
 <link rel="up" href="xmlsec-ref.html" title="XML Security Core Library API Reference.">
 <link rel="prev" href="xmlsec-keysmngr.html" title="keysmngr">
 <link rel="next" href="xmlsec-membuf.html" title="membuf">
-<meta name="generator" content="GTK-Doc V1.25 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.27 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<style type="text/css">
-table.CALSTABLE > tbody > tr:nth-child(1) > td:nth-child(1) {
-    width: 20em;
-}
-.synopsis, .classsynopsis {
-    background: #eeeeee;
-    border: solid 1px #aaaaaa;
-}
-.programlisting {
-    background: #eeeeee;
-    border: solid 1px #000000;
-}
-.navigation {
-    background: #eeeeee;
-    border: solid 1px #000000;
-}
-.navigation a {
-    color: initial;
-}
-.navigation a:visited {
-    color: initial;
-}
-</style>
 </head>
-<body><table width="100%" valign="top"><tr valign="top">
-<td valign="top" align="left" width="210">
-<img src="../images/logo.gif" alt="XML Security Library" border="0"><p></p>
-<ul>
-<li><a href="../index.html">Home</a></li>
-<li><a href="../download.html">Download</a></li>
-<li><a href="../news.html">News</a></li>
-<li><a href="../documentation.html">Documentation</a></li>
-<ul>
-<li><a href="../faq.html">FAQ</a></li>
-<li><a href="../api/xmlsec-notes.html">Tutorial</a></li>
-<li><a href="../api/xmlsec-reference.html">API reference</a></li>
-<li><a href="../api/xmlsec-examples.html">Examples</a></li>
-</ul>
-<li><a href="../xmldsig.html">XML Digital Signature</a></li>
-<ul><li><a href="http://www.aleksey.com/xmlsec/xmldsig-verifier.html">Online Verifier</a></li></ul>
-<li><a href="../xmlenc.html">XML Encryption</a></li>
-<li><a href="../c14n.html">XML Canonicalization</a></li>
-<li><a href="../bugs.html">Reporting Bugs</a></li>
-<li><a href="http://www.aleksey.com/pipermail/xmlsec">Mailing list</a></li>
-<li><a href="../related.html">Related</a></li>
-<li><a href="../authors.html">Authors</a></li>
-</ul>
-<table width="100%">
-<tr>
-<td width="15"></td>
-<td><a href="http://xmlsoft.org/"><img src="../images/libxml2-logo.png" alt="LibXML2" border="0"></a></td>
-</tr>
-<tr>
-<td width="15"></td>
-<td><a href="http://xmlsoft.org/XSLT"><img src="../images/libxslt-logo.png" alt="LibXSLT" border="0"></a></td>
-</tr>
-<tr>
-<td width="15"></td>
-<td><a href="http://www.openssl.org/"><img src="../images/openssl-logo.png" alt="OpenSSL" border="0"></a></td>
-</tr>
-<!--Links - start--><!--Links - end-->
-</table>
-</td>
-<td valign="top"><table width="100%" valign="top"><tr><td valign="top" align="left" id="xmlsecContent">
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
                   <a href="#xmlsec-list.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
@@ -88,16 +27,20 @@ table.CALSTABLE > tbody > tr:nth-child(1) > td:nth-child(1) {
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="xmlsec-list.top_of_page"></a>list</span></h2>
-<p>list &#8212; Generic list structure implementation.</p>
+<p>list — Generic list structure functions.</p>
 </td>
 <td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsect1">
+<a name="xmlsec-list.stability-level"></a><h2>Stability Level</h2>
+<a href="http://foldoc.org/Stable"><span class="acronym">Stable</span></a>, unless otherwise indicated
+</div>
+<div class="refsect1">
 <a name="xmlsec-list.functions"></a><h2>Functions</h2>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col width="150px" class="functions_return">
-<col class="functions_name">
+<col>
+<col>
 </colgroup>
 <tbody>
 <tr>
@@ -105,7 +48,7 @@ table.CALSTABLE > tbody > tr:nth-child(1) > td:nth-child(1) {
 <font><span class="returnvalue">void</span></font>
 </td>
 <td class="function_name">
-<a class="link" href="xmlsec-list.html#xmlSecPtrListSetDefaultAllocMode" title="xmlSecPtrListSetDefaultAllocMode ()">xmlSecPtrListSetDefaultAllocMode</a> <span class="c_punctuation">()</span>
+<a class="link" href="xmlsec-list.html#xmlSecPtrListSetDefaultAllocMode" title="xmlSecPtrListSetDefaultAllocMode ()">xmlSecPtrListSetDefaultAllocMode</a> <span class="c_punctuation">()</span>
 </td>
 </tr>
 <tr>
@@ -113,7 +56,7 @@ table.CALSTABLE > tbody > tr:nth-child(1) > td:nth-child(1) {
 <font><span class="returnvalue">int</span></font>
 </td>
 <td class="function_name">
-<a class="link" href="xmlsec-list.html#xmlSecPtrListInitialize" title="xmlSecPtrListInitialize ()">xmlSecPtrListInitialize</a> <span class="c_punctuation">()</span>
+<a class="link" href="xmlsec-list.html#xmlSecPtrListInitialize" title="xmlSecPtrListInitialize ()">xmlSecPtrListInitialize</a> <span class="c_punctuation">()</span>
 </td>
 </tr>
 <tr>
@@ -121,23 +64,15 @@ table.CALSTABLE > tbody > tr:nth-child(1) > td:nth-child(1) {
 <font><span class="returnvalue">void</span></font>
 </td>
 <td class="function_name">
-<a class="link" href="xmlsec-list.html#xmlSecPtrListFinalize" title="xmlSecPtrListFinalize ()">xmlSecPtrListFinalize</a> <span class="c_punctuation">()</span>
+<a class="link" href="xmlsec-list.html#xmlSecPtrListFinalize" title="xmlSecPtrListFinalize ()">xmlSecPtrListFinalize</a> <span class="c_punctuation">()</span>
 </td>
 </tr>
 <tr>
 <td class="function_type">
-<font><span class="returnvalue">xmlSecPtrListPtr</span></font>
+<a class="link" href="xmlsec-list.html#xmlSecPtrList" title="struct xmlSecPtrList"><span class="returnvalue">xmlSecPtrListPtr</span></a>
 </td>
 <td class="function_name">
-<a class="link" href="xmlsec-list.html#xmlSecPtrListCreate" title="xmlSecPtrListCreate ()">xmlSecPtrListCreate</a> <span class="c_punctuation">()</span>
-</td>
-</tr>
-<tr>
-<td class="function_type">
-<font><span class="returnvalue">void</span></font>
-</td>
-<td class="function_name">
-<a class="link" href="xmlsec-list.html#xmlSecPtrListDestroy" title="xmlSecPtrListDestroy ()">xmlSecPtrListDestroy</a> <span class="c_punctuation">()</span>
+<a class="link" href="xmlsec-list.html#xmlSecPtrListCreate" title="xmlSecPtrListCreate ()">xmlSecPtrListCreate</a> <span class="c_punctuation">()</span>
 </td>
 </tr>
 <tr>
@@ -145,7 +80,15 @@ table.CALSTABLE > tbody > tr:nth-child(1) > td:nth-child(1) {
 <font><span class="returnvalue">void</span></font>
 </td>
 <td class="function_name">
-<a class="link" href="xmlsec-list.html#xmlSecPtrListEmpty" title="xmlSecPtrListEmpty ()">xmlSecPtrListEmpty</a> <span class="c_punctuation">()</span>
+<a class="link" href="xmlsec-list.html#xmlSecPtrListDestroy" title="xmlSecPtrListDestroy ()">xmlSecPtrListDestroy</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<font><span class="returnvalue">void</span></font>
+</td>
+<td class="function_name">
+<a class="link" href="xmlsec-list.html#xmlSecPtrListEmpty" title="xmlSecPtrListEmpty ()">xmlSecPtrListEmpty</a> <span class="c_punctuation">()</span>
 </td>
 </tr>
 <tr>
@@ -153,15 +96,15 @@ table.CALSTABLE > tbody > tr:nth-child(1) > td:nth-child(1) {
 <font><span class="returnvalue">int</span></font>
 </td>
 <td class="function_name">
-<a class="link" href="xmlsec-list.html#xmlSecPtrListCopy" title="xmlSecPtrListCopy ()">xmlSecPtrListCopy</a> <span class="c_punctuation">()</span>
+<a class="link" href="xmlsec-list.html#xmlSecPtrListCopy" title="xmlSecPtrListCopy ()">xmlSecPtrListCopy</a> <span class="c_punctuation">()</span>
 </td>
 </tr>
 <tr>
 <td class="function_type">
-<font><span class="returnvalue">xmlSecPtrListPtr</span></font>
+<a class="link" href="xmlsec-list.html#xmlSecPtrList" title="struct xmlSecPtrList"><span class="returnvalue">xmlSecPtrListPtr</span></a>
 </td>
 <td class="function_name">
-<a class="link" href="xmlsec-list.html#xmlSecPtrListDuplicate" title="xmlSecPtrListDuplicate ()">xmlSecPtrListDuplicate</a> <span class="c_punctuation">()</span>
+<a class="link" href="xmlsec-list.html#xmlSecPtrListDuplicate" title="xmlSecPtrListDuplicate ()">xmlSecPtrListDuplicate</a> <span class="c_punctuation">()</span>
 </td>
 </tr>
 <tr>
@@ -169,23 +112,15 @@ table.CALSTABLE > tbody > tr:nth-child(1) > td:nth-child(1) {
 <a class="link" href="xmlsec-xmlsec.html#xmlSecSize" title="xmlSecSize"><span class="returnvalue">xmlSecSize</span></a>
 </td>
 <td class="function_name">
-<a class="link" href="xmlsec-list.html#xmlSecPtrListGetSize" title="xmlSecPtrListGetSize ()">xmlSecPtrListGetSize</a> <span class="c_punctuation">()</span>
+<a class="link" href="xmlsec-list.html#xmlSecPtrListGetSize" title="xmlSecPtrListGetSize ()">xmlSecPtrListGetSize</a> <span class="c_punctuation">()</span>
 </td>
 </tr>
 <tr>
 <td class="function_type">
-<a class="link" href="xmlsec-xmlsec.html#xmlSecPtr" title="xmlSecPtr"><span class="returnvalue">xmlSecPtr</span></a>
+<font><span class="returnvalue">xmlSecPtr</span></font>
 </td>
 <td class="function_name">
-<a class="link" href="xmlsec-list.html#xmlSecPtrListGetItem" title="xmlSecPtrListGetItem ()">xmlSecPtrListGetItem</a> <span class="c_punctuation">()</span>
-</td>
-</tr>
-<tr>
-<td class="function_type">
-<font><span class="returnvalue">int</span></font>
-</td>
-<td class="function_name">
-<a class="link" href="xmlsec-list.html#xmlSecPtrListAdd" title="xmlSecPtrListAdd ()">xmlSecPtrListAdd</a> <span class="c_punctuation">()</span>
+<a class="link" href="xmlsec-list.html#xmlSecPtrListGetItem" title="xmlSecPtrListGetItem ()">xmlSecPtrListGetItem</a> <span class="c_punctuation">()</span>
 </td>
 </tr>
 <tr>
@@ -193,7 +128,7 @@ table.CALSTABLE > tbody > tr:nth-child(1) > td:nth-child(1) {
 <font><span class="returnvalue">int</span></font>
 </td>
 <td class="function_name">
-<a class="link" href="xmlsec-list.html#xmlSecPtrListSet" title="xmlSecPtrListSet ()">xmlSecPtrListSet</a> <span class="c_punctuation">()</span>
+<a class="link" href="xmlsec-list.html#xmlSecPtrListAdd" title="xmlSecPtrListAdd ()">xmlSecPtrListAdd</a> <span class="c_punctuation">()</span>
 </td>
 </tr>
 <tr>
@@ -201,15 +136,23 @@ table.CALSTABLE > tbody > tr:nth-child(1) > td:nth-child(1) {
 <font><span class="returnvalue">int</span></font>
 </td>
 <td class="function_name">
-<a class="link" href="xmlsec-list.html#xmlSecPtrListRemove" title="xmlSecPtrListRemove ()">xmlSecPtrListRemove</a> <span class="c_punctuation">()</span>
+<a class="link" href="xmlsec-list.html#xmlSecPtrListSet" title="xmlSecPtrListSet ()">xmlSecPtrListSet</a> <span class="c_punctuation">()</span>
 </td>
 </tr>
 <tr>
 <td class="function_type">
-<a class="link" href="xmlsec-xmlsec.html#xmlSecPtr" title="xmlSecPtr"><span class="returnvalue">xmlSecPtr</span></a>
+<font><span class="returnvalue">int</span></font>
 </td>
 <td class="function_name">
-<a class="link" href="xmlsec-list.html#xmlSecPtrListRemoveAndReturn" title="xmlSecPtrListRemoveAndReturn ()">xmlSecPtrListRemoveAndReturn</a> <span class="c_punctuation">()</span>
+<a class="link" href="xmlsec-list.html#xmlSecPtrListRemove" title="xmlSecPtrListRemove ()">xmlSecPtrListRemove</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<font><span class="returnvalue">xmlSecPtr</span></font>
+</td>
+<td class="function_name">
+<a class="link" href="xmlsec-list.html#xmlSecPtrListRemoveAndReturn" title="xmlSecPtrListRemoveAndReturn ()">xmlSecPtrListRemoveAndReturn</a> <span class="c_punctuation">()</span>
 </td>
 </tr>
 <tr>
@@ -217,7 +160,7 @@ table.CALSTABLE > tbody > tr:nth-child(1) > td:nth-child(1) {
 <font><span class="returnvalue">void</span></font>
 </td>
 <td class="function_name">
-<a class="link" href="xmlsec-list.html#xmlSecPtrListDebugDump" title="xmlSecPtrListDebugDump ()">xmlSecPtrListDebugDump</a> <span class="c_punctuation">()</span>
+<a class="link" href="xmlsec-list.html#xmlSecPtrListDebugDump" title="xmlSecPtrListDebugDump ()">xmlSecPtrListDebugDump</a> <span class="c_punctuation">()</span>
 </td>
 </tr>
 <tr>
@@ -225,7 +168,7 @@ table.CALSTABLE > tbody > tr:nth-child(1) > td:nth-child(1) {
 <font><span class="returnvalue">void</span></font>
 </td>
 <td class="function_name">
-<a class="link" href="xmlsec-list.html#xmlSecPtrListDebugXmlDump" title="xmlSecPtrListDebugXmlDump ()">xmlSecPtrListDebugXmlDump</a> <span class="c_punctuation">()</span>
+<a class="link" href="xmlsec-list.html#xmlSecPtrListDebugXmlDump" title="xmlSecPtrListDebugXmlDump ()">xmlSecPtrListDebugXmlDump</a> <span class="c_punctuation">()</span>
 </td>
 </tr>
 <tr>
@@ -248,10 +191,10 @@ table.CALSTABLE > tbody > tr:nth-child(1) > td:nth-child(1) {
 </tr>
 <tr>
 <td class="function_type">
-<a class="link" href="xmlsec-xmlsec.html#xmlSecPtr" title="xmlSecPtr"><span class="returnvalue">xmlSecPtr</span></a>
+<font><span class="returnvalue">xmlSecPtr</span></font>
 </td>
 <td class="function_name">
-<span class="c_punctuation">(</span><a class="link" href="xmlsec-list.html#xmlSecPtrDuplicateItemMethod" title="xmlSecPtrDuplicateItemMethod ()">*xmlSecPtrDuplicateItemMethod</a><span class="c_punctuation">)</span> <span class="c_punctuation">()</span>
+<span class="c_punctuation">(</span><a class="link" href="xmlsec-list.html#xmlSecPtrDuplicateItemMethod" title="xmlSecPtrDuplicateItemMethod ()">*xmlSecPtrDuplicateItemMethod</a><span class="c_punctuation">)</span> <span class="c_punctuation">()</span>
 </td>
 </tr>
 <tr>
@@ -259,7 +202,7 @@ table.CALSTABLE > tbody > tr:nth-child(1) > td:nth-child(1) {
 <font><span class="returnvalue">void</span></font>
 </td>
 <td class="function_name">
-<span class="c_punctuation">(</span><a class="link" href="xmlsec-list.html#xmlSecPtrDestroyItemMethod" title="xmlSecPtrDestroyItemMethod ()">*xmlSecPtrDestroyItemMethod</a><span class="c_punctuation">)</span> <span class="c_punctuation">()</span>
+<span class="c_punctuation">(</span><a class="link" href="xmlsec-list.html#xmlSecPtrDestroyItemMethod" title="xmlSecPtrDestroyItemMethod ()">*xmlSecPtrDestroyItemMethod</a><span class="c_punctuation">)</span> <span class="c_punctuation">()</span>
 </td>
 </tr>
 <tr>
@@ -267,7 +210,7 @@ table.CALSTABLE > tbody > tr:nth-child(1) > td:nth-child(1) {
 <font><span class="returnvalue">void</span></font>
 </td>
 <td class="function_name">
-<span class="c_punctuation">(</span><a class="link" href="xmlsec-list.html#xmlSecPtrDebugDumpItemMethod" title="xmlSecPtrDebugDumpItemMethod ()">*xmlSecPtrDebugDumpItemMethod</a><span class="c_punctuation">)</span> <span class="c_punctuation">()</span>
+<span class="c_punctuation">(</span><a class="link" href="xmlsec-list.html#xmlSecPtrDebugDumpItemMethod" title="xmlSecPtrDebugDumpItemMethod ()">*xmlSecPtrDebugDumpItemMethod</a><span class="c_punctuation">)</span> <span class="c_punctuation">()</span>
 </td>
 </tr>
 <tr>
@@ -281,7 +224,7 @@ table.CALSTABLE > tbody > tr:nth-child(1) > td:nth-child(1) {
 <font><span class="returnvalue">xmlSecPtrListId</span></font>
 </td>
 <td class="function_name">
-<a class="link" href="xmlsec-list.html#xmlSecStringListGetKlass" title="xmlSecStringListGetKlass ()">xmlSecStringListGetKlass</a> <span class="c_punctuation">()</span>
+<a class="link" href="xmlsec-list.html#xmlSecStringListGetKlass" title="xmlSecStringListGetKlass ()">xmlSecStringListGetKlass</a> <span class="c_punctuation">()</span>
 </td>
 </tr>
 </tbody>
@@ -291,8 +234,8 @@ table.CALSTABLE > tbody > tr:nth-child(1) > td:nth-child(1) {
 <a name="xmlsec-list.other"></a><h2>Types and Values</h2>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col width="150px" class="name">
-<col class="description">
+<col>
+<col>
 </colgroup>
 <tbody>
 <tr>
@@ -316,14 +259,12 @@ table.CALSTABLE > tbody > tr:nth-child(1) > td:nth-child(1) {
 </div>
 <div class="refsect1">
 <a name="xmlsec-list.description"></a><h2>Description</h2>
-<p>
-Generic list structure implementation.
-</p>
+<p></p>
 </div>
 <div class="refsect1">
 <a name="xmlsec-list.functions_details"></a><h2>Functions</h2>
 <div class="refsect2">
-<a name="xmlSecPtrListSetDefaultAllocMode"></a><h3>xmlSecPtrListSetDefaultAllocMode ()</h3>
+<a name="xmlSecPtrListSetDefaultAllocMode"></a><h3>xmlSecPtrListSetDefaultAllocMode ()</h3>
 <pre class="programlisting"><font><span class="returnvalue">void</span></font>
 xmlSecPtrListSetDefaultAllocMode (<em class="parameter"><code><a class="link" href="xmlsec-buffer.html#xmlSecAllocMode" title="enum xmlSecAllocMode"><span class="type">xmlSecAllocMode</span></a> defAllocMode</code></em>,
                                   <em class="parameter"><code><a class="link" href="xmlsec-xmlsec.html#xmlSecSize" title="xmlSecSize"><span class="type">xmlSecSize</span></a> defInitialSize</code></em>);</pre>
@@ -332,20 +273,20 @@ xmlSecPtrListSetDefaultAllocMode (<em class="parameter"><code><a class="link" hr
 <a name="xmlSecPtrListSetDefaultAllocMode.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col width="150px" class="parameters_name">
-<col class="parameters_description">
-<col width="200px" class="parameters_annotations">
+<col>
+<col>
+<col>
 </colgroup>
 <tbody>
 <tr>
 <td class="parameter_name"><p>defAllocMode</p></td>
 <td class="parameter_description"><p>the new default memory allocation mode.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
 <td class="parameter_name"><p>defInitialSize</p></td>
 <td class="parameter_description"><p>the new default minimal initial size.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
@@ -353,30 +294,30 @@ xmlSecPtrListSetDefaultAllocMode (<em class="parameter"><code><a class="link" hr
 </div>
 <hr>
 <div class="refsect2">
-<a name="xmlSecPtrListInitialize"></a><h3>xmlSecPtrListInitialize ()</h3>
+<a name="xmlSecPtrListInitialize"></a><h3>xmlSecPtrListInitialize ()</h3>
 <pre class="programlisting"><font><span class="returnvalue">int</span></font>
-xmlSecPtrListInitialize (<em class="parameter"><code><font><span class="type">xmlSecPtrListPtr</span></font> list</code></em>,
+xmlSecPtrListInitialize (<em class="parameter"><code><a class="link" href="xmlsec-list.html#xmlSecPtrList" title="struct xmlSecPtrList"><span class="type">xmlSecPtrListPtr</span></a> list</code></em>,
                          <em class="parameter"><code><font><span class="type">xmlSecPtrListId</span></font> id</code></em>);</pre>
 <p>Initializes the list of given klass. Caller is responsible
-for cleaning up by calling <a class="link" href="xmlsec-list.html#xmlSecPtrListFinalize" title="xmlSecPtrListFinalize ()"><span class="type">xmlSecPtrListFinalize</span></a> function.</p>
+for cleaning up by calling <a class="link" href="xmlsec-list.html#xmlSecPtrListFinalize" title="xmlSecPtrListFinalize ()"><span class="type">xmlSecPtrListFinalize</span></a> function.</p>
 <div class="refsect3">
 <a name="xmlSecPtrListInitialize.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col width="150px" class="parameters_name">
-<col class="parameters_description">
-<col width="200px" class="parameters_annotations">
+<col>
+<col>
+<col>
 </colgroup>
 <tbody>
 <tr>
 <td class="parameter_name"><p>list</p></td>
 <td class="parameter_description"><p>the pointer to list.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
 <td class="parameter_name"><p>id</p></td>
 <td class="parameter_description"><p>the list klass.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
@@ -388,46 +329,46 @@ for cleaning up by calling <a class="link" href="xmlsec-list.html#xmlSecPtrListF
 </div>
 <hr>
 <div class="refsect2">
-<a name="xmlSecPtrListFinalize"></a><h3>xmlSecPtrListFinalize ()</h3>
+<a name="xmlSecPtrListFinalize"></a><h3>xmlSecPtrListFinalize ()</h3>
 <pre class="programlisting"><font><span class="returnvalue">void</span></font>
-xmlSecPtrListFinalize (<em class="parameter"><code><font><span class="type">xmlSecPtrListPtr</span></font> list</code></em>);</pre>
-<p>Cleans up the list initialized with <a class="link" href="xmlsec-list.html#xmlSecPtrListInitialize" title="xmlSecPtrListInitialize ()"><span class="type">xmlSecPtrListInitialize</span></a>
+xmlSecPtrListFinalize (<em class="parameter"><code><a class="link" href="xmlsec-list.html#xmlSecPtrList" title="struct xmlSecPtrList"><span class="type">xmlSecPtrListPtr</span></a> list</code></em>);</pre>
+<p>Cleans up the list initialized with <a class="link" href="xmlsec-list.html#xmlSecPtrListInitialize" title="xmlSecPtrListInitialize ()"><span class="type">xmlSecPtrListInitialize</span></a>
 function.</p>
 <div class="refsect3">
 <a name="xmlSecPtrListFinalize.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col width="150px" class="parameters_name">
-<col class="parameters_description">
-<col width="200px" class="parameters_annotations">
+<col>
+<col>
+<col>
 </colgroup>
 <tbody><tr>
 <td class="parameter_name"><p>list</p></td>
 <td class="parameter_description"><p>the pointer to list.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr></tbody>
 </table></div>
 </div>
 </div>
 <hr>
 <div class="refsect2">
-<a name="xmlSecPtrListCreate"></a><h3>xmlSecPtrListCreate ()</h3>
-<pre class="programlisting"><font><span class="returnvalue">xmlSecPtrListPtr</span></font>
+<a name="xmlSecPtrListCreate"></a><h3>xmlSecPtrListCreate ()</h3>
+<pre class="programlisting"><a class="link" href="xmlsec-list.html#xmlSecPtrList" title="struct xmlSecPtrList"><span class="returnvalue">xmlSecPtrListPtr</span></a>
 xmlSecPtrListCreate (<em class="parameter"><code><font><span class="type">xmlSecPtrListId</span></font> id</code></em>);</pre>
 <p>Creates new list object. Caller is responsible for freeing returned list
-by calling <a class="link" href="xmlsec-list.html#xmlSecPtrListDestroy" title="xmlSecPtrListDestroy ()"><span class="type">xmlSecPtrListDestroy</span></a> function.</p>
+by calling <a class="link" href="xmlsec-list.html#xmlSecPtrListDestroy" title="xmlSecPtrListDestroy ()"><span class="type">xmlSecPtrListDestroy</span></a> function.</p>
 <div class="refsect3">
 <a name="xmlSecPtrListCreate.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col width="150px" class="parameters_name">
-<col class="parameters_description">
-<col width="200px" class="parameters_annotations">
+<col>
+<col>
+<col>
 </colgroup>
 <tbody><tr>
 <td class="parameter_name"><p>id</p></td>
 <td class="parameter_description"><p>the list klass.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr></tbody>
 </table></div>
 </div>
@@ -438,56 +379,56 @@ by calling <a class="link" href="xmlsec-list.html#xmlSecPtrListDestroy" title="x
 </div>
 <hr>
 <div class="refsect2">
-<a name="xmlSecPtrListDestroy"></a><h3>xmlSecPtrListDestroy ()</h3>
+<a name="xmlSecPtrListDestroy"></a><h3>xmlSecPtrListDestroy ()</h3>
 <pre class="programlisting"><font><span class="returnvalue">void</span></font>
-xmlSecPtrListDestroy (<em class="parameter"><code><font><span class="type">xmlSecPtrListPtr</span></font> list</code></em>);</pre>
+xmlSecPtrListDestroy (<em class="parameter"><code><a class="link" href="xmlsec-list.html#xmlSecPtrList" title="struct xmlSecPtrList"><span class="type">xmlSecPtrListPtr</span></a> list</code></em>);</pre>
 <p>Destroys <em class="parameter"><code>list</code></em>
- created with <a class="link" href="xmlsec-list.html#xmlSecPtrListCreate" title="xmlSecPtrListCreate ()"><span class="type">xmlSecPtrListCreate</span></a> function.</p>
+ created with <a class="link" href="xmlsec-list.html#xmlSecPtrListCreate" title="xmlSecPtrListCreate ()"><span class="type">xmlSecPtrListCreate</span></a> function.</p>
 <div class="refsect3">
 <a name="xmlSecPtrListDestroy.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col width="150px" class="parameters_name">
-<col class="parameters_description">
-<col width="200px" class="parameters_annotations">
+<col>
+<col>
+<col>
 </colgroup>
 <tbody><tr>
 <td class="parameter_name"><p>list</p></td>
 <td class="parameter_description"><p>the pointer to list.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr></tbody>
 </table></div>
 </div>
 </div>
 <hr>
 <div class="refsect2">
-<a name="xmlSecPtrListEmpty"></a><h3>xmlSecPtrListEmpty ()</h3>
+<a name="xmlSecPtrListEmpty"></a><h3>xmlSecPtrListEmpty ()</h3>
 <pre class="programlisting"><font><span class="returnvalue">void</span></font>
-xmlSecPtrListEmpty (<em class="parameter"><code><font><span class="type">xmlSecPtrListPtr</span></font> list</code></em>);</pre>
+xmlSecPtrListEmpty (<em class="parameter"><code><a class="link" href="xmlsec-list.html#xmlSecPtrList" title="struct xmlSecPtrList"><span class="type">xmlSecPtrListPtr</span></a> list</code></em>);</pre>
 <p>Remove all items from <em class="parameter"><code>list</code></em>
  (if any).</p>
 <div class="refsect3">
 <a name="xmlSecPtrListEmpty.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col width="150px" class="parameters_name">
-<col class="parameters_description">
-<col width="200px" class="parameters_annotations">
+<col>
+<col>
+<col>
 </colgroup>
 <tbody><tr>
 <td class="parameter_name"><p>list</p></td>
 <td class="parameter_description"><p>the pointer to list.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr></tbody>
 </table></div>
 </div>
 </div>
 <hr>
 <div class="refsect2">
-<a name="xmlSecPtrListCopy"></a><h3>xmlSecPtrListCopy ()</h3>
+<a name="xmlSecPtrListCopy"></a><h3>xmlSecPtrListCopy ()</h3>
 <pre class="programlisting"><font><span class="returnvalue">int</span></font>
-xmlSecPtrListCopy (<em class="parameter"><code><font><span class="type">xmlSecPtrListPtr</span></font> dst</code></em>,
-                   <em class="parameter"><code><font><span class="type">xmlSecPtrListPtr</span></font> src</code></em>);</pre>
+xmlSecPtrListCopy (<em class="parameter"><code><a class="link" href="xmlsec-list.html#xmlSecPtrList" title="struct xmlSecPtrList"><span class="type">xmlSecPtrListPtr</span></a> dst</code></em>,
+                   <em class="parameter"><code><a class="link" href="xmlsec-list.html#xmlSecPtrList" title="struct xmlSecPtrList"><span class="type">xmlSecPtrListPtr</span></a> src</code></em>);</pre>
 <p>Copies <em class="parameter"><code>src</code></em>
  list items to <em class="parameter"><code>dst</code></em>
  list using <font><span class="type">duplicateItem</span></font> method
@@ -497,20 +438,20 @@ we jsut copy pointers to items.</p>
 <a name="xmlSecPtrListCopy.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col width="150px" class="parameters_name">
-<col class="parameters_description">
-<col width="200px" class="parameters_annotations">
+<col>
+<col>
+<col>
 </colgroup>
 <tbody>
 <tr>
 <td class="parameter_name"><p>dst</p></td>
 <td class="parameter_description"><p>the pointer to destination list.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
 <td class="parameter_name"><p>src</p></td>
 <td class="parameter_description"><p>the pointer to source list.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
@@ -522,23 +463,23 @@ we jsut copy pointers to items.</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="xmlSecPtrListDuplicate"></a><h3>xmlSecPtrListDuplicate ()</h3>
-<pre class="programlisting"><font><span class="returnvalue">xmlSecPtrListPtr</span></font>
-xmlSecPtrListDuplicate (<em class="parameter"><code><font><span class="type">xmlSecPtrListPtr</span></font> list</code></em>);</pre>
+<a name="xmlSecPtrListDuplicate"></a><h3>xmlSecPtrListDuplicate ()</h3>
+<pre class="programlisting"><a class="link" href="xmlsec-list.html#xmlSecPtrList" title="struct xmlSecPtrList"><span class="returnvalue">xmlSecPtrListPtr</span></a>
+xmlSecPtrListDuplicate (<em class="parameter"><code><a class="link" href="xmlsec-list.html#xmlSecPtrList" title="struct xmlSecPtrList"><span class="type">xmlSecPtrListPtr</span></a> list</code></em>);</pre>
 <p>Creates a new copy of <em class="parameter"><code>list</code></em>
  and all its items.</p>
 <div class="refsect3">
 <a name="xmlSecPtrListDuplicate.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col width="150px" class="parameters_name">
-<col class="parameters_description">
-<col width="200px" class="parameters_annotations">
+<col>
+<col>
+<col>
 </colgroup>
 <tbody><tr>
 <td class="parameter_name"><p>list</p></td>
 <td class="parameter_description"><p>the pointer to list.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr></tbody>
 </table></div>
 </div>
@@ -549,56 +490,56 @@ xmlSecPtrListDuplicate (<em class="parameter"><code><font><span class="type">xml
 </div>
 <hr>
 <div class="refsect2">
-<a name="xmlSecPtrListGetSize"></a><h3>xmlSecPtrListGetSize ()</h3>
+<a name="xmlSecPtrListGetSize"></a><h3>xmlSecPtrListGetSize ()</h3>
 <pre class="programlisting"><a class="link" href="xmlsec-xmlsec.html#xmlSecSize" title="xmlSecSize"><span class="returnvalue">xmlSecSize</span></a>
-xmlSecPtrListGetSize (<em class="parameter"><code><font><span class="type">xmlSecPtrListPtr</span></font> list</code></em>);</pre>
+xmlSecPtrListGetSize (<em class="parameter"><code><a class="link" href="xmlsec-list.html#xmlSecPtrList" title="struct xmlSecPtrList"><span class="type">xmlSecPtrListPtr</span></a> list</code></em>);</pre>
 <p>Gets list size.</p>
 <div class="refsect3">
 <a name="xmlSecPtrListGetSize.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col width="150px" class="parameters_name">
-<col class="parameters_description">
-<col width="200px" class="parameters_annotations">
+<col>
+<col>
+<col>
 </colgroup>
 <tbody><tr>
 <td class="parameter_name"><p>list</p></td>
 <td class="parameter_description"><p>the pointer to list.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr></tbody>
 </table></div>
 </div>
 <div class="refsect3">
 <a name="xmlSecPtrListGetSize.returns"></a><h4>Returns</h4>
-<p> the number of itmes in <em class="parameter"><code>list</code></em>
+<p> the number of items in <em class="parameter"><code>list</code></em>
 .</p>
 </div>
 </div>
 <hr>
 <div class="refsect2">
-<a name="xmlSecPtrListGetItem"></a><h3>xmlSecPtrListGetItem ()</h3>
-<pre class="programlisting"><a class="link" href="xmlsec-xmlsec.html#xmlSecPtr" title="xmlSecPtr"><span class="returnvalue">xmlSecPtr</span></a>
-xmlSecPtrListGetItem (<em class="parameter"><code><font><span class="type">xmlSecPtrListPtr</span></font> list</code></em>,
+<a name="xmlSecPtrListGetItem"></a><h3>xmlSecPtrListGetItem ()</h3>
+<pre class="programlisting"><font><span class="returnvalue">xmlSecPtr</span></font>
+xmlSecPtrListGetItem (<em class="parameter"><code><a class="link" href="xmlsec-list.html#xmlSecPtrList" title="struct xmlSecPtrList"><span class="type">xmlSecPtrListPtr</span></a> list</code></em>,
                       <em class="parameter"><code><a class="link" href="xmlsec-xmlsec.html#xmlSecSize" title="xmlSecSize"><span class="type">xmlSecSize</span></a> pos</code></em>);</pre>
 <p>Gets item from the list.</p>
 <div class="refsect3">
 <a name="xmlSecPtrListGetItem.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col width="150px" class="parameters_name">
-<col class="parameters_description">
-<col width="200px" class="parameters_annotations">
+<col>
+<col>
+<col>
 </colgroup>
 <tbody>
 <tr>
 <td class="parameter_name"><p>list</p></td>
 <td class="parameter_description"><p>the pointer to list.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
 <td class="parameter_name"><p>pos</p></td>
 <td class="parameter_description"><p>the item position.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
@@ -613,10 +554,10 @@ than the number of items in the list or an error occurs.</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="xmlSecPtrListAdd"></a><h3>xmlSecPtrListAdd ()</h3>
+<a name="xmlSecPtrListAdd"></a><h3>xmlSecPtrListAdd ()</h3>
 <pre class="programlisting"><font><span class="returnvalue">int</span></font>
-xmlSecPtrListAdd (<em class="parameter"><code><font><span class="type">xmlSecPtrListPtr</span></font> list</code></em>,
-                  <em class="parameter"><code><a class="link" href="xmlsec-xmlsec.html#xmlSecPtr" title="xmlSecPtr"><span class="type">xmlSecPtr</span></a> item</code></em>);</pre>
+xmlSecPtrListAdd (<em class="parameter"><code><a class="link" href="xmlsec-list.html#xmlSecPtrList" title="struct xmlSecPtrList"><span class="type">xmlSecPtrListPtr</span></a> list</code></em>,
+                  <em class="parameter"><code><font><span class="type">xmlSecPtr</span></font> item</code></em>);</pre>
 <p>Adds <em class="parameter"><code>item</code></em>
  to the end of the <em class="parameter"><code>list</code></em>
 .</p>
@@ -624,20 +565,20 @@ xmlSecPtrListAdd (<em class="parameter"><code><font><span class="type">xmlSecPtr
 <a name="xmlSecPtrListAdd.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col width="150px" class="parameters_name">
-<col class="parameters_description">
-<col width="200px" class="parameters_annotations">
+<col>
+<col>
+<col>
 </colgroup>
 <tbody>
 <tr>
 <td class="parameter_name"><p>list</p></td>
 <td class="parameter_description"><p>the pointer to list.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
 <td class="parameter_name"><p>item</p></td>
 <td class="parameter_description"><p>the item.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
@@ -649,10 +590,10 @@ xmlSecPtrListAdd (<em class="parameter"><code><font><span class="type">xmlSecPtr
 </div>
 <hr>
 <div class="refsect2">
-<a name="xmlSecPtrListSet"></a><h3>xmlSecPtrListSet ()</h3>
+<a name="xmlSecPtrListSet"></a><h3>xmlSecPtrListSet ()</h3>
 <pre class="programlisting"><font><span class="returnvalue">int</span></font>
-xmlSecPtrListSet (<em class="parameter"><code><font><span class="type">xmlSecPtrListPtr</span></font> list</code></em>,
-                  <em class="parameter"><code><a class="link" href="xmlsec-xmlsec.html#xmlSecPtr" title="xmlSecPtr"><span class="type">xmlSecPtr</span></a> item</code></em>,
+xmlSecPtrListSet (<em class="parameter"><code><a class="link" href="xmlsec-list.html#xmlSecPtrList" title="struct xmlSecPtrList"><span class="type">xmlSecPtrListPtr</span></a> list</code></em>,
+                  <em class="parameter"><code><font><span class="type">xmlSecPtr</span></font> item</code></em>,
                   <em class="parameter"><code><a class="link" href="xmlsec-xmlsec.html#xmlSecSize" title="xmlSecSize"><span class="type">xmlSecSize</span></a> pos</code></em>);</pre>
 <p>Sets the value of list item at position <em class="parameter"><code>pos</code></em>
 . The old value
@@ -661,25 +602,25 @@ is destroyed.</p>
 <a name="xmlSecPtrListSet.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col width="150px" class="parameters_name">
-<col class="parameters_description">
-<col width="200px" class="parameters_annotations">
+<col>
+<col>
+<col>
 </colgroup>
 <tbody>
 <tr>
 <td class="parameter_name"><p>list</p></td>
 <td class="parameter_description"><p>the pointer to list.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
 <td class="parameter_name"><p>item</p></td>
 <td class="parameter_description"><p>the item.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
 <td class="parameter_name"><p>pos</p></td>
 <td class="parameter_description"><p>the pos.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
@@ -691,9 +632,9 @@ is destroyed.</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="xmlSecPtrListRemove"></a><h3>xmlSecPtrListRemove ()</h3>
+<a name="xmlSecPtrListRemove"></a><h3>xmlSecPtrListRemove ()</h3>
 <pre class="programlisting"><font><span class="returnvalue">int</span></font>
-xmlSecPtrListRemove (<em class="parameter"><code><font><span class="type">xmlSecPtrListPtr</span></font> list</code></em>,
+xmlSecPtrListRemove (<em class="parameter"><code><a class="link" href="xmlsec-list.html#xmlSecPtrList" title="struct xmlSecPtrList"><span class="type">xmlSecPtrListPtr</span></a> list</code></em>,
                      <em class="parameter"><code><a class="link" href="xmlsec-xmlsec.html#xmlSecSize" title="xmlSecSize"><span class="type">xmlSecSize</span></a> pos</code></em>);</pre>
 <p>Destroys list item at the position <em class="parameter"><code>pos</code></em>
  and sets it value to NULL.</p>
@@ -701,20 +642,20 @@ xmlSecPtrListRemove (<em class="parameter"><code><font><span class="type">xmlSec
 <a name="xmlSecPtrListRemove.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col width="150px" class="parameters_name">
-<col class="parameters_description">
-<col width="200px" class="parameters_annotations">
+<col>
+<col>
+<col>
 </colgroup>
 <tbody>
 <tr>
 <td class="parameter_name"><p>list</p></td>
 <td class="parameter_description"><p>the pointer to list.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
 <td class="parameter_name"><p>pos</p></td>
 <td class="parameter_description"><p>the position.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
@@ -726,9 +667,9 @@ xmlSecPtrListRemove (<em class="parameter"><code><font><span class="type">xmlSec
 </div>
 <hr>
 <div class="refsect2">
-<a name="xmlSecPtrListRemoveAndReturn"></a><h3>xmlSecPtrListRemoveAndReturn ()</h3>
-<pre class="programlisting"><a class="link" href="xmlsec-xmlsec.html#xmlSecPtr" title="xmlSecPtr"><span class="returnvalue">xmlSecPtr</span></a>
-xmlSecPtrListRemoveAndReturn (<em class="parameter"><code><font><span class="type">xmlSecPtrListPtr</span></font> list</code></em>,
+<a name="xmlSecPtrListRemoveAndReturn"></a><h3>xmlSecPtrListRemoveAndReturn ()</h3>
+<pre class="programlisting"><font><span class="returnvalue">xmlSecPtr</span></font>
+xmlSecPtrListRemoveAndReturn (<em class="parameter"><code><a class="link" href="xmlsec-list.html#xmlSecPtrList" title="struct xmlSecPtrList"><span class="type">xmlSecPtrListPtr</span></a> list</code></em>,
                               <em class="parameter"><code><a class="link" href="xmlsec-xmlsec.html#xmlSecSize" title="xmlSecSize"><span class="type">xmlSecSize</span></a> pos</code></em>);</pre>
 <p>Remove the list item at the position <em class="parameter"><code>pos</code></em>
  and return it back.</p>
@@ -736,20 +677,20 @@ xmlSecPtrListRemoveAndReturn (<em class="parameter"><code><font><span class="typ
 <a name="xmlSecPtrListRemoveAndReturn.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col width="150px" class="parameters_name">
-<col class="parameters_description">
-<col width="200px" class="parameters_annotations">
+<col>
+<col>
+<col>
 </colgroup>
 <tbody>
 <tr>
 <td class="parameter_name"><p>list</p></td>
 <td class="parameter_description"><p>the pointer to list.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
 <td class="parameter_name"><p>pos</p></td>
 <td class="parameter_description"><p>the position.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
@@ -761,9 +702,9 @@ xmlSecPtrListRemoveAndReturn (<em class="parameter"><code><font><span class="typ
 </div>
 <hr>
 <div class="refsect2">
-<a name="xmlSecPtrListDebugDump"></a><h3>xmlSecPtrListDebugDump ()</h3>
+<a name="xmlSecPtrListDebugDump"></a><h3>xmlSecPtrListDebugDump ()</h3>
 <pre class="programlisting"><font><span class="returnvalue">void</span></font>
-xmlSecPtrListDebugDump (<em class="parameter"><code><font><span class="type">xmlSecPtrListPtr</span></font> list</code></em>,
+xmlSecPtrListDebugDump (<em class="parameter"><code><a class="link" href="xmlsec-list.html#xmlSecPtrList" title="struct xmlSecPtrList"><span class="type">xmlSecPtrListPtr</span></a> list</code></em>,
                         <em class="parameter"><code><font><span class="type">FILE</span></font> *output</code></em>);</pre>
 <p>Prints debug information about <em class="parameter"><code>list</code></em>
  to the <em class="parameter"><code>output</code></em>
@@ -772,20 +713,20 @@ xmlSecPtrListDebugDump (<em class="parameter"><code><font><span class="type">xml
 <a name="xmlSecPtrListDebugDump.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col width="150px" class="parameters_name">
-<col class="parameters_description">
-<col width="200px" class="parameters_annotations">
+<col>
+<col>
+<col>
 </colgroup>
 <tbody>
 <tr>
 <td class="parameter_name"><p>list</p></td>
 <td class="parameter_description"><p>the pointer to list.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
 <td class="parameter_name"><p>output</p></td>
 <td class="parameter_description"><p>the pointer to output FILE.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
@@ -793,9 +734,9 @@ xmlSecPtrListDebugDump (<em class="parameter"><code><font><span class="type">xml
 </div>
 <hr>
 <div class="refsect2">
-<a name="xmlSecPtrListDebugXmlDump"></a><h3>xmlSecPtrListDebugXmlDump ()</h3>
+<a name="xmlSecPtrListDebugXmlDump"></a><h3>xmlSecPtrListDebugXmlDump ()</h3>
 <pre class="programlisting"><font><span class="returnvalue">void</span></font>
-xmlSecPtrListDebugXmlDump (<em class="parameter"><code><font><span class="type">xmlSecPtrListPtr</span></font> list</code></em>,
+xmlSecPtrListDebugXmlDump (<em class="parameter"><code><a class="link" href="xmlsec-list.html#xmlSecPtrList" title="struct xmlSecPtrList"><span class="type">xmlSecPtrListPtr</span></a> list</code></em>,
                            <em class="parameter"><code><font><span class="type">FILE</span></font> *output</code></em>);</pre>
 <p>Prints debug information about <em class="parameter"><code>list</code></em>
  to the <em class="parameter"><code>output</code></em>
@@ -804,20 +745,20 @@ xmlSecPtrListDebugXmlDump (<em class="parameter"><code><font><span class="type">
 <a name="xmlSecPtrListDebugXmlDump.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col width="150px" class="parameters_name">
-<col class="parameters_description">
-<col width="200px" class="parameters_annotations">
+<col>
+<col>
+<col>
 </colgroup>
 <tbody>
 <tr>
 <td class="parameter_name"><p>list</p></td>
 <td class="parameter_description"><p>the pointer to list.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
 <td class="parameter_name"><p>output</p></td>
 <td class="parameter_description"><p>the pointer to output FILE.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
@@ -832,14 +773,14 @@ xmlSecPtrListDebugXmlDump (<em class="parameter"><code><font><span class="type">
 <a name="xmlSecPtrListGetName.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col width="150px" class="parameters_name">
-<col class="parameters_description">
-<col width="200px" class="parameters_annotations">
+<col>
+<col>
+<col>
 </colgroup>
 <tbody><tr>
 <td class="parameter_name"><p>list</p></td>
 <td class="parameter_description"><p>the ponter to list.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr></tbody>
 </table></div>
 </div>
@@ -856,14 +797,14 @@ or 0 otherwise.</p>
 <a name="xmlSecPtrListIsValid.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col width="150px" class="parameters_name">
-<col class="parameters_description">
-<col width="200px" class="parameters_annotations">
+<col>
+<col>
+<col>
 </colgroup>
 <tbody><tr>
 <td class="parameter_name"><p>list</p></td>
 <td class="parameter_description"><p>the pointer to list.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr></tbody>
 </table></div>
 </div>
@@ -880,20 +821,20 @@ or 0 otherwise.</p>
 <a name="xmlSecPtrListCheckId.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col width="150px" class="parameters_name">
-<col class="parameters_description">
-<col width="200px" class="parameters_annotations">
+<col>
+<col>
+<col>
 </colgroup>
 <tbody>
 <tr>
 <td class="parameter_name"><p>list</p></td>
 <td class="parameter_description"><p>the pointer to list.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
 <td class="parameter_name"><p>dataId</p></td>
 <td class="parameter_description"><p>the list Id.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
@@ -901,23 +842,23 @@ or 0 otherwise.</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="xmlSecPtrDuplicateItemMethod"></a><h3>xmlSecPtrDuplicateItemMethod ()</h3>
-<pre class="programlisting"><a class="link" href="xmlsec-xmlsec.html#xmlSecPtr" title="xmlSecPtr"><span class="returnvalue">xmlSecPtr</span></a>
-<span class="c_punctuation">(</span>*xmlSecPtrDuplicateItemMethod<span class="c_punctuation">)</span> (<em class="parameter"><code><a class="link" href="xmlsec-xmlsec.html#xmlSecPtr" title="xmlSecPtr"><span class="type">xmlSecPtr</span></a> ptr</code></em>);</pre>
+<a name="xmlSecPtrDuplicateItemMethod"></a><h3>xmlSecPtrDuplicateItemMethod ()</h3>
+<pre class="programlisting"><font><span class="returnvalue">xmlSecPtr</span></font>
+<span class="c_punctuation">(</span>*xmlSecPtrDuplicateItemMethod<span class="c_punctuation">)</span> (<em class="parameter"><code><font><span class="type">xmlSecPtr</span></font> ptr</code></em>);</pre>
 <p>Duplicates item <em class="parameter"><code>ptr</code></em>
 .</p>
 <div class="refsect3">
 <a name="xmlSecPtrDuplicateItemMethod.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col width="150px" class="parameters_name">
-<col class="parameters_description">
-<col width="200px" class="parameters_annotations">
+<col>
+<col>
+<col>
 </colgroup>
 <tbody><tr>
 <td class="parameter_name"><p>ptr</p></td>
 <td class="parameter_description"><p>the poinetr to list item.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr></tbody>
 </table></div>
 </div>
@@ -928,32 +869,32 @@ or 0 otherwise.</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="xmlSecPtrDestroyItemMethod"></a><h3>xmlSecPtrDestroyItemMethod ()</h3>
+<a name="xmlSecPtrDestroyItemMethod"></a><h3>xmlSecPtrDestroyItemMethod ()</h3>
 <pre class="programlisting"><font><span class="returnvalue">void</span></font>
-<span class="c_punctuation">(</span>*xmlSecPtrDestroyItemMethod<span class="c_punctuation">)</span> (<em class="parameter"><code><a class="link" href="xmlsec-xmlsec.html#xmlSecPtr" title="xmlSecPtr"><span class="type">xmlSecPtr</span></a> ptr</code></em>);</pre>
+<span class="c_punctuation">(</span>*xmlSecPtrDestroyItemMethod<span class="c_punctuation">)</span> (<em class="parameter"><code><font><span class="type">xmlSecPtr</span></font> ptr</code></em>);</pre>
 <p>Destroys list item <em class="parameter"><code>ptr</code></em>
 .</p>
 <div class="refsect3">
 <a name="xmlSecPtrDestroyItemMethod.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col width="150px" class="parameters_name">
-<col class="parameters_description">
-<col width="200px" class="parameters_annotations">
+<col>
+<col>
+<col>
 </colgroup>
 <tbody><tr>
 <td class="parameter_name"><p>ptr</p></td>
 <td class="parameter_description"><p>the poinetr to list item.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr></tbody>
 </table></div>
 </div>
 </div>
 <hr>
 <div class="refsect2">
-<a name="xmlSecPtrDebugDumpItemMethod"></a><h3>xmlSecPtrDebugDumpItemMethod ()</h3>
+<a name="xmlSecPtrDebugDumpItemMethod"></a><h3>xmlSecPtrDebugDumpItemMethod ()</h3>
 <pre class="programlisting"><font><span class="returnvalue">void</span></font>
-<span class="c_punctuation">(</span>*xmlSecPtrDebugDumpItemMethod<span class="c_punctuation">)</span> (<em class="parameter"><code><a class="link" href="xmlsec-xmlsec.html#xmlSecPtr" title="xmlSecPtr"><span class="type">xmlSecPtr</span></a> ptr</code></em>,
+<span class="c_punctuation">(</span>*xmlSecPtrDebugDumpItemMethod<span class="c_punctuation">)</span> (<em class="parameter"><code><font><span class="type">xmlSecPtr</span></font> ptr</code></em>,
                                  <em class="parameter"><code><font><span class="type">FILE</span></font> *output</code></em>);</pre>
 <p>Prints debug information about <em class="parameter"><code>item</code></em>
  to <em class="parameter"><code>output</code></em>
@@ -962,20 +903,20 @@ or 0 otherwise.</p>
 <a name="xmlSecPtrDebugDumpItemMethod.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col width="150px" class="parameters_name">
-<col class="parameters_description">
-<col width="200px" class="parameters_annotations">
+<col>
+<col>
+<col>
 </colgroup>
 <tbody>
 <tr>
 <td class="parameter_name"><p>ptr</p></td>
 <td class="parameter_description"><p>the poinetr to list item.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
 <td class="parameter_name"><p>output</p></td>
 <td class="parameter_description"><p>the output FILE.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
@@ -990,25 +931,25 @@ or 0 otherwise.</p>
 <a name="xmlSecPtrListKlassGetName.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col width="150px" class="parameters_name">
-<col class="parameters_description">
-<col width="200px" class="parameters_annotations">
+<col>
+<col>
+<col>
 </colgroup>
 <tbody><tr>
 <td class="parameter_name"><p>klass</p></td>
 <td class="parameter_description"><p>the list klass.
 2</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr></tbody>
 </table></div>
 </div>
 </div>
 <hr>
 <div class="refsect2">
-<a name="xmlSecStringListGetKlass"></a><h3>xmlSecStringListGetKlass ()</h3>
+<a name="xmlSecStringListGetKlass"></a><h3>xmlSecStringListGetKlass ()</h3>
 <pre class="programlisting"><font><span class="returnvalue">xmlSecPtrListId</span></font>
 xmlSecStringListGetKlass (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
-<p>The strins list class.</p>
+<p>The strings list class.</p>
 <div class="refsect3">
 <a name="xmlSecStringListGetKlass.returns"></a><h4>Returns</h4>
 <p> strings list klass.</p>
@@ -1033,35 +974,35 @@ xmlSecStringListGetKlass (<em class="parameter"><code><span class="type">void</s
 <a name="xmlSecPtrList.members"></a><h4>Members</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col width="300px" class="struct_members_name">
-<col class="struct_members_description">
-<col width="200px" class="struct_members_annotations">
+<col>
+<col>
+<col>
 </colgroup>
 <tbody>
 <tr>
-<td class="struct_member_name"><p><font><span class="type">xmlSecPtrListId</span></font> <em class="structfield"><code><a name="xmlSecPtrList.id"></a>id</code></em>;</p></td>
+<td class="struct_member_name"><p><font><span class="type">xmlSecPtrListId</span></font> <em class="structfield"><code><a name="xmlSecPtrList.id"></a>id</code></em>;</p></td>
 <td class="struct_member_description"><p>the list items description.</p></td>
-<td class="struct_member_annotations"> </td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td class="struct_member_name"><p><a class="link" href="xmlsec-xmlsec.html#xmlSecPtr" title="xmlSecPtr"><span class="type">xmlSecPtr</span></a> *<em class="structfield"><code><a name="xmlSecPtrList.data"></a>data</code></em>;</p></td>
+<td class="struct_member_name"><p><font><span class="type">xmlSecPtr</span></font> *<em class="structfield"><code><a name="xmlSecPtrList.data"></a>data</code></em>;</p></td>
 <td class="struct_member_description"><p>the list data.</p></td>
-<td class="struct_member_annotations"> </td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td class="struct_member_name"><p><a class="link" href="xmlsec-xmlsec.html#xmlSecSize" title="xmlSecSize"><span class="type">xmlSecSize</span></a> <em class="structfield"><code><a name="xmlSecPtrList.use"></a>use</code></em>;</p></td>
+<td class="struct_member_name"><p><a class="link" href="xmlsec-xmlsec.html#xmlSecSize" title="xmlSecSize"><span class="type">xmlSecSize</span></a> <em class="structfield"><code><a name="xmlSecPtrList.use"></a>use</code></em>;</p></td>
 <td class="struct_member_description"><p>the current list size.</p></td>
-<td class="struct_member_annotations"> </td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td class="struct_member_name"><p><a class="link" href="xmlsec-xmlsec.html#xmlSecSize" title="xmlSecSize"><span class="type">xmlSecSize</span></a> <em class="structfield"><code><a name="xmlSecPtrList.max"></a>max</code></em>;</p></td>
+<td class="struct_member_name"><p><a class="link" href="xmlsec-xmlsec.html#xmlSecSize" title="xmlSecSize"><span class="type">xmlSecSize</span></a> <em class="structfield"><code><a name="xmlSecPtrList.max"></a>max</code></em>;</p></td>
 <td class="struct_member_description"><p>the max (allocated) list size.</p></td>
-<td class="struct_member_annotations"> </td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td class="struct_member_name"><p><a class="link" href="xmlsec-buffer.html#xmlSecAllocMode" title="enum xmlSecAllocMode"><span class="type">xmlSecAllocMode</span></a> <em class="structfield"><code><a name="xmlSecPtrList.allocMode"></a>allocMode</code></em>;</p></td>
+<td class="struct_member_name"><p><a class="link" href="xmlsec-buffer.html#xmlSecAllocMode" title="enum xmlSecAllocMode"><span class="type">xmlSecAllocMode</span></a> <em class="structfield"><code><a name="xmlSecPtrList.allocMode"></a>allocMode</code></em>;</p></td>
 <td class="struct_member_description"><p>the memory allocation mode.</p></td>
-<td class="struct_member_annotations"> </td>
+<td class="struct_member_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
@@ -1090,35 +1031,35 @@ xmlSecStringListGetKlass (<em class="parameter"><code><span class="type">void</s
 <a name="xmlSecPtrListKlass.members"></a><h4>Members</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col width="300px" class="struct_members_name">
-<col class="struct_members_description">
-<col width="200px" class="struct_members_annotations">
+<col>
+<col>
+<col>
 </colgroup>
 <tbody>
 <tr>
-<td class="struct_member_name"><p>const <font><span class="type">xmlChar</span></font> *<em class="structfield"><code><a name="xmlSecPtrListKlass.name"></a>name</code></em>;</p></td>
+<td class="struct_member_name"><p>const <font><span class="type">xmlChar</span></font> *<em class="structfield"><code><a name="xmlSecPtrListKlass.name"></a>name</code></em>;</p></td>
 <td class="struct_member_description"><p>the list klass name.</p></td>
-<td class="struct_member_annotations"> </td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td class="struct_member_name"><p><a class="link" href="xmlsec-list.html#xmlSecPtrDuplicateItemMethod" title="xmlSecPtrDuplicateItemMethod ()"><span class="type">xmlSecPtrDuplicateItemMethod</span></a> <em class="structfield"><code><a name="xmlSecPtrListKlass.duplicateItem"></a>duplicateItem</code></em>;</p></td>
-<td class="struct_member_description"><p>the duplciate item method.</p></td>
-<td class="struct_member_annotations"> </td>
+<td class="struct_member_name"><p><a class="link" href="xmlsec-list.html#xmlSecPtrDuplicateItemMethod" title="xmlSecPtrDuplicateItemMethod ()"><span class="type">xmlSecPtrDuplicateItemMethod</span></a> <em class="structfield"><code><a name="xmlSecPtrListKlass.duplicateItem"></a>duplicateItem</code></em>;</p></td>
+<td class="struct_member_description"><p>the duplicate item method.</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td class="struct_member_name"><p><a class="link" href="xmlsec-list.html#xmlSecPtrDestroyItemMethod" title="xmlSecPtrDestroyItemMethod ()"><span class="type">xmlSecPtrDestroyItemMethod</span></a> <em class="structfield"><code><a name="xmlSecPtrListKlass.destroyItem"></a>destroyItem</code></em>;</p></td>
+<td class="struct_member_name"><p><a class="link" href="xmlsec-list.html#xmlSecPtrDestroyItemMethod" title="xmlSecPtrDestroyItemMethod ()"><span class="type">xmlSecPtrDestroyItemMethod</span></a> <em class="structfield"><code><a name="xmlSecPtrListKlass.destroyItem"></a>destroyItem</code></em>;</p></td>
 <td class="struct_member_description"><p>the destroy item method.</p></td>
-<td class="struct_member_annotations"> </td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td class="struct_member_name"><p><a class="link" href="xmlsec-list.html#xmlSecPtrDebugDumpItemMethod" title="xmlSecPtrDebugDumpItemMethod ()"><span class="type">xmlSecPtrDebugDumpItemMethod</span></a> <em class="structfield"><code><a name="xmlSecPtrListKlass.debugDumpItem"></a>debugDumpItem</code></em>;</p></td>
+<td class="struct_member_name"><p><a class="link" href="xmlsec-list.html#xmlSecPtrDebugDumpItemMethod" title="xmlSecPtrDebugDumpItemMethod ()"><span class="type">xmlSecPtrDebugDumpItemMethod</span></a> <em class="structfield"><code><a name="xmlSecPtrListKlass.debugDumpItem"></a>debugDumpItem</code></em>;</p></td>
 <td class="struct_member_description"><p>the debug dump item method.</p></td>
-<td class="struct_member_annotations"> </td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td class="struct_member_name"><p><a class="link" href="xmlsec-list.html#xmlSecPtrDebugDumpItemMethod" title="xmlSecPtrDebugDumpItemMethod ()"><span class="type">xmlSecPtrDebugDumpItemMethod</span></a> <em class="structfield"><code><a name="xmlSecPtrListKlass.debugXmlDumpItem"></a>debugXmlDumpItem</code></em>;</p></td>
+<td class="struct_member_name"><p><a class="link" href="xmlsec-list.html#xmlSecPtrDebugDumpItemMethod" title="xmlSecPtrDebugDumpItemMethod ()"><span class="type">xmlSecPtrDebugDumpItemMethod</span></a> <em class="structfield"><code><a name="xmlSecPtrListKlass.debugXmlDumpItem"></a>debugXmlDumpItem</code></em>;</p></td>
 <td class="struct_member_description"><p>the debug dump item in xml format method.</p></td>
-<td class="struct_member_annotations"> </td>
+<td class="struct_member_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
@@ -1133,7 +1074,6 @@ xmlSecStringListGetKlass (<em class="parameter"><code><span class="type">void</s
 </div>
 </div>
 <div class="footer">
-<hr>Generated by GTK-Doc V1.25</div>
-</td></tr></table></td>
-</tr></table></body>
+<hr>Generated by GTK-Doc V1.27</div>
+</body>
 </html>

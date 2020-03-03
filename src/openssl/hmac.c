@@ -1,19 +1,29 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
- * HMAC Algorithm support (http://www.w3.org/TR/xmldsig-core/#sec-HMAC):
- * The HMAC algorithm (RFC2104 [HMAC]) takes the truncation length in bits
- * as a parameter; if the parameter is not specified then all the bits of the
- * hash are output. An example of an HMAC SignatureMethod element:
- * <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#hmac-sha1">
- *   <HMACOutputLength>128</HMACOutputLength>
- * </SignatureMethod>
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
  *
  * Copyright (C) 2002-2016 Aleksey Sanin <aleksey@aleksey.com>. All Rights Reserved.
  */
+/**
+ * SECTION:hmac
+ * @Short_description: HMAC transforms implementation for OpenSSL.
+ * @Stability: Private
+ *
+ * [HMAC Algorithm support](http://www.w3.org/TR/xmldsig-core/#sec-HMAC):
+ * The HMAC algorithm (RFC2104 [HMAC]) takes the truncation length in bits
+ * as a parameter; if the parameter is not specified then all the bits of the
+ * hash are output. An example of an HMAC SignatureMethod element:
+ *
+ * |[<!-- language="XML" -->
+ * <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#hmac-sha1">
+ *   <HMACOutputLength>128</HMACOutputLength>
+ * </SignatureMethod>
+ * |]
+ */
+
 #ifndef XMLSEC_NO_HMAC
 #include "globals.h"
 
@@ -161,9 +171,6 @@ xmlSecOpenSSLHmacCheckId(xmlSecTransformPtr transform) {
     {
         return(0);
     }
-
-    /* just in case */
-    return(0);
 }
 
 
@@ -395,7 +402,7 @@ xmlSecOpenSSLHmacVerify(xmlSecTransformPtr transform,
         return(0);
     }
 
-    /* we check the last byte separatelly */
+    /* we check the last byte separately */
     xmlSecAssert2(dataSize > 0, -1);
     mask = last_byte_masks[ctx->dgstSize % 8];
     if((ctx->dgst[dataSize - 1] & mask) != (data[dataSize - 1]  & mask)) {

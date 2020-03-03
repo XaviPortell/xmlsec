@@ -1,8 +1,6 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
- * X509 support
- *
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
@@ -10,6 +8,13 @@
  * Copyright (C) 2003 Cordys R&D BV, All rights reserved.
  * Copyright (C) 2003-2016 Aleksey Sanin <aleksey@aleksey.com>. All Rights Reserved.
  */
+/**
+ * SECTION:x509vfy
+ * @Short_description: X509 certificates verification support functions for Microsoft Crypto API.
+ * @Stability: Private
+ *
+ */
+
 #include "globals.h"
 
 #ifndef XMLSEC_NO_X509
@@ -157,7 +162,7 @@ xmlSecMSCryptoUnixTimeToFileTime(time_t t, LPFILETIME pft) {
 }
 
 static BOOL
-xmlSecMSCrypoVerifyCertTime(PCCERT_CONTEXT pCert, LPFILETIME pft) {
+xmlSecMSCryptoVerifyCertTime(PCCERT_CONTEXT pCert, LPFILETIME pft) {
     xmlSecAssert2(pCert != NULL, FALSE);
     xmlSecAssert2(pCert->pCertInfo != NULL, FALSE);
     xmlSecAssert2(pft != NULL, FALSE);
@@ -194,7 +199,6 @@ xmlSecMSCryptoCheckRevocation(HCERTSTORE hStore, PCCERT_CONTEXT pCert) {
 static void
 xmlSecMSCryptoX509StoreCertError(xmlSecKeyDataStorePtr store, PCCERT_CONTEXT cert, DWORD flags) {
     xmlChar * subject = NULL;
-    DWORD dwSize;
 
     xmlSecAssert(xmlSecKeyDataStoreCheckId(store, xmlSecMSCryptoX509StoreId));
     xmlSecAssert(cert != NULL);
@@ -337,7 +341,7 @@ xmlSecMSCryptoBuildCertChainManually (PCCERT_CONTEXT cert, LPFILETIME pfTime,
     PCCERT_CONTEXT issuerCert = NULL;
     DWORD flags;
 
-    if (!xmlSecMSCrypoVerifyCertTime(cert, pfTime)) {
+    if (!xmlSecMSCryptoVerifyCertTime(cert, pfTime)) {
         xmlSecMSCryptoX509StoreCertError(store, cert, CERT_STORE_TIME_VALIDITY_FLAG);
         return(FALSE);
     }
@@ -570,7 +574,7 @@ xmlSecMSCryptoX509StoreAdoptCert(xmlSecKeyDataStorePtr store, PCCERT_CONTEXT pCe
     }
 
     /* TODO: The context to be added here is not duplicated first,
-    * hopefully this will not lead to errors when closing teh store
+    * hopefully this will not lead to errors when closing the store
     * and freeing the mem for all the context in the store.
     */
     xmlSecAssert2(certStore != NULL, -1);
@@ -688,7 +692,7 @@ xmlSecMSCryptoX509StoreEnableSystemTrustedCerts (xmlSecKeyDataStorePtr store, in
     xmlSecAssert(ctx != NULL);
     xmlSecAssert(ctx->untrusted != NULL);
 
-    /* it is other way around to make default value 0 mimic old behaiviour */
+    /* it is other way around to make default value 0 mimic old behaviour */
     ctx->dont_use_system_trusted_certs = !val;
 }
 
@@ -1097,9 +1101,9 @@ xmlSecMSCryptoX509GetCertName(const xmlChar * name) {
     }
 
     /* get name */
-    res = xmlSecMSCryptoConvertUtf8ToTstr(name2);
+    res = xmlSecWin32ConvertUtf8ToTstr(name2);
     if(res == NULL) {
-        xmlSecInternalError("xmlSecMSCryptoConvertUtf8ToTstr", NULL);
+        xmlSecInternalError("xmlSecWin32ConvertUtf8ToTstr", NULL);
         xmlFree(name2);
         return(NULL);
     }
@@ -1264,9 +1268,9 @@ xmlSecMSCryptoX509GetNameString(PCCERT_CONTEXT pCertContext, DWORD dwType, DWORD
         return (NULL);
     }
 
-    res = xmlSecMSCryptoConvertTstrToUtf8(name);
+    res = xmlSecWin32ConvertTstrToUtf8(name);
     if(res == NULL) {
-        xmlSecInternalError("xmlSecMSCryptoConvertTstrToUtf8", NULL);
+        xmlSecInternalError("xmlSecWin32ConvertTstrToUtf8", NULL);
         xmlFree(name);
         return (NULL);
     }

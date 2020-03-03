@@ -1,81 +1,20 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>membuf: XML Security Library Reference Manual</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="index.html" title="XML Security Library Reference Manual">
 <link rel="up" href="xmlsec-ref.html" title="XML Security Core Library API Reference.">
 <link rel="prev" href="xmlsec-list.html" title="list">
 <link rel="next" href="xmlsec-nodeset.html" title="nodeset">
-<meta name="generator" content="GTK-Doc V1.25 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.27 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<style type="text/css">
-table.CALSTABLE > tbody > tr:nth-child(1) > td:nth-child(1) {
-    width: 20em;
-}
-.synopsis, .classsynopsis {
-    background: #eeeeee;
-    border: solid 1px #aaaaaa;
-}
-.programlisting {
-    background: #eeeeee;
-    border: solid 1px #000000;
-}
-.navigation {
-    background: #eeeeee;
-    border: solid 1px #000000;
-}
-.navigation a {
-    color: initial;
-}
-.navigation a:visited {
-    color: initial;
-}
-</style>
 </head>
-<body><table width="100%" valign="top"><tr valign="top">
-<td valign="top" align="left" width="210">
-<img src="../images/logo.gif" alt="XML Security Library" border="0"><p></p>
-<ul>
-<li><a href="../index.html">Home</a></li>
-<li><a href="../download.html">Download</a></li>
-<li><a href="../news.html">News</a></li>
-<li><a href="../documentation.html">Documentation</a></li>
-<ul>
-<li><a href="../faq.html">FAQ</a></li>
-<li><a href="../api/xmlsec-notes.html">Tutorial</a></li>
-<li><a href="../api/xmlsec-reference.html">API reference</a></li>
-<li><a href="../api/xmlsec-examples.html">Examples</a></li>
-</ul>
-<li><a href="../xmldsig.html">XML Digital Signature</a></li>
-<ul><li><a href="http://www.aleksey.com/xmlsec/xmldsig-verifier.html">Online Verifier</a></li></ul>
-<li><a href="../xmlenc.html">XML Encryption</a></li>
-<li><a href="../c14n.html">XML Canonicalization</a></li>
-<li><a href="../bugs.html">Reporting Bugs</a></li>
-<li><a href="http://www.aleksey.com/pipermail/xmlsec">Mailing list</a></li>
-<li><a href="../related.html">Related</a></li>
-<li><a href="../authors.html">Authors</a></li>
-</ul>
-<table width="100%">
-<tr>
-<td width="15"></td>
-<td><a href="http://xmlsoft.org/"><img src="../images/libxml2-logo.png" alt="LibXML2" border="0"></a></td>
-</tr>
-<tr>
-<td width="15"></td>
-<td><a href="http://xmlsoft.org/XSLT"><img src="../images/libxslt-logo.png" alt="LibXSLT" border="0"></a></td>
-</tr>
-<tr>
-<td width="15"></td>
-<td><a href="http://www.openssl.org/"><img src="../images/openssl-logo.png" alt="OpenSSL" border="0"></a></td>
-</tr>
-<!--Links - start--><!--Links - end-->
-</table>
-</td>
-<td valign="top"><table width="100%" valign="top"><tr><td valign="top" align="left" id="xmlsecContent">
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
                   <a href="#xmlsec-membuf.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
@@ -88,16 +27,20 @@ table.CALSTABLE > tbody > tr:nth-child(1) > td:nth-child(1) {
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="xmlsec-membuf.top_of_page"></a>membuf</span></h2>
-<p>membuf &#8212; Memory buffer transform implementation.</p>
+<p>membuf — Memory buffer transform functions.</p>
 </td>
 <td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
 <div class="refsect1">
+<a name="xmlsec-membuf.stability-level"></a><h2>Stability Level</h2>
+<a href="http://foldoc.org/Stable"><span class="acronym">Stable</span></a>, unless otherwise indicated
+</div>
+<div class="refsect1">
 <a name="xmlsec-membuf.functions"></a><h2>Functions</h2>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col width="150px" class="functions_return">
-<col class="functions_name">
+<col>
+<col>
 </colgroup>
 <tbody>
 <tr>
@@ -105,15 +48,15 @@ table.CALSTABLE > tbody > tr:nth-child(1) > td:nth-child(1) {
 <font><span class="returnvalue">xmlSecTransformId</span></font>
 </td>
 <td class="function_name">
-<a class="link" href="xmlsec-membuf.html#xmlSecTransformMemBufGetKlass" title="xmlSecTransformMemBufGetKlass ()">xmlSecTransformMemBufGetKlass</a> <span class="c_punctuation">()</span>
+<a class="link" href="xmlsec-membuf.html#xmlSecTransformMemBufGetKlass" title="xmlSecTransformMemBufGetKlass ()">xmlSecTransformMemBufGetKlass</a> <span class="c_punctuation">()</span>
 </td>
 </tr>
 <tr>
 <td class="function_type">
-<font><span class="returnvalue">xmlSecBufferPtr</span></font>
+<a class="link" href="xmlsec-buffer.html#xmlSecBuffer" title="struct xmlSecBuffer"><span class="returnvalue">xmlSecBufferPtr</span></a>
 </td>
 <td class="function_name">
-<a class="link" href="xmlsec-membuf.html#xmlSecTransformMemBufGetBuffer" title="xmlSecTransformMemBufGetBuffer ()">xmlSecTransformMemBufGetBuffer</a> <span class="c_punctuation">()</span>
+<a class="link" href="xmlsec-membuf.html#xmlSecTransformMemBufGetBuffer" title="xmlSecTransformMemBufGetBuffer ()">xmlSecTransformMemBufGetBuffer</a> <span class="c_punctuation">()</span>
 </td>
 </tr>
 </tbody>
@@ -123,8 +66,8 @@ table.CALSTABLE > tbody > tr:nth-child(1) > td:nth-child(1) {
 <a name="xmlsec-membuf.other"></a><h2>Types and Values</h2>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col width="150px" class="name">
-<col class="description">
+<col>
+<col>
 </colgroup>
 <tbody><tr>
 <td class="define_keyword">#define</td>
@@ -134,17 +77,15 @@ table.CALSTABLE > tbody > tr:nth-child(1) > td:nth-child(1) {
 </div>
 <div class="refsect1">
 <a name="xmlsec-membuf.description"></a><h2>Description</h2>
-<p>
-Memory buffer transform implementation.
-</p>
+<p></p>
 </div>
 <div class="refsect1">
 <a name="xmlsec-membuf.functions_details"></a><h2>Functions</h2>
 <div class="refsect2">
-<a name="xmlSecTransformMemBufGetKlass"></a><h3>xmlSecTransformMemBufGetKlass ()</h3>
+<a name="xmlSecTransformMemBufGetKlass"></a><h3>xmlSecTransformMemBufGetKlass ()</h3>
 <pre class="programlisting"><font><span class="returnvalue">xmlSecTransformId</span></font>
 xmlSecTransformMemBufGetKlass (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
-<p>The memory buffer transorm (used to store the data that go through it).</p>
+<p>The memory buffer transform (used to store the data that go through it).</p>
 <div class="refsect3">
 <a name="xmlSecTransformMemBufGetKlass.returns"></a><h4>Returns</h4>
 <p> memory buffer transform klass.</p>
@@ -152,22 +93,22 @@ xmlSecTransformMemBufGetKlass (<em class="parameter"><code><span class="type">vo
 </div>
 <hr>
 <div class="refsect2">
-<a name="xmlSecTransformMemBufGetBuffer"></a><h3>xmlSecTransformMemBufGetBuffer ()</h3>
-<pre class="programlisting"><font><span class="returnvalue">xmlSecBufferPtr</span></font>
-xmlSecTransformMemBufGetBuffer (<em class="parameter"><code><font><span class="type">xmlSecTransformPtr</span></font> transform</code></em>);</pre>
+<a name="xmlSecTransformMemBufGetBuffer"></a><h3>xmlSecTransformMemBufGetBuffer ()</h3>
+<pre class="programlisting"><a class="link" href="xmlsec-buffer.html#xmlSecBuffer" title="struct xmlSecBuffer"><span class="returnvalue">xmlSecBufferPtr</span></a>
+xmlSecTransformMemBufGetBuffer (<em class="parameter"><code><a class="link" href="xmlsec-transforms.html#xmlSecTransform" title="struct xmlSecTransform"><span class="type">xmlSecTransformPtr</span></a> transform</code></em>);</pre>
 <p>Gets the pointer to memory buffer transform buffer.</p>
 <div class="refsect3">
 <a name="xmlSecTransformMemBufGetBuffer.parameters"></a><h4>Parameters</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
 <colgroup>
-<col width="150px" class="parameters_name">
-<col class="parameters_description">
-<col width="200px" class="parameters_annotations">
+<col>
+<col>
+<col>
 </colgroup>
 <tbody><tr>
 <td class="parameter_name"><p>transform</p></td>
 <td class="parameter_description"><p>the pointer to memory buffer transform.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_annotations"> </td>
 </tr></tbody>
 </table></div>
 </div>
@@ -187,7 +128,6 @@ xmlSecTransformMemBufGetBuffer (<em class="parameter"><code><font><span class="t
 </div>
 </div>
 <div class="footer">
-<hr>Generated by GTK-Doc V1.25</div>
-</td></tr></table></td>
-</tr></table></body>
+<hr>Generated by GTK-Doc V1.27</div>
+</body>
 </html>

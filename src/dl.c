@@ -7,6 +7,12 @@
  *
  * Copyright (C) 2002-2016 Aleksey Sanin <aleksey@aleksey.com>. All Rights Reserved.
  */
+/**
+ * SECTION:dl
+ * @Short_description: Dynamic crypto-engine library loading functions.
+ * @Stability: Stable
+ *
+ */
 #include "globals.h"
 
 #include <stdlib.h>
@@ -30,7 +36,6 @@
 #include <xmlsec/dl.h>
 
 #ifndef XMLSEC_NO_CRYPTO_DYNAMIC_LOADING
-
 
 #ifdef XMLSEC_DL_LIBLTDL
 #include <ltdl.h>
@@ -241,7 +246,7 @@ xmlSecCryptoDLLibraryConstructFilename(const xmlChar* name) {
     xmlSecAssert2(name != NULL, NULL);
 
     /* TODO */
-    len = xmlStrlen(BAD_CAST PACKAGE) + xmlStrlen(name) + strlen(tmpl) + 1;
+    len = xmlStrlen(BAD_CAST PACKAGE) + xmlStrlen(name) + xmlStrlen(BAD_CAST tmpl) + 1;
     res = (xmlChar*)xmlMalloc(len + 1);
     if(res == NULL) {
         xmlSecMallocError(len + 1, NULL);
@@ -267,7 +272,7 @@ xmlSecCryptoDLLibraryConstructGetFunctionsName(const xmlChar* name) {
 
     xmlSecAssert2(name != NULL, NULL);
 
-    len = xmlStrlen(name) + strlen(tmpl) + 1;
+    len = xmlStrlen(name) + xmlStrlen(BAD_CAST tmpl) + 1;
     res = (xmlChar*)xmlMalloc(len + 1);
     if(res == NULL) {
         xmlSecMallocError(len + 1, NULL);
@@ -330,7 +335,7 @@ xmlSecCryptoDLInit(void) {
     ret = xmlSecPtrListInitialize(&gXmlSecCryptoDLLibraries,
                                   xmlSecCryptoDLLibrariesListGetKlass());
     if(ret < 0) {
-        xmlSecInternalError("xmlSecPtrListPtrInitialize",
+        xmlSecInternalError("xmlSecPtrListInitialize",
                             "xmlSecCryptoDLLibrariesListGetKlass");
         return(-1);
     }
@@ -366,6 +371,8 @@ xmlSecCryptoDLShutdown(void) {
     if(ret != 0) {
         xmlSecIOError("lt_dlexit", NULL, NULL);
     }
+#else  /* XMLSEC_DL_LIBLTDL */
+    UNREFERENCED_PARAMETER(ret);
 #endif /* XMLSEC_DL_LIBLTDL */
 
     return(0);
@@ -611,6 +618,24 @@ xmlSecCryptoDLFunctionsRegisterKeyDataAndTransforms(struct _xmlSecCryptoDLFuncti
     if((functions->transformAes256CbcGetKlass != NULL) && xmlSecTransformIdsRegister(functions->transformAes256CbcGetKlass()) < 0) {
         xmlSecInternalError("xmlSecTransformIdsRegister",
                             xmlSecTransformKlassGetName(functions->transformAes256CbcGetKlass()));
+        return(-1);
+    }
+
+    if ((functions->transformAes128GcmGetKlass != NULL) && xmlSecTransformIdsRegister(functions->transformAes128GcmGetKlass()) < 0) {
+        xmlSecInternalError("xmlSecTransformIdsRegister",
+                            xmlSecTransformKlassGetName(functions->transformAes128GcmGetKlass()));
+        return(-1);
+    }
+
+    if ((functions->transformAes192GcmGetKlass != NULL) && xmlSecTransformIdsRegister(functions->transformAes192GcmGetKlass()) < 0) {
+        xmlSecInternalError("xmlSecTransformIdsRegister",
+                            xmlSecTransformKlassGetName(functions->transformAes192GcmGetKlass()));
+        return(-1);
+    }
+
+    if ((functions->transformAes256GcmGetKlass != NULL) && xmlSecTransformIdsRegister(functions->transformAes256GcmGetKlass()) < 0) {
+        xmlSecInternalError("xmlSecTransformIdsRegister",
+                            xmlSecTransformKlassGetName(functions->transformAes256GcmGetKlass()));
         return(-1);
     }
 

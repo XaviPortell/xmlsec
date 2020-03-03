@@ -1,12 +1,17 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
- * Canonicalization transforms.
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
  *
  * Copyright (C) 2002-2016 Aleksey Sanin <aleksey@aleksey.com>. All Rights Reserved.
+ */
+/**
+ * SECTION:c14n
+ * @Short_description: C14N transform implementation.
+ * @Stability: Private
+ *
  */
 #include "globals.h"
 
@@ -622,7 +627,7 @@ static xmlSecTransformKlass xmlSecTransformExclC14NKlass = {
 /**
  * xmlSecTransformExclC14NGetKlass:
  *
- * Exclusive canoncicalization that ommits comments transform klass
+ * Exclusive canoncicalization that omits comments transform klass
  * (http://www.w3.org/TR/xml-exc-c14n/).
  *
  * Returns: exclusive c14n transform id.

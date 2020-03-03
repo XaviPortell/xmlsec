@@ -1,78 +1,17 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Signing with X509 certificate.: XML Security Library Reference Manual</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="index.html" title="XML Security Library Reference Manual">
 <link rel="up" href="xmlsec-examples.html" title="Examples.">
 <link rel="prev" href="xmlsec-examples-sign-dynamimc-template.html" title="Signing a dynamicaly created template.">
 <link rel="next" href="xmlsec-verify-with-key.html" title="Verifying a signature with a single key.">
-<meta name="generator" content="GTK-Doc V1.25 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.27 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<style type="text/css">
-table.CALSTABLE > tbody > tr:nth-child(1) > td:nth-child(1) {
-    width: 20em;
-}
-.synopsis, .classsynopsis {
-    background: #eeeeee;
-    border: solid 1px #aaaaaa;
-}
-.programlisting {
-    background: #eeeeee;
-    border: solid 1px #000000;
-}
-.navigation {
-    background: #eeeeee;
-    border: solid 1px #000000;
-}
-.navigation a {
-    color: initial;
-}
-.navigation a:visited {
-    color: initial;
-}
-</style>
 </head>
-<body><table width="100%" valign="top"><tr valign="top">
-<td valign="top" align="left" width="210">
-<img src="../images/logo.gif" alt="XML Security Library" border="0"><p></p>
-<ul>
-<li><a href="../index.html">Home</a></li>
-<li><a href="../download.html">Download</a></li>
-<li><a href="../news.html">News</a></li>
-<li><a href="../documentation.html">Documentation</a></li>
-<ul>
-<li><a href="../faq.html">FAQ</a></li>
-<li><a href="../api/xmlsec-notes.html">Tutorial</a></li>
-<li><a href="../api/xmlsec-reference.html">API reference</a></li>
-<li><a href="../api/xmlsec-examples.html">Examples</a></li>
-</ul>
-<li><a href="../xmldsig.html">XML Digital Signature</a></li>
-<ul><li><a href="http://www.aleksey.com/xmlsec/xmldsig-verifier.html">Online Verifier</a></li></ul>
-<li><a href="../xmlenc.html">XML Encryption</a></li>
-<li><a href="../c14n.html">XML Canonicalization</a></li>
-<li><a href="../bugs.html">Reporting Bugs</a></li>
-<li><a href="http://www.aleksey.com/pipermail/xmlsec">Mailing list</a></li>
-<li><a href="../related.html">Related</a></li>
-<li><a href="../authors.html">Authors</a></li>
-</ul>
-<table width="100%">
-<tr>
-<td width="15"></td>
-<td><a href="http://xmlsoft.org/"><img src="../images/libxml2-logo.png" alt="LibXML2" border="0"></a></td>
-</tr>
-<tr>
-<td width="15"></td>
-<td><a href="http://xmlsoft.org/XSLT"><img src="../images/libxslt-logo.png" alt="LibXSLT" border="0"></a></td>
-</tr>
-<tr>
-<td width="15"></td>
-<td><a href="http://www.openssl.org/"><img src="../images/openssl-logo.png" alt="OpenSSL" border="0"></a></td>
-</tr>
-<!--Links - start--><!--Links - end-->
-</table>
-</td>
-<td valign="top"><table width="100%" valign="top"><tr><td valign="top" align="left" id="xmlsecContent">
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts"></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
@@ -92,8 +31,8 @@ table.CALSTABLE > tbody > tr:nth-child(1) > td:nth-child(1) {
  * 
  * Signs a file using a dynamicaly created template, key from PEM file and
  * an X509 certificate. The signature has one reference with one enveloped 
- * transform to sign the whole document except the <a class="ulink" href="" target="_top">&lt;dsig:Signature/&gt;</a> node 
- * itself. The key certificate is written in the <a class="ulink" href="" target="_top">&lt;dsig:X509Data/&gt;</a> node.
+ * transform to sign the whole document except the &lt;dsig:Signature/&gt; node 
+ * itself. The key certificate is written in the &lt;dsig:X509Data/&gt; node.
  * 
  * This example was developed and tested with OpenSSL crypto library. The 
  * certificates management policies for another crypto library may break it.
@@ -189,7 +128,7 @@ main(int argc, char **argv) {
     if(xmlSecCryptoDLLoadLibrary(NULL) &lt; 0) {
         fprintf(stderr, "Error: unable to load default xmlsec-crypto library. Make sure\n"
                         "that you have it installed and check shared libraries path\n"
-                        "(LD_LIBRARY_PATH) envornment variable.\n");
+                        "(LD_LIBRARY_PATH and/or LTDL_LIBRARY_PATH) environment variables.\n");
         return(-1);     
     }
 #endif /* XMLSEC_CRYPTO_DYNAMIC_LOADING */
@@ -237,7 +176,7 @@ main(int argc, char **argv) {
  *
  * Signs the @xml_file using private key from @key_file and dynamicaly
  * created enveloped signature template. The certificate from @cert_file
- * is placed in the <a class="ulink" href="" target="_top">&lt;dsig:X509Data/&gt;</a> node.
+ * is placed in the &lt;dsig:X509Data/&gt; node.
  *
  * Returns 0 on success or a negative value if an error occurs.
  */
@@ -270,7 +209,7 @@ sign_file(const char* xml_file, const char* key_file, const char* cert_file) {
         goto done;              
     }
 
-    /* add <a class="ulink" href="" target="_top">&lt;dsig:Signature/&gt;</a> node to the doc */
+    /* add &lt;dsig:Signature/&gt; node to the doc */
     xmlAddChild(xmlDocGetRootElement(doc), signNode);
     
     /* add reference */
@@ -287,7 +226,7 @@ sign_file(const char* xml_file, const char* key_file, const char* cert_file) {
         goto done;              
     }
     
-    /* add <a class="ulink" href="" target="_top">&lt;dsig:KeyInfo/&gt;</a> and <a class="ulink" href="" target="_top">&lt;dsig:X509Data/&gt;</a> */
+    /* add &lt;dsig:KeyInfo/&gt; and &lt;dsig:X509Data/&gt; */
     keyInfoNode = xmlSecTmplSignatureEnsureKeyInfo(signNode, NULL);
     if(keyInfoNode == NULL) {
         fprintf(stderr, "Error: failed to add key info\n");
@@ -432,7 +371,6 @@ fBjXssrERn05kpBcrRfzou4r3DCgQFPhjxga&lt;/X509Certificate&gt;
 </div>
 </div>
 <div class="footer">
-<hr>Generated by GTK-Doc V1.25</div>
-</td></tr></table></td>
-</tr></table></body>
+<hr>Generated by GTK-Doc V1.27</div>
+</body>
 </html>

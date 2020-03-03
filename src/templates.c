@@ -1,12 +1,17 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
- * Creating signature and encryption templates.
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
  *
  * Copyright (C) 2002-2016 Aleksey Sanin <aleksey@aleksey.com>. All Rights Reserved.
+ */
+/**
+ * SECTION:templates
+ * @Short_description: XML signature and encryption template functions.
+ * @Stability: Stable
+ *
  */
 #include "globals.h"
 
@@ -137,7 +142,7 @@ xmlSecTmplSignatureCreateNsPref(xmlDocPtr doc, xmlSecTransformId c14nMethodId,
         return(NULL);
     }
 
-    /* add CanonicaizationMethod node to SignedInfo */
+    /* add CanonicalizationMethod node to SignedInfo */
     cur = xmlSecAddChild(signedInfoNode, xmlSecNodeCanonicalizationMethod, xmlSecDSigNs);
     if(cur == NULL) {
         xmlSecInternalError("xmlSecAddChild(xmlSecNodeCanonicalizationMethod)", NULL);
@@ -407,12 +412,16 @@ xmlSecTmplReferenceAddTransform(xmlNodePtr referenceNode, xmlSecTransformId tran
         tmp = xmlSecGetNextElementNode(referenceNode->children);
         if(tmp == NULL) {
             transformsNode = xmlSecAddChild(referenceNode, xmlSecNodeTransforms, xmlSecDSigNs);
+            if(transformsNode == NULL) {
+                xmlSecInternalError("xmlSecAddChild(xmlSecNodeTransforms)", NULL);
+                return(NULL);
+            }
         } else {
             transformsNode = xmlSecAddPrevSibling(tmp, xmlSecNodeTransforms, xmlSecDSigNs);
-        }
-        if(transformsNode == NULL) {
-            xmlSecInternalError("xmlSecAddChild or xmlSecAddPrevSibling(xmlSecNodeTransforms)", NULL);
-            return(NULL);
+            if(transformsNode == NULL) {
+                xmlSecInternalError("xmlSecAddPrevSibling(xmlSecNodeTransforms)", NULL);
+                return(NULL);
+            }
         }
     }
 
@@ -814,7 +823,7 @@ xmlSecTmplEncDataEnsureCipherReference(xmlNodePtr encNode, const xmlChar *uri) {
  * xmlSecTmplEncDataGetEncMethodNode:
  * @encNode:            the pointer to <enc:EcnryptedData /> node.
  *
- * Gets pointer to <enc:EncrytpionMethod/> node.
+ * Gets pointer to <enc:EncryptionMethod/> node.
  *
  * Returns: pointer to <enc:EncryptionMethod /> node or NULL if an error occurs.
  */
@@ -1431,7 +1440,7 @@ xmlSecTmplX509DataAddCRL(xmlNodePtr x509DataNode) {
  * Creates <dsig:HMACOutputLength/> child for the HMAC transform
  * node @node.
  *
- * Returns: 0 on success and a negatie value otherwise.
+ * Returns: 0 on success and a negative value otherwise.
  */
 int
 xmlSecTmplTransformAddHmacOutputLength(xmlNodePtr transformNode, xmlSecSize bitsLen) {
@@ -1453,7 +1462,11 @@ xmlSecTmplTransformAddHmacOutputLength(xmlNodePtr transformNode, xmlSecSize bits
         return(-1);
     }
 
+#ifdef WIN32
+    sprintf_s(buf, sizeof(buf), "%lu", (unsigned long)bitsLen);
+#else  /* WIN32 */
     sprintf(buf, "%lu", (unsigned long)bitsLen);
+#endif /* WIN32 */
     xmlNodeSetContent(cur, BAD_CAST buf);
     return(0);
 }
@@ -1504,7 +1517,7 @@ xmlSecTmplTransformAddRsaOaepParam(xmlNodePtr transformNode,
 /**
  * xmlSecTmplTransformAddXsltStylesheet:
  * @transformNode:      the pointer to <dsig:Transform/> node.
- * @xslt:               the XSLT transform exspression.
+ * @xslt:               the XSLT transform expression.
  *
  * Writes the XSLT transform expression to the @node.
  *

@@ -1,13 +1,19 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
- * Enchanced nodes set
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
  *
  * Copyright (C) 2002-2016 Aleksey Sanin <aleksey@aleksey.com>. All Rights Reserved.
  */
+/**
+ * SECTION:nodeset
+ * @Short_description: XML nodes set functions
+ * @Stability: Stable
+ *
+ */
+
 #include "globals.h"
 
 #include <stdlib.h>
@@ -20,6 +26,7 @@
 #include <xmlsec/xmlsec.h>
 #include <xmlsec/nodeset.h>
 #include <xmlsec/errors.h>
+#include <xmlsec/private.h>
 
 #define xmlSecGetParent(node)           \
     (((node)->type != XML_NAMESPACE_DECL) ? \
@@ -250,7 +257,7 @@ xmlSecNodeSetContains(xmlSecNodeSetPtr nset, xmlNodePtr node, xmlNodePtr parent)
 
 /**
  * xmlSecNodeSetAdd:
- * @nset:               the pointer to currrent nodes set (or NULL).
+ * @nset:               the pointer to current nodes set (or NULL).
  * @newNSet:            the pointer to new nodes set.
  * @op:                 the operation type.
  *
@@ -282,7 +289,7 @@ xmlSecNodeSetAdd(xmlSecNodeSetPtr nset, xmlSecNodeSetPtr newNSet,
 
 /**
  * xmlSecNodeSetAddList:
- * @nset:               the pointer to currrent nodes set (or NULL).
+ * @nset:               the pointer to current nodes set (or NULL).
  * @newNSet:            the pointer to new nodes set.
  * @op:                 the operation type.
  *
@@ -493,6 +500,8 @@ xmlSecNodeSetDumpTextNodesWalkCallback(xmlSecNodeSetPtr nset, xmlNodePtr cur,
     xmlSecAssert2(nset != NULL, -1);
     xmlSecAssert2(cur != NULL, -1);
     xmlSecAssert2(data != NULL, -1);
+
+    UNREFERENCED_PARAMETER(parent);
 
     if(cur->type != XML_TEXT_NODE) {
         return(0);

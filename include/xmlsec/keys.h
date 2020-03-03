@@ -11,16 +11,15 @@
 #ifndef __XMLSEC_KEYS_H__
 #define __XMLSEC_KEYS_H__
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
 #include <time.h>
 
 #include <xmlsec/xmlsec.h>
 #include <xmlsec/list.h>
 #include <xmlsec/keysdata.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 /**
  * xmlSecKeyUsage:
@@ -32,29 +31,28 @@ typedef unsigned int                    xmlSecKeyUsage;
 /**
  * xmlSecKeyUsageSign:
  *
- * Key can be used in any way.
-
+ * Key for signing.
  */
 #define xmlSecKeyUsageSign              0x00000001
 
 /**
  * xmlSecKeyUsageVerify:
  *
- * Key for signing.
+ * Key for signature verification.
  */
 #define xmlSecKeyUsageVerify            0x00000002
 
 /**
  * xmlSecKeyUsageEncrypt:
  *
- * Key for signature verification.
+ * An encryption key.
  */
 #define xmlSecKeyUsageEncrypt           0x00000004
 
 /**
  * xmlSecKeyUsageDecrypt:
  *
- * An encryption key.
+ * A decryption key.
  */
 #define xmlSecKeyUsageDecrypt           0x00000008
 
@@ -68,7 +66,7 @@ typedef unsigned int                    xmlSecKeyUsage;
 /**
  * xmlSecKeyUsageAny:
  *
- * A decryption key.
+ * Key can be used in any way.
  */
 #define xmlSecKeyUsageAny               0xFFFFFFFF
 

@@ -1,14 +1,19 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
- * X509 support
- *
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
  *
  * Copyright (C) 2002-2016 Aleksey Sanin <aleksey@aleksey.com>. All Rights Reserved.
  */
+/**
+ * SECTION:x509
+ * @Short_description: X509 certificates implementation for OpenSSL.
+ * @Stability: Stable
+ *
+ */
+
 #include "globals.h"
 
 #ifndef XMLSEC_NO_X509
@@ -21,11 +26,6 @@
 #include <time.h>
 
 #include <libxml/tree.h>
-#include <openssl/evp.h>
-#include <openssl/x509.h>
-#include <openssl/x509_vfy.h>
-#include <openssl/x509v3.h>
-#include <openssl/asn1.h>
 
 #include <xmlsec/xmlsec.h>
 #include <xmlsec/xmltree.h>
@@ -35,20 +35,36 @@
 #include <xmlsec/x509.h>
 #include <xmlsec/base64.h>
 #include <xmlsec/errors.h>
+#include <xmlsec/private.h>
 
 #include <xmlsec/openssl/crypto.h>
 #include <xmlsec/openssl/evp.h>
 #include <xmlsec/openssl/x509.h>
+
+/* Windows overwrites X509_NAME and other things that break openssl */
+#include <openssl/evp.h>
+#include <openssl/x509.h>
+#include <openssl/x509_vfy.h>
+#include <openssl/x509v3.h>
+#include <openssl/asn1.h>
+
+#ifdef OPENSSL_IS_BORINGSSL
+#include <openssl/mem.h>
+#endif /* OPENSSL_IS_BORINGSSL */
+
+
+
 #include "openssl_compat.h"
+
 
 /* The ASN1_TIME_check() function was changed from ASN1_TIME * to
  * const ASN1_TIME * in 1.1.0. To avoid compiler warnings, we use this hack.
  */
-#if !defined(XMLSEC_OPENSSL_API_110)
+#if !defined(XMLSEC_OPENSSL_API_110) || defined(OPENSSL_IS_BORINGSSL)
 typedef ASN1_TIME XMLSEC_CONST_ASN1_TIME;
-#else  /* !defined(XMLSEC_OPENSSL_API_110) */
+#else  /* !defined(XMLSEC_OPENSSL_API_110) || defined(OPENSSL_IS_BORINGSSL) */
 typedef const ASN1_TIME XMLSEC_CONST_ASN1_TIME;
-#endif /* !defined(XMLSEC_OPENSSL_API_110) */
+#endif /* !defined(XMLSEC_OPENSSL_API_110) || defined(OPENSSL_IS_BORINGSSL) */
 
 /*************************************************************************
  *
@@ -395,9 +411,9 @@ xmlSecOpenSSLKeyDataX509GetCert(xmlSecKeyDataPtr data, xmlSecSize pos) {
     ctx = xmlSecOpenSSLX509DataGetCtx(data);
     xmlSecAssert2(ctx != NULL, NULL);
     xmlSecAssert2(ctx->certsList != NULL, NULL);
-    xmlSecAssert2((int)pos < sk_X509_num(ctx->certsList), NULL);
+    xmlSecAssert2(pos < (xmlSecSize)sk_X509_num(ctx->certsList), NULL);
 
-    return(sk_X509_value(ctx->certsList, pos));
+    return(sk_X509_value(ctx->certsList, (int)pos));
 }
 
 /**
@@ -479,9 +495,9 @@ xmlSecOpenSSLKeyDataX509GetCrl(xmlSecKeyDataPtr data, xmlSecSize pos) {
     xmlSecAssert2(ctx != NULL, NULL);
 
     xmlSecAssert2(ctx->crlsList != NULL, NULL);
-    xmlSecAssert2((int)pos < sk_X509_CRL_num(ctx->crlsList), NULL);
+    xmlSecAssert2(pos < (xmlSecSize)sk_X509_CRL_num(ctx->crlsList), NULL);
 
-    return(sk_X509_CRL_value(ctx->crlsList, pos));
+    return(sk_X509_CRL_value(ctx->crlsList, (int)pos));
 }
 
 /**
@@ -870,6 +886,7 @@ xmlSecOpenSSLX509DataNodeRead(xmlSecKeyDataPtr data, xmlNodePtr node, xmlSecKeyI
                 xmlSecInternalError2("xmlSecOpenSSLX509CertificateNodeRead",
                                      xmlSecKeyDataGetName(data),
                                      "node=%s", xmlSecErrorsSafeString(xmlSecNodeGetName(cur)));
+                return(-1);
             }
         } else if(xmlSecCheckNodeName(cur, xmlSecNodeX509SubjectName, xmlSecDSigNs)) {
             ret = xmlSecOpenSSLX509SubjectNameNodeRead(data, cur, keyInfoCtx);
@@ -877,6 +894,7 @@ xmlSecOpenSSLX509DataNodeRead(xmlSecKeyDataPtr data, xmlNodePtr node, xmlSecKeyI
                 xmlSecInternalError2("xmlSecOpenSSLX509SubjectNameNodeRead",
                                      xmlSecKeyDataGetName(data),
                                      "node=%s", xmlSecErrorsSafeString(xmlSecNodeGetName(cur)));
+                return(-1);
             }
         } else if(xmlSecCheckNodeName(cur, xmlSecNodeX509IssuerSerial, xmlSecDSigNs)) {
             ret = xmlSecOpenSSLX509IssuerSerialNodeRead(data, cur, keyInfoCtx);
@@ -884,6 +902,7 @@ xmlSecOpenSSLX509DataNodeRead(xmlSecKeyDataPtr data, xmlNodePtr node, xmlSecKeyI
                 xmlSecInternalError2("xmlSecOpenSSLX509IssuerSerialNodeRead",
                                      xmlSecKeyDataGetName(data),
                                      "node=%s", xmlSecErrorsSafeString(xmlSecNodeGetName(cur)));
+                return(-1);
             }
         } else if(xmlSecCheckNodeName(cur, xmlSecNodeX509SKI, xmlSecDSigNs)) {
             ret = xmlSecOpenSSLX509SKINodeRead(data, cur, keyInfoCtx);
@@ -891,6 +910,7 @@ xmlSecOpenSSLX509DataNodeRead(xmlSecKeyDataPtr data, xmlNodePtr node, xmlSecKeyI
                 xmlSecInternalError2("xmlSecOpenSSLX509SKINodeRead",
                                      xmlSecKeyDataGetName(data),
                                      "node=%s", xmlSecErrorsSafeString(xmlSecNodeGetName(cur)));
+                return(-1);
             }
         } else if(xmlSecCheckNodeName(cur, xmlSecNodeX509CRL, xmlSecDSigNs)) {
             ret = xmlSecOpenSSLX509CRLNodeRead(data, cur, keyInfoCtx);
@@ -898,6 +918,7 @@ xmlSecOpenSSLX509DataNodeRead(xmlSecKeyDataPtr data, xmlNodePtr node, xmlSecKeyI
                 xmlSecInternalError2("xmlSecOpenSSLX509CRLNodeRead",
                                      xmlSecKeyDataGetName(data),
                                      "node=%s", xmlSecErrorsSafeString(xmlSecNodeGetName(cur)));
+                return(-1);
             }
         } else if((keyInfoCtx->flags & XMLSEC_KEYINFO_FLAGS_X509DATA_STOP_ON_UNKNOWN_CHILD) != 0) {
             /* laxi schema validation: ignore unknown nodes */
@@ -1057,6 +1078,7 @@ xmlSecOpenSSLX509SubjectNameNodeWrite(X509* cert, xmlNodePtr node, xmlSecKeyInfo
 
     xmlSecAssert2(cert != NULL, -1);
     xmlSecAssert2(node != NULL, -1);
+    UNREFERENCED_PARAMETER(keyInfoCtx);
 
     buf = xmlSecOpenSSLX509NameWrite(X509_get_subject_name(cert));
     if(buf == NULL) {
@@ -1199,6 +1221,7 @@ xmlSecOpenSSLX509IssuerSerialNodeWrite(X509* cert, xmlNodePtr node, xmlSecKeyInf
 
     xmlSecAssert2(cert != NULL, -1);
     xmlSecAssert2(node != NULL, -1);
+    UNREFERENCED_PARAMETER(keyInfoCtx);
 
     /* create xml nodes */
     cur = xmlSecEnsureEmptyChild(node, xmlSecNodeX509IssuerSerial, xmlSecDSigNs);
@@ -1326,6 +1349,7 @@ xmlSecOpenSSLX509SKINodeWrite(X509* cert, xmlNodePtr node, xmlSecKeyInfoCtxPtr k
 
     xmlSecAssert2(cert != NULL, -1);
     xmlSecAssert2(node != NULL, -1);
+    UNREFERENCED_PARAMETER(keyInfoCtx);
 
     buf = xmlSecOpenSSLX509SKIWrite(cert);
     if(buf == NULL) {
@@ -1512,9 +1536,28 @@ xmlSecOpenSSLKeyDataX509VerifyAndExtractKey(xmlSecKeyDataPtr data, xmlSecKeyPtr 
 #ifdef HAVE_TIMEGM
 extern time_t timegm (struct tm *tm);
 #else  /* HAVE_TIMEGM */
+
 #ifdef WIN32
+
+#ifdef _MSC_VER
+static time_t
+my_timegm(struct tm *t) {
+    long seconds = 0;
+    if(_get_timezone(&seconds) != 0) {
+        return(-1);
+    }
+    return (mktime(t) - seconds);
+}
+#define timegm(tm) my_timegm(tm)
+
+#else  /* _MSC_VER */
+
 #define timegm(tm)      (mktime(tm) - _timezone)
+
+#endif /* _MSC_VER */
+
 #else /* WIN32 */
+
 /* Absolutely not the best way but it's the only ANSI compatible way I know.
  * If you system has a native struct tm --> GMT time_t conversion function
  * (like timegm) use it instead.
@@ -1529,7 +1572,7 @@ my_timegm(struct tm *t) {
         t->tm_hour--;
         tl = mktime (t);
         if (tl == -1) {
-            return -1;
+            return (-1);
         }
         tl += 3600;
     }
@@ -1540,7 +1583,7 @@ my_timegm(struct tm *t) {
         tg->tm_hour--;
         tb = mktime (tg);
         if (tb == -1) {
-            return -1;
+            return (-1);
         }
         tb += 3600;
     }
@@ -1548,6 +1591,7 @@ my_timegm(struct tm *t) {
 }
 
 #define timegm(tm) my_timegm(tm)
+
 #endif /* WIN32 */
 #endif /* HAVE_TIMEGM */
 
@@ -1847,7 +1891,7 @@ xmlSecOpenSSLX509NameWrite(X509_NAME* nm) {
     (void)BIO_flush(mem); /* should call flush ? */
 
     size = BIO_pending(mem);
-    res = xmlMalloc(size + 1);
+    res = (xmlChar *)xmlMalloc(size + 1);
     if(res == NULL) {
         xmlSecMallocError(size + 1, NULL);
         BIO_free_all(mem);
@@ -1920,7 +1964,7 @@ xmlSecOpenSSLX509SKIWrite(X509* cert) {
         return(NULL);
     }
 
-    keyId = X509V3_EXT_d2i(ext);
+    keyId = (ASN1_OCTET_STRING *)X509V3_EXT_d2i(ext);
     if (keyId == NULL) {
         xmlSecOpenSSLError("X509V3_EXT_d2i", NULL);
         ASN1_OCTET_STRING_free(keyId);

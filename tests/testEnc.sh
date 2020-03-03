@@ -6,11 +6,17 @@
 ##########################################################################
 ##########################################################################
 ##########################################################################
-echo "--- testEnc started for xmlsec-$crypto library ($timestamp)"
-echo "--- LD_LIBRARY_PATH=$LD_LIBRARY_PATH" 
-echo "--- log file is $logfile"
+if [ -z "$XMLSEC_TEST_REPRODUCIBLE" ]; then
+    echo "--- testEnc started for xmlsec-$crypto library ($timestamp)"
+fi
+echo "--- LD_LIBRARY_PATH=$LD_LIBRARY_PATH"
+echo "--- LTDL_LIBRARY_PATH=$LTDL_LIBRARY_PATH"
+if [ -z "$XMLSEC_TEST_REPRODUCIBLE" ]; then
+    echo "--- log file is $logfile"
+fi
 echo "--- testEnc started for xmlsec-$crypto library ($timestamp)" >> $logfile
 echo "--- LD_LIBRARY_PATH=$LD_LIBRARY_PATH" >> $logfile
+echo "--- LTDL_LIBRARY_PATH=$LTDL_LIBRARY_PATH" >> $logfile
 
 ##########################################################################
 ##########################################################################
@@ -100,6 +106,14 @@ execEncTest $res_success \
     "--keys-file $topfolder/keys/keys.xml --enabled-key-data key-name,enc-key" \
     "--keys-file $keysfile  --session-key des-192  --binary-data $topfolder/aleksey-xmlenc-01/enc-des3cbc-aes192-keyname.data" \
     "--keys-file $keysfile"
+
+execEncTest $res_success \
+    "" \
+    "aleksey-xmlenc-01/enc-aes256-kt-rsa_oaep_sha1-params" \
+    "aes256-cbc rsa-oaep-mgf1p" \
+    "$priv_key_option:my-rsa-key $topfolder/keys/largersakey.$priv_key_format --pwd secret123" \
+    "$priv_key_option:my-rsa-key $topfolder/keys/largersakey.$priv_key_format --pwd secret123 --session-key aes-256 --enabled-key-data key-name --xml-data $topfolder/aleksey-xmlenc-01/enc-aes256-kt-rsa_oaep_sha1-params.data --node-name http://example.org/paymentv2:CreditCard"  \
+    "$priv_key_option:my-rsa-key $topfolder/keys/largersakey.$priv_key_format --pwd secret123"
 
 ##########################################################################
 #
@@ -361,6 +375,54 @@ execEncTest $res_success \
 #01-phaos-xmlenc-3/enc-element-3des-kt-rsa_oaep_sha256.xml
 #01-phaos-xmlenc-3/enc-element-3des-kt-rsa_oaep_sha512.xml
 
+
+echo "--------- AES-GCM tests include both positive and negative tests  ----------"
+if [ -z "$XMLSEC_TEST_REPRODUCIBLE" ]; then
+    echo "--- detailed log is written to  $logfile"
+fi
+##########################################################################
+#
+# AES-GCM
+#
+# IV length=96, AAD length=0 and tag length=128
+##########################################################################
+aesgcm_key_lengths="128 192 256"
+aesgcm_plaintext_lengths="104 128 256 408"
+aesgcm_vectors="01 02 03 04 05 06 07 08 09 10 11 12 13 14 15"
+for aesgcm_k_l in $aesgcm_key_lengths ; do 
+    for aesgcm_pt_l in $aesgcm_plaintext_lengths ; do 
+        for aesgcm_v in $aesgcm_vectors ; do 
+            base_test_name="nist-aesgcm/aes${aesgcm_k_l}/aes${aesgcm_k_l}-gcm-96-${aesgcm_pt_l}-0-128-${aesgcm_v}"
+            # If the corresponding *.data file is missing then we expect the test to fail 
+            if [ -f "$topfolder/$base_test_name.xml" -a ! -f "$topfolder/$base_test_name.data" ] ; then
+                execEncTest "$res_fail" \
+                    "" \
+                    "$base_test_name" \
+                    "aes${aesgcm_k_l}-gcm" \
+                    "--keys-file $topfolder/nist-aesgcm/keys-aes${aesgcm_k_l}-gcm.xml" \
+                    "" \
+                    ""
+            else
+                # generate binary file out of base64
+                DECODE="-d"
+                if [ "`uname`" = "Darwin" ]; then
+		    DECODE="-D"
+                fi
+                cat "$topfolder/$base_test_name.data" | base64 $DECODE > $tmpfile.3
+                execEncTest "$res_success" \
+                    "" \
+                    "$base_test_name" \
+                    "aes${aesgcm_k_l}-gcm" \
+                    "--keys-file $topfolder/nist-aesgcm/keys-aes${aesgcm_k_l}-gcm.xml" \
+                    "--keys-file $topfolder/nist-aesgcm/keys-aes${aesgcm_k_l}-gcm.xml --binary-data $tmpfile.3" \
+                    "--keys-file $topfolder/nist-aesgcm/keys-aes${aesgcm_k_l}-gcm.xml" \
+		    "base64"
+            fi
+        done
+    done
+done
+
+
 ##########################################################################
 #
 # test dynamicencryption
@@ -383,7 +445,9 @@ fi
 ##########################################################################
 ##########################################################################
 echo "--------- Negative Testing: Following tests MUST FAIL ----------"
-echo "--- detailed log is written to  $logfile" 
+if [ -z "$XMLSEC_TEST_REPRODUCIBLE" ]; then
+    echo "--- detailed log is written to  $logfile"
+fi
 execEncTest $res_fail \
     "" \
     "01-phaos-xmlenc-3/bad-alg-enc-element-aes128-kw-3des" \
@@ -409,5 +473,7 @@ rm -rf $tmpfile
 ##########################################################################
 echo "--- testEnc finished" >> $logfile
 echo "--- testEnc finished"
-echo "--- detailed log is written to  $logfile"
+if [ -z "$XMLSEC_TEST_REPRODUCIBLE" ]; then
+    echo "--- detailed log is written to  $logfile"
+fi
 

@@ -14,9 +14,6 @@
 
 #ifndef XMLSEC_NO_XMLENC
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
 #include <stdio.h>
 
 #include <libxml/tree.h>
@@ -28,6 +25,10 @@ extern "C" {
 #include <xmlsec/keysmngr.h>
 #include <xmlsec/keyinfo.h>
 #include <xmlsec/transforms.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 /**
  * xmlEncCtxMode:
@@ -87,7 +88,7 @@ typedef enum {
  * @cipherValueNode:            the pointer to <enc:CipherValue/> node.
  * @reserved1:                  reserved for the future.
  *
- * XML Encrypiton context.
+ * XML Encryption context.
  */
 struct _xmlSecEncCtx {
     /* these data user can set before performing the operation */

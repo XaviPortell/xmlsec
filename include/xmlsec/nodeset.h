@@ -11,14 +11,14 @@
 #ifndef __XMLSEC_NODESET_H__
 #define __XMLSEC_NODESET_H__
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
 #include <libxml/tree.h>
 #include <libxml/xpath.h>
 
 #include <xmlsec/xmlsec.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 typedef struct _xmlSecNodeSet   xmlSecNodeSet, *xmlSecNodeSetPtr;
 
@@ -34,7 +34,7 @@ typedef struct _xmlSecNodeSet   xmlSecNodeSet, *xmlSecNodeSetPtr;
  * @xmlSecNodeSetTreeWithoutCommentsInvert:     nodes set = all document nodes
  *                              minus (nodes in the list and all their subtress
  *                              plus all comment nodes).
- * @xmlSecNodeSetList:          nodes set = all nodes in the chidren list of nodes sets.
+ * @xmlSecNodeSetList:          nodes set = all nodes in the children list of nodes sets.
  *
  * The basic nodes sets types.
  */

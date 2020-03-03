@@ -1,13 +1,20 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
- * XPath transform
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
  *
  * Copyright (C) 2002-2016 Aleksey Sanin <aleksey@aleksey.com>. All Rights Reserved.
  */
+/**
+ * SECTION:xpath
+ * @Short_description: XPath transform implementation.
+ * @Stability: Private
+ *
+ * 
+ */
+
 #include "globals.h"
 
 #include <stdlib.h>
@@ -30,7 +37,7 @@
  *
  * xmlSecXPathHereFunction:
  * @ctxt:               the ponter to XPath context.
- * @nargs:              the arguments nubmer.
+ * @nargs:              the arguments number.
  *
  * The implementation of XPath "here()" function.
  * See xmlXPtrHereFunction() in xpointer.c. the only change is that
@@ -420,7 +427,7 @@ xmlSecTransformXPathExecute(xmlSecTransformPtr transform, int last,
     transform->outNodes = xmlSecXPathDataListExecute(dataList, doc,
                                 transform->hereNode, transform->inNodes);
     if(transform->outNodes == NULL) {
-        xmlSecInternalError("xmlSecXPathDataExecute",
+        xmlSecInternalError("xmlSecXPathDataListExecute",
                             xmlSecTransformGetName(transform));
         return(-1);
     }
@@ -530,7 +537,7 @@ xmlSecTransformXPathNodeRead(xmlSecTransformPtr transform, xmlNodePtr node, xmlS
 
     /* create full XPath expression */
     xmlSecAssert2(data->expr != NULL, -1);
-    tmpSize = xmlStrlen(data->expr) + strlen(xpathPattern) + 1;
+    tmpSize = xmlStrlen(data->expr) + xmlStrlen(BAD_CAST xpathPattern) + 1;
     tmp = (xmlChar*) xmlMalloc(sizeof(xmlChar) * tmpSize);
     if(tmp == NULL) {
         xmlSecMallocError(sizeof(xmlChar) * tmpSize,

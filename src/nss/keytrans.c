@@ -1,13 +1,19 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
- * AES Algorithm support
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
  *
- * Copyright .................................
+ * Copyright (c) 2003 America Online, Inc.  All rights reserved.
  */
+/**
+ * SECTION:keytrans
+ * @Short_description: RSA Key Transport transforms implementation for NSS.
+ * @Stability: Private
+ *
+ */
+
 #include "globals.h"
 
 #include <stdlib.h>
@@ -340,7 +346,7 @@ xmlSecNssKeyTransportCtxFinal(xmlSecNssKeyTransportCtxPtr ctx, xmlSecBufferPtr i
         return(-1);
     }
 
-    /* Now we get all of the key materail */
+    /* Now we get all of the key material */
     /* from now on we will wrap or unwrap the key */
     if(ctx->pubkey != NULL) {
         blockSize = SECKEY_PublicKeyStrength(ctx->pubkey);
@@ -513,7 +519,7 @@ xmlSecNssKeyTransportExecute(xmlSecTransformPtr transform, int last, xmlSecTrans
 
         if((context->material == NULL) && (last != 0)) {
             xmlSecInvalidTransfromStatusError2(transform,
-                    "No enough data to intialize transform");
+                    "No enough data to initialize transform");
             return(-1);
         }
 

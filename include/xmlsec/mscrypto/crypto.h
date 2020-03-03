@@ -9,10 +9,6 @@
 #ifndef __XMLSEC_MSCRYPTO_CRYPTO_H__
 #define __XMLSEC_MSCRYPTO_CRYPTO_H__
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
 #include <windows.h>
 #include <wincrypt.h>
 
@@ -20,6 +16,10 @@ extern "C" {
 #include <xmlsec/keys.h>
 #include <xmlsec/transforms.h>
 #include <xmlsec/dl.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 XMLSEC_CRYPTO_EXPORT xmlSecCryptoDLFunctionsPtr xmlSecCryptoGetFunctions_mscrypto(void);
 
@@ -33,7 +33,7 @@ XMLSEC_CRYPTO_EXPORT int                xmlSecMSCryptoShutdown          (void);
 
 XMLSEC_CRYPTO_EXPORT int                xmlSecMSCryptoKeysMngrInit      (xmlSecKeysMngrPtr mngr);
 XMLSEC_CRYPTO_EXPORT int                xmlSecMSCryptoGenerateRandom    (xmlSecBufferPtr buffer,
-                                                                         size_t size);
+                                                                         xmlSecSize size);
 
 XMLSEC_CRYPTO_EXPORT void               xmlSecMSCryptoErrorsDefaultCallback(const char* file,
                                                                         int line,
@@ -48,16 +48,16 @@ XMLSEC_CRYPTO_EXPORT void               xmlSecMSCryptoErrorsDefaultCallback(cons
  * String encoding conversion utils
  *
  ******************************************************************************/
-XMLSEC_CRYPTO_EXPORT LPWSTR             xmlSecMSCryptoConvertLocaleToUnicode(const char* str);
+XMLSEC_DEPRECATED XMLSEC_CRYPTO_EXPORT LPWSTR             xmlSecMSCryptoConvertLocaleToUnicode(const char* str);
 
-XMLSEC_CRYPTO_EXPORT LPWSTR             xmlSecMSCryptoConvertUtf8ToUnicode  (const xmlChar* str);
-XMLSEC_CRYPTO_EXPORT xmlChar*           xmlSecMSCryptoConvertUnicodeToUtf8  (LPCWSTR str);
+XMLSEC_DEPRECATED XMLSEC_CRYPTO_EXPORT LPWSTR             xmlSecMSCryptoConvertUtf8ToUnicode  (const xmlChar* str);
+XMLSEC_DEPRECATED XMLSEC_CRYPTO_EXPORT xmlChar*           xmlSecMSCryptoConvertUnicodeToUtf8  (LPCWSTR str);
 
-XMLSEC_CRYPTO_EXPORT xmlChar*           xmlSecMSCryptoConvertLocaleToUtf8   (const char* str);
-XMLSEC_CRYPTO_EXPORT char*              xmlSecMSCryptoConvertUtf8ToLocale   (const xmlChar* str);
+XMLSEC_DEPRECATED XMLSEC_CRYPTO_EXPORT xmlChar*           xmlSecMSCryptoConvertLocaleToUtf8   (const char* str);
+XMLSEC_DEPRECATED XMLSEC_CRYPTO_EXPORT char*              xmlSecMSCryptoConvertUtf8ToLocale   (const xmlChar* str);
 
-XMLSEC_CRYPTO_EXPORT xmlChar*           xmlSecMSCryptoConvertTstrToUtf8     (LPCTSTR str);
-XMLSEC_CRYPTO_EXPORT LPTSTR             xmlSecMSCryptoConvertUtf8ToTstr     (const xmlChar*  str);
+XMLSEC_DEPRECATED XMLSEC_CRYPTO_EXPORT xmlChar*           xmlSecMSCryptoConvertTstrToUtf8     (LPCTSTR str);
+XMLSEC_DEPRECATED XMLSEC_CRYPTO_EXPORT LPTSTR             xmlSecMSCryptoConvertUtf8ToTstr     (const xmlChar*  str);
 
 
 /********************************************************************
@@ -113,6 +113,52 @@ XMLSEC_CRYPTO_EXPORT xmlSecKeyDataId    xmlSecMSCryptoKeyDataGost2001GetKlass   
 XMLSEC_CRYPTO_EXPORT xmlSecTransformId xmlSecMSCryptoTransformGost2001GostR3411_94GetKlass(void);
 
 #endif /* XMLSEC_NO_GOST */
+
+#ifndef XMLSEC_NO_GOST2012
+
+/********************************************************************
+ *
+ * GOST R 34.10-2012  transform
+ *
+ *******************************************************************/
+
+/**
+ * xmlSecMSCryptoKeyDataGost2012_256Id:
+ *
+ * The GOST R 34.10-2012 256 key klass
+ */
+#define xmlSecMSCryptoKeyDataGost2012_256Id \
+        xmlSecMSCryptoKeyDataGost2012_256GetKlass()
+XMLSEC_CRYPTO_EXPORT xmlSecKeyDataId    xmlSecMSCryptoKeyDataGost2012_256GetKlass   (void);
+
+/**
+ * xmlSecMSCryptoKeyDataGost2012_512Id:
+ *
+ * The GOST R 34.10-2012 512 key klass
+ */
+#define xmlSecMSCryptoKeyDataGost2012_512Id \
+        xmlSecMSCryptoKeyDataGost2012_512GetKlass()
+XMLSEC_CRYPTO_EXPORT xmlSecKeyDataId    xmlSecMSCryptoKeyDataGost2012_512GetKlass   (void);
+
+/**
+ * xmlSecMSCryptoTransformGost2012_256Id:
+ *
+ * The GOST R 34.10-2012 - GOST R 3411-2012 256 bit signature transform klass.
+ */
+#define xmlSecMSCryptoTransformGost2012_256Id \
+        xmlSecMSCryptoTransformGost2012_256GetKlass()
+XMLSEC_CRYPTO_EXPORT xmlSecTransformId xmlSecMSCryptoTransformGost2012_256GetKlass(void);
+
+/**
+ * xmlSecMSCryptoTransformGost2012_512Id:
+ *
+ * The GOST R 34.10-2012 - GOST R 3411-2012 512 bit signature transform klass.
+ */
+#define xmlSecMSCryptoTransformGost2012_512Id \
+        xmlSecMSCryptoTransformGost2012_512GetKlass()
+XMLSEC_CRYPTO_EXPORT xmlSecTransformId xmlSecMSCryptoTransformGost2012_512GetKlass(void);
+
+#endif /* XMLSEC_NO_GOST2012 */
 
 /********************************************************************
  *
@@ -315,7 +361,37 @@ XMLSEC_CRYPTO_EXPORT xmlSecTransformId xmlSecMSCryptoTransformSha512GetKlass(voi
 #define xmlSecMSCryptoTransformGostR3411_94Id \
         xmlSecMSCryptoTransformGostR3411_94GetKlass()
 XMLSEC_CRYPTO_EXPORT xmlSecTransformId xmlSecMSCryptoTransformGostR3411_94GetKlass(void);
+
 #endif /* XMLSEC_NO_GOST */
+
+#ifndef XMLSEC_NO_GOST2012
+
+/********************************************************************
+ *
+ * GOST R 34.10-2012 256 and 512-bit digests
+ *
+ *******************************************************************/
+
+/**
+ * xmlSecMSCryptoTransformGostR3411_2012_256Id:
+ *
+ * The GOST R 34.11-2012 256 digest transform klass.
+ */
+#define xmlSecMSCryptoTransformGostR3411_2012_256Id \
+        xmlSecMSCryptoTransformGostR3411_2012_256GetKlass()
+XMLSEC_CRYPTO_EXPORT xmlSecTransformId xmlSecMSCryptoTransformGostR3411_2012_256GetKlass(void);
+
+/**
+ * xmlSecMSCryptoTransformGostR3411_2012_512Id:
+ *
+ * The GOST R 34.11-2012 512 digest transform klass.
+ */
+#define xmlSecMSCryptoTransformGostR3411_2012_512Id \
+        xmlSecMSCryptoTransformGostR3411_2012_512GetKlass()
+XMLSEC_CRYPTO_EXPORT xmlSecTransformId xmlSecMSCryptoTransformGostR3411_2012_512GetKlass(void);
+
+#endif /* XMLSEC_NO_GOST2012 */
+
 
 /********************************************************************
  *

@@ -15,10 +15,6 @@
 
 #ifndef XMLSEC_NO_XMLDSIG
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
 #include <libxml/tree.h>
 #include <libxml/parser.h>
 
@@ -30,6 +26,10 @@ extern "C" {
 #include <xmlsec/keysmngr.h>
 #include <xmlsec/keyinfo.h>
 #include <xmlsec/transforms.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 typedef struct _xmlSecDSigReferenceCtx          xmlSecDSigReferenceCtx,
                                                 *xmlSecDSigReferenceCtxPtr;
@@ -114,7 +114,7 @@ typedef enum {
  *                              functions.
  * @operation:                  the operation: sign or verify.
  * @result:                     the pointer to signature (not valid for signature verification).
- * @status:                     the <dsig:Signatuire/> processing status.
+ * @status:                     the <dsig:Signature/> processing status.
  * @signMethod:                 the pointer to signature transform.
  * @c14nMethod:                 the pointer to c14n transform.
  * @preSignMemBufMethod:        the pointer to binary buffer right before signature

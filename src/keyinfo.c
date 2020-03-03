@@ -1,18 +1,27 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
- * <dsig:KeyInfo/> element processing
- * (http://www.w3.org/TR/xmlSec-core/#sec-KeyInfo:
  *
- * The KeyInfo Element
+ * This is free software; see Copyright file in the source
+ * distribution for preciese wording.
  *
- * KeyInfo is an optional element that enables the recipient(s) to obtain
+ * Copyright (C) 2002-2016 Aleksey Sanin <aleksey@aleksey.com>. All Rights Reserved.
+ */
+/**
+ * SECTION:keyinfo
+ * @Short_description: &lt;dsig:KeyInfo/&gt; node parser functions.
+ * @Stability: Stable
+ *
+ *
+ * [KeyInfo](https://www.w3.org/TR/xmldsig-core/#sec-KeyInfo) is an 
+ * optional element that enables the recipient(s) to obtain
  * the key needed to validate the signature.  KeyInfo may contain keys,
  * names, certificates and other public key management information, such as
  * in-band key distribution or key agreement data.
  *
- *  Schema Definition:
+ * Schema Definition:
  *
+ * |[<!-- language="XML" -->
  *  <element name="KeyInfo" type="ds:KeyInfoType"/>
  *  <complexType name="KeyInfoType" mixed="true">
  *    <choice maxOccurs="unbounded">
@@ -28,19 +37,17 @@
  *    </choice>
  *    <attribute name="Id" type="ID" use="optional"/>
  *  </complexType>
+ * ]|
  *
  * DTD:
  *
+ * |[<!-- language="XML" -->
  * <!ELEMENT KeyInfo (#PCDATA|KeyName|KeyValue|RetrievalMethod|
  *                    X509Data|PGPData|SPKIData|MgmtData %KeyInfo.ANY;)* >
  * <!ATTLIST KeyInfo  Id  ID   #IMPLIED >
- *
- *
- * This is free software; see Copyright file in the source
- * distribution for preciese wording.
- *
- * Copyright (C) 2002-2016 Aleksey Sanin <aleksey@aleksey.com>. All Rights Reserved.
+ * ]|
  */
+
 #include "globals.h"
 
 #include <stdlib.h>
@@ -633,7 +640,6 @@ xmlSecKeyDataNameGetKlass(void) {
 
 static int
 xmlSecKeyDataNameXmlRead(xmlSecKeyDataId id, xmlSecKeyPtr key, xmlNodePtr node, xmlSecKeyInfoCtxPtr keyInfoCtx) {
-    const xmlChar* oldName;
     xmlChar* newName;
     int ret;
 
@@ -643,19 +649,10 @@ xmlSecKeyDataNameXmlRead(xmlSecKeyDataId id, xmlSecKeyPtr key, xmlNodePtr node, 
     xmlSecAssert2(keyInfoCtx != NULL, -1);
     xmlSecAssert2(keyInfoCtx->mode == xmlSecKeyInfoModeRead, -1);
 
-    oldName = xmlSecKeyGetName(key);
+    /* read key name */
     newName = xmlNodeGetContent(node);
     if(newName == NULL) {
         xmlSecInvalidNodeContentError(node, xmlSecKeyDataKlassGetName(id), "empty");
-        return(-1);
-    }
-
-    /* compare name values */
-    if((oldName != NULL) && !xmlStrEqual(oldName, newName)) {
-        xmlSecOtherError(XMLSEC_ERRORS_R_INVALID_KEY_DATA,
-                         xmlSecKeyDataKlassGetName(id),
-                         "key name is already specified");
-        xmlFree(newName);
         return(-1);
     }
 
@@ -683,19 +680,42 @@ xmlSecKeyDataNameXmlRead(xmlSecKeyDataId id, xmlSecKeyPtr key, xmlNodePtr node, 
                 return(-1);
             }
             xmlSecKeyDestroy(tmpKey);
+
+            /* and set the key name */
+            ret = xmlSecKeySetName(key, newName);
+            if(ret < 0) {
+                xmlSecInternalError("xmlSecKeySetName",
+                                    xmlSecKeyDataKlassGetName(id));
+                xmlFree(newName);   
+                return(-1);
+            } 
+        }
+        /* TODO: record the key names we tried */
+    } else {
+        const xmlChar* oldName;
+
+        /* if we already have a keyname, make sure that it matches or set it */
+        oldName = xmlSecKeyGetName(key);
+        if(oldName != NULL) {
+            if(!xmlStrEqual(oldName, newName)) {
+                xmlSecOtherError(XMLSEC_ERRORS_R_INVALID_KEY_DATA,
+                                 xmlSecKeyDataKlassGetName(id),
+                                 "key name is already specified");
+                xmlFree(newName);
+                return(-1);
+            }
+        } else {
+            ret = xmlSecKeySetName(key, newName);
+            if(ret < 0) {
+                xmlSecInternalError("xmlSecKeySetName",
+                                    xmlSecKeyDataKlassGetName(id));
+                xmlFree(newName);
+                return(-1);
+            }
         }
     }
 
-    /* finally set key name if it is not there */
-    if(xmlSecKeyGetName(key) == NULL) {
-        ret = xmlSecKeySetName(key, newName);
-        if(ret < 0) {
-            xmlSecInternalError("xmlSecKeySetName",
-                                xmlSecKeyDataKlassGetName(id));
-            xmlFree(newName);
-            return(-1);
-        }
-    }
+    /* done */
     xmlFree(newName);
     return(0);
 }
@@ -712,13 +732,21 @@ xmlSecKeyDataNameXmlWrite(xmlSecKeyDataId id, xmlSecKeyPtr key, xmlNodePtr node,
     xmlSecAssert2(keyInfoCtx->mode == xmlSecKeyInfoModeWrite, -1);
 
     name = xmlSecKeyGetName(key);
-    if(name != NULL) {
-        ret = xmlSecNodeEncodeAndSetContent(node, name);
-        if(ret < 0) {
-            xmlSecInternalError("xmlSecNodeEncodeAndSetContent", NULL);
-            return(-1);
-        }
+    if(name == NULL) {
+        return(8);
     }
+
+    if(!xmlSecIsEmptyNode(node)) {
+        return(0);
+    }
+
+    ret = xmlSecNodeEncodeAndSetContent(node, name);
+    if(ret < 0) {
+        xmlSecInternalError("xmlSecNodeEncodeAndSetContent", NULL);
+        return(-1);
+    }
+
+    /* done */
     return(0);
 }
 
@@ -1322,7 +1350,7 @@ xmlSecKeyDataEncryptedKeyXmlRead(xmlSecKeyDataId id, xmlSecKeyPtr key, xmlNodePt
     result = xmlSecEncCtxDecryptToBuffer(keyInfoCtx->encCtx, node);
     if((result == NULL) || (xmlSecBufferGetData(result) == NULL)) {
         /* We might have multiple EncryptedKey elements, encrypted
-         * for different receipints but application can enforce
+         * for different recipients but application can enforce
          * correct enc key.
          */
         if((keyInfoCtx->flags & XMLSEC_KEYINFO_FLAGS_ENCKEY_DONT_STOP_ON_FAILED_DECRYPTION) != 0) {

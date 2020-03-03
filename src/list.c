@@ -1,13 +1,18 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
- * List of pointers.
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
- *
  * Copyright (C) 2002-2016 Aleksey Sanin <aleksey@aleksey.com>. All Rights Reserved.
  */
+/**
+ * SECTION:list
+ * @Short_description: Generic list structure functions.
+ * @Stability: Stable
+ *
+ */
+
 #include "globals.h"
 
 #include <stdlib.h>
@@ -18,7 +23,6 @@
 #include <xmlsec/xmlsec.h>
 #include <xmlsec/list.h>
 #include <xmlsec/errors.h>
-
 
 static int              xmlSecPtrListEnsureSize                 (xmlSecPtrListPtr list,
                                                                  xmlSecSize size);
@@ -243,7 +247,7 @@ xmlSecPtrListDuplicate(xmlSecPtrListPtr list) {
  *
  * Gets list size.
  *
- * Returns: the number of itmes in @list.
+ * Returns: the number of items in @list.
  */
 xmlSecSize
 xmlSecPtrListGetSize(xmlSecPtrListPtr list) {
@@ -288,7 +292,7 @@ xmlSecPtrListAdd(xmlSecPtrListPtr list, xmlSecPtr item) {
 
     ret = xmlSecPtrListEnsureSize(list, list->use + 1);
     if(ret < 0) {
-        xmlSecInternalError2("xmlSecPtrListAdd",
+        xmlSecInternalError2("xmlSecPtrListEnsureSize",
                              xmlSecPtrListGetName(list),
                              "size=%d", list->use + 1);
         return(-1);
@@ -484,7 +488,7 @@ static xmlSecPtrListKlass xmlSecStringListKlass = {
 /**
  * xmlSecStringListGetKlass:
  *
- * The strins list class.
+ * The strings list class.
  *
  * Returns: strings list klass.
  */

@@ -25,6 +25,29 @@ table.CALSTABLE > tbody > tr:nth-child(1) > td:nth-child(1) {
     color: initial;
 }
 </style>
+<style type="text/css">
+table.CALSTABLE > tbody > tr:nth-child(1) > td:nth-child(1) {
+    width: 20em;
+}
+.synopsis, .classsynopsis {
+    background: #eeeeee;
+    border: solid 1px #aaaaaa;
+}
+.programlisting {
+    background: #eeeeee;
+    border: solid 1px #000000;
+}
+.navigation {
+    background: #eeeeee;
+    border: solid 1px #000000;
+}
+.navigation a {
+    color: initial;
+}
+.navigation a:visited {
+    color: initial;
+}
+</style>
 </head>
 <body><table width="100%" valign="top"><tr valign="top">
 <td valign="top" align="left" width="210">
@@ -222,6 +245,10 @@ table.CALSTABLE > tbody > tr:nth-child(1) > td:nth-child(1) {
 </dt>
 <dd> <dd>load load private key from pkcs12 file &lt;file&gt; </dd>
 </dd>
+<dt> <b>--pkcs12-persist</b> <dt></dt>
+</dt>
+<dd> <dd>persist loaded private key </dd>
+</dd>
 <dt> <b>--pubkey-cert-pem[</b>:&lt;name&gt;] &lt;file&gt; <dt></dt>
 </dt>
 <dd> <dd>load public key from PEM cert file </dd>
@@ -289,6 +316,10 @@ table.CALSTABLE > tbody > tr:nth-child(1) > td:nth-child(1) {
 <dt> <b>--xxe</b> <dt></dt>
 </dt>
 <dd> <dd>enable External Entity resolution. WARNING: this may allow the reading of arbitrary files and URLs, controlled by the input XML document.  Use with caution! </dd>
+</dd>
+<dt> <b>--url-map</b>:&lt;url&gt; &lt;file&gt; <dt></dt>
+</dt>
+<dd> <dd>maps a given &lt;url&gt; to the given &lt;file&gt; for loading external resources </dd>
 </dd>
 </dl>
 <a name="lbAF"> </a><h2>AUTHOR</h2>

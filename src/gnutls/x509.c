@@ -2,14 +2,19 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
- * X509 support
- *
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
  *
  * Copyright (C) 2010-2016 Aleksey Sanin <aleksey@aleksey.com>. All Rights Reserved.
  */
+/**
+ * SECTION:x509
+ * @Short_description: X509 certificates implementation for GnuTLS.
+ * @Stability: Stable
+ *
+ */
+
 #include "globals.h"
 
 #ifndef XMLSEC_NO_X509
@@ -967,7 +972,9 @@ xmlSecGnuTLSX509Trim(xmlChar * str) {
 
     /* skip spaces from the beggining */
     p = str;
-    while(XMLSEC_GNUTLS_IS_SPACE(*p) && ((*p) != '\0')) ++p;
+    while(XMLSEC_GNUTLS_IS_SPACE(*p) && ((*p) != '\0')) {
+        ++p;
+    }
     if(p != str) {
         for(q = str; ; ++q, ++p) {
             (*q) = (*p);
@@ -978,8 +985,12 @@ xmlSecGnuTLSX509Trim(xmlChar * str) {
     }
 
     /* skip spaces from the end */
-    for(p = str; (*p) != '\0'; ++p);
-    while((p > str) && (XMLSEC_GNUTLS_IS_SPACE(*(p - 1)))) *(--p) = '\0';
+    for(p = str; (*p) != '\0'; ++p) {
+        ;
+    }
+    while((p > str) && (XMLSEC_GNUTLS_IS_SPACE(*(p - 1)))) {
+        *(--p) = '\0';
+    }
 }
 
 static int

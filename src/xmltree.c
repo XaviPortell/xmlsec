@@ -1,13 +1,19 @@
 /*
  * XML Security Library (http://www.aleksey.com/xmlsec).
  *
- * Common XML Doc utility functions
  *
  * This is free software; see Copyright file in the source
  * distribution for preciese wording.
  *
  * Copyright (C) 2002-2016 Aleksey Sanin <aleksey@aleksey.com>. All Rights Reserved.
  */
+/**
+ * SECTION:xmltree
+ * @Short_description: XML tree functions.
+ * @Stability: Stable
+ *
+ */
+
 #include "globals.h"
 
 #include <stdlib.h>
@@ -734,7 +740,7 @@ xmlSecAddIDs(xmlDocPtr doc, xmlNodePtr cur, const xmlChar** ids) {
 /**
  * xmlSecCreateTree:
  * @rootNodeName:       the root node name.
- * @rootNodeNs:         the root node namespace (otpional).
+ * @rootNodeNs:         the root node namespace (optional).
  *
  * Creates a new XML tree with one root node @rootNodeName.
  *
@@ -782,7 +788,7 @@ xmlSecCreateTree(const xmlChar* rootNodeName, const xmlChar* rootNodeNs) {
  * xmlSecIsEmptyNode:
  * @node:               the node to check
  *
- * Checks whethere the @node is empty (i.e. has only whitespaces children).
+ * Checks whether the @node is empty (i.e. has only whitespaces children).
  *
  * Returns: 1 if @node is empty, 0 otherwise or a negative value if an error occurs.
  */
@@ -811,7 +817,7 @@ xmlSecIsEmptyNode(xmlNodePtr node) {
  * xmlSecIsEmptyString:
  * @str:                the string to check
  *
- * Checks whethere the @str is empty (i.e. has only whitespaces children).
+ * Checks whether the @str is empty (i.e. has only whitespaces children).
  *
  * Returns: 1 if @str is empty, 0 otherwise or a negative value if an error occurs.
  */
@@ -896,7 +902,7 @@ xmlSecGetQName(xmlNodePtr node, const xmlChar* href, const xmlChar* local) {
         xmlSecSize len;
 
         len = xmlStrlen(local) + xmlStrlen(ns->prefix) + 4;
-        qname = xmlMalloc(len);
+        qname = (xmlChar *)xmlMalloc(len);
         if(qname == NULL) {
             xmlSecMallocError(len, NULL);
             return(NULL);
@@ -1011,7 +1017,7 @@ xmlSecQName2IntegerGetIntegerFromString(xmlSecQName2IntegerInfoConstPtr info,
 
     qnameLocalPart = xmlStrchr(qname, ':');
     if(qnameLocalPart != NULL) {
-        qnamePrefix = xmlStrndup(qname, qnameLocalPart - qname);
+        qnamePrefix = xmlStrndup(qname, (int)(qnameLocalPart - qname));
         if(qnamePrefix == NULL) {
             xmlSecStrdupError(qname, NULL);
             return(-1);
@@ -1256,7 +1262,7 @@ xmlSecQName2IntegerAttributeWrite(xmlSecQName2IntegerInfoConstPtr info, xmlNodeP
 
     attr = xmlSetProp(node, attrName, qname);
     if(attr == NULL) {
-        xmlSecInternalError4("xmlSecAddChildNode", NULL,
+        xmlSecInternalError4("xmlSetProp", NULL,
                              "node=%s,attrName=%s,intValue=%d",
                              xmlSecErrorsSafeString(node->name),
                              xmlSecErrorsSafeString(attrName),
@@ -1415,7 +1421,7 @@ xmlSecQName2BitMaskGetBitMaskFromString(xmlSecQName2BitMaskInfoConstPtr info,
 
     qnameLocalPart = xmlStrchr(qname, ':');
     if(qnameLocalPart != NULL) {
-        qnamePrefix = xmlStrndup(qname, qnameLocalPart - qname);
+        qnamePrefix = xmlStrndup(qname, (int)(qnameLocalPart - qname));
         if(qnamePrefix == NULL) {
             xmlSecStrdupError(qname, NULL);
             return(-1);
@@ -1671,6 +1677,273 @@ xmlSecQName2BitMaskDebugXmlDump(xmlSecQName2BitMaskInfoConstPtr info, xmlSecBitM
     fprintf(output, "</%sList>\n", name);
 }
 
+/*************************************************************************
+ *
+ * Windows string conversions
+ *
+ ************************************************************************/
+#ifdef WIN32
+
+/**
+ * xmlSecWin32ConvertUtf8ToUnicode:
+ * @str:         the string to convert.
+ *
+ * Converts input string from UTF8 to Unicode.
+ *
+ * Returns: a pointer to newly allocated string (must be freed with xmlFree) or NULL if an error occurs.
+ */
+LPWSTR
+xmlSecWin32ConvertUtf8ToUnicode(const xmlChar* str) {
+    LPWSTR res = NULL;
+    int len;
+    int ret;
+
+    xmlSecAssert2(str != NULL, NULL);
+
+    /* call MultiByteToWideChar first to get the buffer size */
+    ret = MultiByteToWideChar(CP_UTF8, 0, (LPCCH)str, -1, NULL, 0);
+    if(ret <= 0) {
+        return(NULL);
+    }
+    len = ret + 1;
+
+    /* allocate buffer */
+    res = (LPWSTR)xmlMalloc(sizeof(WCHAR) * len);
+    if(res == NULL) {
+        xmlSecMallocError(sizeof(WCHAR) * len, NULL);
+        return(NULL);
+    }
+
+    /* convert */
+    ret = MultiByteToWideChar(CP_UTF8, 0, (LPCCH)str, -1, res, len);
+    if(ret <= 0) {
+        xmlFree(res);
+        return(NULL);
+    }
+
+    /* done */
+    return(res);
+}
+
+/**
+ * xmlSecWin32ConvertUnicodeToUtf8:
+ * @str:         the string to convert.
+ *
+ * Converts input string from Unicode to UTF8.
+ *
+ * Returns: a pointer to newly allocated string (must be freed with xmlFree) or NULL if an error occurs.
+ */
+xmlChar*
+xmlSecWin32ConvertUnicodeToUtf8(LPCWSTR str) {
+    xmlChar * res = NULL;
+    int len;
+    int ret;
+
+    xmlSecAssert2(str != NULL, NULL);
+
+    /* call WideCharToMultiByte first to get the buffer size */
+    ret = WideCharToMultiByte(CP_UTF8, 0, str, -1, NULL, 0, NULL, NULL);
+    if(ret <= 0) {
+        return(NULL);
+    }
+    len = ret + 1;
+
+    /* allocate buffer */
+    res = (xmlChar*)xmlMalloc(sizeof(xmlChar) * len);
+    if(res == NULL) {
+        xmlSecMallocError(sizeof(xmlChar) * len, NULL);
+        return(NULL);
+    }
+
+    /* convert */
+    ret = WideCharToMultiByte(CP_UTF8, 0, str, -1, (LPSTR)res, len, NULL, NULL);
+    if(ret <= 0) {
+        xmlFree(res);
+        return(NULL);
+    }
+
+    /* done */
+    return(res);
+}
+
+/**
+ * xmlSecWin32ConvertLocaleToUnicode:
+ * @str:         the string to convert.
+ *
+ * Converts input string from current system locale to Unicode.
+ *
+ * Returns: a pointer to newly allocated string (must be freed with xmlFree) or NULL if an error occurs.
+ */
+LPWSTR
+xmlSecWin32ConvertLocaleToUnicode(const char* str) {
+    LPWSTR res = NULL;
+    int len;
+    int ret;
+
+    xmlSecAssert2(str != NULL, NULL);
+
+    /* call MultiByteToWideChar first to get the buffer size */
+    ret = MultiByteToWideChar(CP_ACP, 0, str, -1, NULL, 0);
+    if(ret <= 0) {
+        return(NULL);
+    }
+    len = ret;
+
+    /* allocate buffer */
+    res = (LPWSTR)xmlMalloc(sizeof(WCHAR) * len);
+    if(res == NULL) {
+        xmlSecMallocError(sizeof(WCHAR) * len, NULL);
+        return(NULL);
+    }
+
+    /* convert */
+    ret = MultiByteToWideChar(CP_ACP, 0, str, -1, res, len);
+    if(ret <= 0) {
+        xmlFree(res);
+        return(NULL);
+    }
+
+    /* done */
+    return(res);
+}
+
+/**
+ * xmlSecWin32ConvertLocaleToUtf8:
+ * @str:         the string to convert.
+ *
+ * Converts input string from locale to UTF8.
+ *
+ * Returns: a pointer to newly allocated string (must be freed with xmlFree) or NULL if an error occurs.
+ */
+xmlChar*
+xmlSecWin32ConvertLocaleToUtf8(const char * str) {
+    LPWSTR strW = NULL;
+    xmlChar * res = NULL;
+    int len;
+    int ret;
+
+    xmlSecAssert2(str != NULL, NULL);
+
+    strW = xmlSecWin32ConvertLocaleToUnicode(str);
+    if(strW == NULL) {
+        return(NULL);
+    }
+
+    /* call WideCharToMultiByte first to get the buffer size */
+    ret = WideCharToMultiByte(CP_ACP, 0, strW, -1, NULL, 0, NULL, NULL);
+    if(ret <= 0) {
+        xmlFree(strW);
+        return(NULL);
+    }
+    len = ret + 1;
+
+    /* allocate buffer */
+    res = (xmlChar*)xmlMalloc(sizeof(xmlChar) * len);
+    if(res == NULL) {
+        xmlSecMallocError(sizeof(xmlChar) * len, NULL);
+        xmlFree(strW);
+        return(NULL);
+    }
+
+    /* convert */
+    ret = WideCharToMultiByte(CP_ACP, 0, strW, -1, (LPSTR)res, len, NULL, NULL);
+    if(ret <= 0) {
+        xmlFree(strW);
+        xmlFree(res);
+        return(NULL);
+    }
+
+    /* done */
+    xmlFree(strW);
+    return(res);
+}
+
+/**
+ * xmlSecWin32ConvertUtf8ToLocale:
+ * @str:         the string to convert.
+ *
+ * Converts input string from UTF8 to locale.
+ *
+ * Returns: a pointer to newly allocated string (must be freed with xmlFree) or NULL if an error occurs.
+ */
+char *
+xmlSecWin32ConvertUtf8ToLocale(const xmlChar* str) {
+    LPWSTR strW = NULL;
+    char * res = NULL;
+    int len;
+    int ret;
+
+    xmlSecAssert2(str != NULL, NULL);
+
+    strW = xmlSecWin32ConvertUtf8ToUnicode(str);
+    if(strW == NULL) {
+        return(NULL);
+    }
+
+    /* call WideCharToMultiByte first to get the buffer size */
+    ret = WideCharToMultiByte(CP_ACP, 0, strW, -1, NULL, 0, NULL, NULL);
+    if(ret <= 0) {
+        xmlFree(strW);
+        return(NULL);
+    }
+    len = ret + 1;
+
+    /* allocate buffer */
+    res = (char*)xmlMalloc(sizeof(char) * len);
+    if(res == NULL) {
+        xmlSecMallocError(sizeof(char) * len, NULL);
+        xmlFree(strW);
+        return(NULL);
+    }
+
+    /* convert */
+    ret = WideCharToMultiByte(CP_ACP, 0, strW, -1, res, len, NULL, NULL);
+    if(ret <= 0) {
+        xmlFree(strW);
+        xmlFree(res);
+        return(NULL);
+    }
+
+    /* done */
+    xmlFree(strW);
+    return(res);
+}
+
+/**
+ * xmlSecWin32ConvertTstrToUtf8:
+ * @str:         the string to convert.
+ *
+ * Converts input string from TSTR (locale or Unicode) to UTF8.
+ *
+ * Returns: a pointer to newly allocated string (must be freed with xmlFree) or NULL if an error occurs.
+ */
+xmlChar*
+xmlSecWin32ConvertTstrToUtf8(LPCTSTR str) {
+#ifdef UNICODE
+    return xmlSecWin32ConvertUnicodeToUtf8(str);
+#else  /* UNICODE */
+    return xmlSecWin32ConvertLocaleToUtf8(str);
+#endif /* UNICODE */
+}
+
+/**
+ * xmlSecWin32ConvertUtf8ToTstr:
+ * @str:         the string to convert.
+ *
+ * Converts input string from UTF8 to TSTR (locale or Unicode).
+ *
+ * Returns: a pointer to newly allocated string (must be freed with xmlFree) or NULL if an error occurs.
+ */
+LPTSTR
+xmlSecWin32ConvertUtf8ToTstr(const xmlChar*  str) {
+#ifdef UNICODE
+    return xmlSecWin32ConvertUtf8ToUnicode(str);
+#else  /* UNICODE */
+    return xmlSecWin32ConvertUtf8ToLocale(str);
+#endif /* UNICODE */
+}
+
+#endif /* WIN32 */
 
 
 
